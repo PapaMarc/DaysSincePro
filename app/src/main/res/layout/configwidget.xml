@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dip"
+        android:text="@string/select_event" >
+    </TextView>
+
+    <Spinner
+        android:id="@+id/spinnerW"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/event" >
+    </Spinner>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dip"
+        android:text="@string/color" >
+    </TextView>
+
+    <Spinner
+        android:id="@+id/spinnerC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/color" >
+    </Spinner>
+
+    <CheckBox
+        android:id="@+id/checkBoxOpaque"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/opaque" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dip"
+        android:text="@string/display_style" >
+    </TextView>
+
+    <Spinner
+        android:id="@+id/spinnerS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/display_style" >
+    </Spinner>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/OK" >
+    </Button>
+
+</LinearLayout>

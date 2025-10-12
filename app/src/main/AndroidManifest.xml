@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.alexcmak.dayssincepro"
+          xmlns:tools="http://schemas.android.com/tools">
+
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Holo.Light">
+
+        <activity
+            android:name=".CategoriesActivity"
+            android:label="@string/show_categories"></activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="android.support.UI_OPTIONS"
+                       android:value="splitActionBarWhenNarrow"/>
+        </activity>
+
+        <activity
+            android:name=".EditEventActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/edit_event"></activity>
+
+        <activity
+            android:name=".EditHistory"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/history"></activity>
+
+
+        <activity android:name="PrefActivity" />
+        <activity android:name="FileExplore" />
+        <activity
+            android:name="ConfigWidgetActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Days Since Pro 3 Widget"></activity>
+
+        <activity
+            android:name="HistoryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/history"></activity>
+
+        <activity
+            android:name=".DaysDiffActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/days_diff" >
+        </activity>
+
+
+        <activity
+            android:name=".EventChooserActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/select_event" >
+        </activity>
+
+        <receiver
+            android:name=".DaysSinceAppWidgetProvider"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget1_info" />
+        </receiver>
+
+        <receiver android:name=".OnAlarmReceive" />
+
+
+    </application>
+
+</manifest>
