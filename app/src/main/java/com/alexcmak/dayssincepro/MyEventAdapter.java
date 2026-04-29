@@ -78,8 +78,22 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         Calendar now = Calendar.getInstance();
 
         if (nEstDays != 0) {
-            // this is a recurring event, the next occur is represented by dsc2
-            nextDate = new SimpleDate(sNextDate);
+            // Calculate the next scheduled recurrence date after today
+            Calendar recurCal = Calendar.getInstance();
+            recurCal.setTime(sd.getDate());
+            Calendar nowCal = Calendar.getInstance();
+            nowCal.setTime(now.getTime());
+
+            // If the event date is in the future, use it
+            if (recurCal.after(nowCal)) {
+                nextDate = new SimpleDate(recurCal.getTime());
+            } else {
+                // Find the next occurrence after today
+                while (!recurCal.after(nowCal)) {
+                    recurCal.add(Calendar.DAY_OF_YEAR, (int) nEstDays);
+                }
+                nextDate = new SimpleDate(recurCal.getTime());
+            }
             dsc2 = new DaysSinceCalculations(nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }
