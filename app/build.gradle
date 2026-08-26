@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "com.MerWare.DaysSincePro"
     compileSdkVersion 34
 
 
     defaultConfig {
-        applicationId "com.alexcmak.dayssincepro"
+        applicationId "com.MerWare.DaysSincePro"
         minSdkVersion 30
-        targetSdkVersion 34
-        versionCode 46
-        versionName "3.1.6"
+        targetSdkVersion 35
+        versionCode 47
+        versionName "3.2.0"
     }
     buildTypes {
         release {
@@ -18,14 +19,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
 }
