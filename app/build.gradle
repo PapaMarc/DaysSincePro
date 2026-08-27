@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.MerWare.DaysSincePro"
-    compileSdkVersion 34
+    compileSdk 35
 
 
     defaultConfig {
         applicationId "com.MerWare.DaysSincePro"
-        minSdkVersion 30
-        targetSdkVersion 35
+        minSdk 30
+        targetSdk 35
         versionCode 47
         versionName "3.2.0"
     }
@@ -18,7 +18,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
+   compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -28,5 +28,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.12.0' 
 }
