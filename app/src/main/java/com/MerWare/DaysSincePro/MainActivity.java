@@ -157,85 +157,79 @@ public class MainActivity extends AppCompatActivity implements
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
 
-            case R.id.menu_daysdiff:
+        if (itemId == R.id.menu_daysdiff) {
 
-                Intent intentDD = new Intent(this, DaysDiffActivity.class);
-                startActivityForResult(intentDD, DAYSDIFF_ACTIVITY);
-                break;
+            Intent intentDD = new Intent(this, DaysDiffActivity.class);
+            startActivityForResult(intentDD, DAYSDIFF_ACTIVITY);
 
-            case R.id.menu_about:
-                AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 - v3.0.2 Sep 30 2016 - v3.1.5 Nov 23, 2023",
-                        "").show();
-                break;
-            case R.id.action_add:
+        } else if (itemId == R.id.menu_about) {
+            AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 - v3.0.2 Sep 30 2016 - v3.1.5 Nov 23, 2023",
+                    "").show();
 
-                // either tabs have the same functions.
-                // daysSinceFragment.addItem();
-                addItem();
-                break;
-            case R.id.action_open:
-                category();
-                break;
-            case R.id.action_settings:
-                settings();
-                break;
+        } else if (itemId == R.id.action_add) {
 
-            case R.id.menu_export:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.backup_database);
+            // either tabs have the same functions.
+            // daysSinceFragment.addItem();
+            addItem();
+
+        } else if (itemId == R.id.action_open) {
+            category();
+
+        } else if (itemId == R.id.action_settings) {
+            settings();
+
+        } else if (itemId == R.id.menu_export) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.backup_database);
 
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    builder.setMessage(R.string.no_permission_are_you_sure);
-                }
-                else {
-                    builder.setMessage(R.string.permission_are_you_sure);
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                builder.setMessage(R.string.no_permission_are_you_sure);
+            }
+            else {
+                builder.setMessage(R.string.permission_are_you_sure);
+            }
 
 
-                builder.setPositiveButton(R.string.yes, backupListener);
-                builder.setNegativeButton(R.string.no, backupListener);
-                builder.show();
-                break;
-            case R.id.menu_import:
+            builder.setPositiveButton(R.string.yes, backupListener);
+            builder.setNegativeButton(R.string.no, backupListener);
+            builder.show();
 
-                // if folder is empty another message
-                File[] files = InternalStorageDirectory.listFiles();
-                if (files.length == 0)
-                {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.restore_from_database)
-                            .setMessage(Days_Since_DB_Internal + " is not found.")
-                            .setCancelable(false)
-                            .setNeutralButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-                }
-                else {
+        } else if (itemId == R.id.menu_import) {
 
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                    builder2.setTitle(R.string.restore_from_database);
-                    builder2.setMessage(getString(R.string.replace_data) + " "
-                            + getString(R.string.are_you_sure));
-                    builder2.setPositiveButton(R.string.yes, restoreListener);
-                    builder2.setNegativeButton(R.string.no, restoreListener);
-                    builder2.show();
-                }
-                break;
+            // if folder is empty another message
+            File[] files = InternalStorageDirectory.listFiles();
+            if (files.length == 0)
+            {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.restore_from_database)
+                        .setMessage(Days_Since_DB_Internal + " is not found.")
+                        .setCancelable(false)
+                        .setNeutralButton(android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }).show();
+            }
+            else {
 
-            case R.id.menu_notify:
-                alarmHelp.setAlarm(1);
-                break;
-            case R.id.action_search:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle(R.string.restore_from_database);
+                builder2.setMessage(getString(R.string.replace_data) + " "
+                        + getString(R.string.are_you_sure));
+                builder2.setPositiveButton(R.string.yes, restoreListener);
+                builder2.setNegativeButton(R.string.no, restoreListener);
+                builder2.show();
+            }
 
+        } else if (itemId == R.id.menu_notify) {
+            alarmHelp.setAlarm(1);
 
-                break;
-
+        } else if (itemId == R.id.action_search) {
+            // no-op
         }
 
         return super.onOptionsItemSelected(item);
