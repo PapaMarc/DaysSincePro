@@ -43,8 +43,17 @@ public class AboutDialog {
                 maintained,
                 republished);
 
-        // Maintained/republished line appears first, then the original author credit below it.
-        String fullAboutText = maintainedAndRepublished + "\n\n" + aboutText;
+        String marcSeinfeld = "Marc Seinfeld";
+        String merWare = "MerWare";
+        String donationLinkText = "optional donation here";
+        String donationText = "Voluntary contributions help keep this app free. " +
+                "You can share your " + donationLinkText +
+                ", though doing so does not unlock features.";
+
+        // Maintained/republished line appears first, then the donation blurb,
+        // then the original author credit below it, each separated by a blank line.
+        String fullAboutText = maintainedAndRepublished + "\n\n" + donationText +
+                "\n\n" + aboutText;
 
         // Custom centered title
         final TextView title = new TextView(context);
@@ -75,6 +84,33 @@ public class AboutDialog {
                     new URLSpan("https://play.google.com/store/search?q=DaysSincePro&c=apps"),
                     republishedStart,
                     republishedStart + republished.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        int marcSeinfeldStart = messageText.toString().indexOf(marcSeinfeld);
+        if (marcSeinfeldStart >= 0) {
+            messageText.setSpan(
+                    new URLSpan("https://merware.net/index.html#marc"),
+                    marcSeinfeldStart,
+                    marcSeinfeldStart + marcSeinfeld.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        int merWareStart = messageText.toString().indexOf(merWare);
+        if (merWareStart >= 0) {
+            messageText.setSpan(
+                    new URLSpan("https://merware.net/index.html#portfolio"),
+                    merWareStart,
+                    merWareStart + merWare.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        int donationLinkStart = messageText.toString().indexOf(donationLinkText);
+        if (donationLinkStart >= 0) {
+            messageText.setSpan(
+                    new URLSpan("https://merware.net/index.html#support"),
+                    donationLinkStart,
+                    donationLinkStart + donationLinkText.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
