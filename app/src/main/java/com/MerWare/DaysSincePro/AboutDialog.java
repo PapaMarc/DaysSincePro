@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.widget.TextView;
 
 public class AboutDialog {
@@ -29,8 +32,7 @@ public class AboutDialog {
 
         }
 
-        String aboutTitle = context.getString(R.string.about) + " " +
-                context.getString(R.string.app_name);
+        String aboutTitle = "About: DaysSincePro";
         String versionString = String.format("Version: %s", versionInfo);
         String aboutText = "Originally written by " + author + "\n" + date;
 
@@ -40,7 +42,16 @@ public class AboutDialog {
                 R.string.about_maintained_and_republished,
                 maintained,
                 republished);
-        String fullAboutText = aboutText + "\n" + maintainedAndRepublished;
+
+        // Maintained/republished line appears first, then the original author credit below it.
+        String fullAboutText = maintainedAndRepublished + "\n\n" + aboutText;
+
+        // Custom centered title
+        final TextView title = new TextView(context);
+        title.setText(aboutTitle);
+        title.setGravity(Gravity.CENTER);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        title.setPadding(0, 32, 0, 16);
 
         // Set up the TextView
         final TextView message = new TextView(context);
@@ -67,14 +78,23 @@ public class AboutDialog {
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        // Set some padding
-        message.setPadding(5, 5, 5, 5);
+        // Center the version line only; the rest of the text reads left-to-right normally.
+        messageText.setSpan(
+                new android.text.style.AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                0,
+                versionString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Balanced left/right margins
+        float density = context.getResources().getDisplayMetrics().density;
+        int horizontalPadding = (int) (24 * density);
+        message.setPadding(horizontalPadding, 8, horizontalPadding, 24);
         message.setText(messageText);
         message.setMovementMethod(LinkMovementMethod.getInstance());
         message.setLinksClickable(true);
 
         return new AlertDialog.Builder(context)
-                .setTitle(aboutTitle)
+                .setCustomTitle(title)
                 .setInverseBackgroundForced(true)
                 .setCancelable(true)
                 .setPositiveButton(context.getString(android.R.string.ok), null)

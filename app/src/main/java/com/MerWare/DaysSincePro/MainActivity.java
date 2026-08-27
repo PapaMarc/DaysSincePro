@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivityForResult(intentDD, DAYSDIFF_ACTIVITY);
 
         } else if (itemId == R.id.menu_about) {
-            AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 - v3.0.2 Sep 30 2016 - v3.1.5 Nov 23, 2023",
+            AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 --> v3.0.2 Sep 30 2016 --> v3.1.5 Nov 23, 2023",
                     "").show();
 
         } else if (itemId == R.id.action_add) {
