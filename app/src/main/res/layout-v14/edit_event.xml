@@ -63,7 +63,7 @@
                 android:text="@string/recurrence"
                 android:textStyle="bold" />
 
-            <com.alexcmak.dayssincepro.SelectAgainSpinner
+            <com.MerWare.DaysSincePro.SelectAgainSpinner
                 android:id="@+id/recur_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

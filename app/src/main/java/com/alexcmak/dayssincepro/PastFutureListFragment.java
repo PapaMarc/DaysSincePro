@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -3,7 +3,7 @@
  * https://github.com/mburman/Android-File-Explore
  */
 
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.alexcmak.dayssincepro.SimpleDate.DateStyle;
+import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
 
 public class EditEventActivity extends Activity {
 

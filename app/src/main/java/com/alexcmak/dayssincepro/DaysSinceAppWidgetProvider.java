@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
-import com.alexcmak.dayssincepro.SimpleDate.DateStyle;
+import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
 
 public class DaysSinceAppWidgetProvider extends AppWidgetProvider {
 

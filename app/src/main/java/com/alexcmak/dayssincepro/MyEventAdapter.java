@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import java.util.Calendar;
 
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.alexcmak.dayssincepro.SimpleDate.DateStyle;
+import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
 
 public class MyEventAdapter extends SimpleCursorAdapter {
 

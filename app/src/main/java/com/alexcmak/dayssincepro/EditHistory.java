@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import java.util.Calendar;
 
@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alexcmak.dayssincepro.SimpleDate.DateStyle;
+import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
 
 public class EditHistory extends Activity {
 

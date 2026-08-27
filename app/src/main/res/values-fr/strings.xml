@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_maintained">maintenu</string>
+    <string name="about_republished">republié</string>
+    <string name="about_maintained_and_republished">DaysSincePro — %1$s et %2$s par Marc Seinfeld / MerWare</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 /* ****************************************************
  * Simple Date - Java have long had a Date class,

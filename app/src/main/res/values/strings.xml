@@ -166,4 +166,8 @@
     <string name="end_day">End Day</string>
     <string name="touch_here">Touch Here</string>
     <string name="no_end_date_specified"> No End Date specified</string>
+
+    <string name="about_maintained">maintained</string>
+    <string name="about_republished">republished</string>
+    <string name="about_maintained_and_republished">DaysSincePro — %1$s and %2$s by Marc Seinfeld / MerWare</string>
 </resources>

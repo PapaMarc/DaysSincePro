@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import android.Manifest;
 import android.app.Activity;
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.menu_about:
-                AboutDialog.create(this, "Alex Mak", "July 28, 2024",
+                AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 - v3.0.2 Sep 30 2016 - v3.1.5 Nov 23, 2023",
                         "").show();
                 break;
             case R.id.action_add:
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private String mydir = "DaysSincePro";
-    private String dbName = "/data/data/com.alexcmak.dayssincepro/databases/alex_db";
+    private String dbName = "/data/data/com.MerWare.DaysSincePro/databases/alex_db";
     private final int BACKUP_PERMISSION = 1;
 
 

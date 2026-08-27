@@ -1,4 +1,4 @@
-package com.alexcmak.dayssincepro;
+package com.MerWare.DaysSincePro;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
