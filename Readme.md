@@ -1,7 +1,12 @@
 ## DaysSincePro
 
-The rebirth.
-Back in 2019 i stumbled upon and became enamored with the utility of Alex Mak's Days Since Pro. For 12-18mo, as i do, i peppered him with feedback on the app.
+The rebirth. What's old is new again. It's simply been Days Since...
+
+Back in 2019 i stumbled upon and became enamored with the utility of Alex Mak's Days Since Pro. For 12-18mo, as i do, i peppered him with feedback on the app, and more often than not he was responsive and engaged in a dialog with me about various bug fixes i suggested and potential DCR's (design change requests) i highlighted. At some point, as life does... he drifted off from actively maintaining the app. And i continued to use it... though a particular feature implementation issue around the 'days until' functionality would on a recurring basis return to my foreground processing, and i'd think about reaching out to Alex again to see if he'd arrived at a solution and would consider making an update. At some point in the 1st half of 2026 i reached out to Alex again, and lo and behold he noted he'd published the source up on GitHub, and i could have at it if i wished... so i promptly implemented the fix and a test harness to validate it, but for another 4mo or so never got around to actually setting up the build environment and the undertaking around republishing the app (which at this point in time requires a 14day closed trial w/a dozen users which takes some doing).
+
+Finally, in late Aug 2026 i've gotten around to doing this so, here we are.
+
+What appears below remains untouched as Alex wrote it on publishing it out to GitHub in 2024:
 
 ## Days Since Pro 3
 
