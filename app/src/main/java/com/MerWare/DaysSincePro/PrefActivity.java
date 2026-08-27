@@ -36,6 +36,7 @@ public class PrefActivity extends PreferenceActivity implements
         }
 
         super.onCreate(savedInstanceState);
+        EdgeToEdgeUtil.applyContentInsets(this);
 
         addPreferencesFromResource(R.xml.options);
 

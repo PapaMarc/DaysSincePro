@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EdgeToEdgeUtil.applyContentInsets(this);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
