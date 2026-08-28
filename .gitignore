@@ -1,15 +1,33 @@
+# ----------------------------------------
+# Android Studio / IntelliJ project files
+# ----------------------------------------
 *.iml
-.gradle
-/local.properties
 /.idea/workspace.xml
 /.idea/libraries
-/.idea/workspace.xml
 /.idea/deploymentTargetSelector.xml
 /.idea/deviceManager.xml
 /.idea/shelf/
 /.idea/gradle.xml
 
-.DS_Store
+# ----------------------------------------
+# Gradle files and build outputs
+# ----------------------------------------
+.gradle
 /build
 /captures
+
+# ----------------------------------------
+# Local configuration (never commit)
+# ----------------------------------------
+local.properties
+app/keystore.properties
+
+# ----------------------------------------
+# OS-specific junk
+# ----------------------------------------
+.DS_Store
+
+# ----------------------------------------
+# Java / Kotlin compiled classes
+# ----------------------------------------
 *.class
