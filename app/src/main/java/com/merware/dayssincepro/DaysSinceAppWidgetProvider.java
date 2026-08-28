@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
-import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
+import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class DaysSinceAppWidgetProvider extends AppWidgetProvider {
 

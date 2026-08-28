@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
+import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class EditEventActivity extends Activity {
 

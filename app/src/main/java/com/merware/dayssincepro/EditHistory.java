@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
+import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class EditHistory extends Activity {
 

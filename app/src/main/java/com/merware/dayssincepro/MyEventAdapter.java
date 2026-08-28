@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.MerWare.DaysSincePro.SimpleDate.DateStyle;
+import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class MyEventAdapter extends SimpleCursorAdapter {
 
