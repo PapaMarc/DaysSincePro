@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements
         String tabStyle = preferences.getString("tab_style", "0");
         int iTab = Integer.parseInt(tabStyle);
 
-        if (iTab == 1)
-            mViewPager.setCurrentItem(1);
+        if (iTab != 0)
+            mViewPager.setCurrentItem(iTab);
 
         // for backup and restore
         SetDBName();
@@ -321,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     DaysSinceFragment daysSinceFragment;
+    SinceLastFragment sinceLastFragment;
     DaysUntilFragment daysUntilFragment;
 
     /**
@@ -347,6 +348,10 @@ public class MainActivity extends AppCompatActivity implements
 
                     break;
                 case 1:
+                    sinceLastFragment = new SinceLastFragment();
+                    fragment = sinceLastFragment;
+                    break;
+                case 2:
                     daysUntilFragment = new DaysUntilFragment();
                     fragment = daysUntilFragment;
                     break;
@@ -357,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -366,6 +371,8 @@ public class MainActivity extends AppCompatActivity implements
                 case 0:
                     return getString(R.string.dayssince);
                 case 1:
+                    return getString(R.string.sincelast);
+                case 2:
                     return getString(R.string.daysuntil);
             }
             return null;
@@ -596,6 +603,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
 
                         daysSinceFragment.listData();
+                        sinceLastFragment.listData();
                         daysUntilFragment.listData();
 
                         chosenID = data.getLongExtra("catId", 0);
@@ -671,6 +679,9 @@ public class MainActivity extends AppCompatActivity implements
                         // must do it here
                         if (daysSinceFragment != null)
                             daysSinceFragment.listData();
+
+                        if (sinceLastFragment != null)
+                            sinceLastFragment.listData();
 
                         if (daysUntilFragment != null)
                             daysUntilFragment.listData();
@@ -756,6 +767,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onQueryTextSubmit(String query) {
 
         daysSinceFragment.listDataAjax(query);
+        sinceLastFragment.listDataAjax(query);
         daysUntilFragment.listDataAjax(query);
         return false;
     }
@@ -764,7 +776,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onQueryTextChange(String newText) {
 
         // from Crashes and ANRs
-        if (daysSinceFragment == null || daysUntilFragment == null)
+        if (daysSinceFragment == null || sinceLastFragment == null || daysUntilFragment == null)
             return false;
 
         if (newText == null)
@@ -772,14 +784,17 @@ public class MainActivity extends AppCompatActivity implements
 
         if (newText.length() == 0) {
             daysSinceFragment.unsetSearchText();
+            sinceLastFragment.unsetSearchText();
             daysUntilFragment.unsetSearchText();
 
             daysSinceFragment.listData();
+            sinceLastFragment.listData();
             daysUntilFragment.listData();
             return true;
         }
 
         daysSinceFragment.listDataAjax(newText);
+        sinceLastFragment.listDataAjax(newText);
         daysUntilFragment.listDataAjax(newText);
         return true;
     }

@@ -5,5 +5,6 @@ package com.MerWare.DaysSincePro;
  */
 public enum TabKind {
     DaysSince,
+    SinceLast,
     DaysUntil
 }

@@ -101,10 +101,11 @@
 
     <string name="theme"> Theme</string>
     <string name="notification">Notification</string>
-    <string name="daysuntil">Days Until</string>
+    <string name="daysuntil">Until Next</string>
+    <string name="sincelast">Since Last</string>
     <string name="user_settings">User Settings</string>
     <string name="msg_since">Event added in Days Since tab</string>
-    <string name="msg_until">Event added in Days Until tab</string>
+    <string name="msg_until">Event added in Until Next tab</string>
     <string name="add_event">Add Event</string>
     <string name="edit_event">Edit Event </string>
     <string name="backup_database">Backup Database</string>

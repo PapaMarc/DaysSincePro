@@ -153,7 +153,7 @@ public class PastFutureListFragment extends ListFragment {
 
        //     Log.wtf("dsp", "listData() Kind is " + kind);
 
-            if (kind == TabKind.DaysSince)
+            if (kind == TabKind.DaysSince || kind == TabKind.SinceLast)
                 whereClause += "date <= '" + today + "'";
             else {
                 whereClause += "(date > '" + today + "' or recur > 0)";
@@ -265,7 +265,7 @@ public class PastFutureListFragment extends ListFragment {
 
             whereClause = whereClause + " event like '%" + str + "%' and ";
 
-            if (kind == TabKind.DaysSince)
+            if (kind == TabKind.DaysSince || kind == TabKind.SinceLast)
                 whereClause = whereClause + dateCondition;
             else {
                 // buggy

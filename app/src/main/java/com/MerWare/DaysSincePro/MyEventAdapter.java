@@ -75,6 +75,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         DaysSinceCalculations dsc2 = dsc1;
         String dayText;
         SimpleDate nextDate = sd;
+        SimpleDate lastDate = sd; // most recent occurrence on or before today
         Calendar now = Calendar.getInstance();
 
         if (nEstDays != 0) {
@@ -88,18 +89,25 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             if (recurCal.after(nowCal)) {
                 nextDate = new SimpleDate(recurCal.getTime());
             } else {
-                // Find the next occurrence after today
+                // Find the last occurrence on/before today, and the next occurrence after today
+                Calendar lastCal = (Calendar) recurCal.clone();
                 while (!recurCal.after(nowCal)) {
+                    lastCal = (Calendar) recurCal.clone();
                     recurCal.add(Calendar.DAY_OF_YEAR, (int) nEstDays);
                 }
                 nextDate = new SimpleDate(recurCal.getTime());
+                lastDate = new SimpleDate(lastCal.getTime());
             }
             dsc2 = new DaysSinceCalculations(nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }
 
+        DaysSinceCalculations dsc3 = new DaysSinceCalculations(lastDate);
+
         if (kind == TabKind.DaysSince) {
             dsc = dsc1;
+        } else if (kind == TabKind.SinceLast) {
+            dsc = dsc3;
         } else {
             dsc = dsc2;
 
@@ -130,6 +138,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             if (kind == TabKind.DaysSince) {
                 dayText = sd.getDate(DateStyle.US);
             }
+            else if (kind == TabKind.SinceLast) {
+                dayText = lastDate.getDate(DateStyle.US);
+            }
             else {
                 // Log.wtf("look", "ok no system date format what is useNextDate " + useNextDate);
                 if (useNextDate) {
@@ -153,6 +164,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             if (kind == TabKind.DaysSince) {
                 // Log.wtf("look", "days since ok what is useNextDate " + useNextDate);
                 dayText = sd.getDate(dateStyle);
+            }
+            else if (kind == TabKind.SinceLast) {
+                dayText = lastDate.getDate(dateStyle);
             }
             else {
                 // Log.wtf("look", "days until ok what is useNextDate " + useNextDate);
@@ -239,8 +253,10 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         {
             StringBuffer sb = new StringBuffer();
 
+            DaysSinceCalculations dscForExplain = (kind == TabKind.SinceLast) ? dsc3 : dsc1;
+
             if (dscStartToEnd == null) {
-                sb.append(dsc1.getExplain(false, nStyleOption));  // start date
+                sb.append(dscForExplain.getExplain(false, nStyleOption));  // start date (or last recurrence)
                 explainView.setText(sb.toString());
             }
            else
@@ -262,6 +278,14 @@ public class MyEventAdapter extends SimpleCursorAdapter {
                             sb.append(dscEnd.getExplain(false, nStyleOption));
                         else
                             sb.append(dsc1.getExplain(false, nStyleOption));
+
+                        sb.append("\n");
+                        break;
+                    case SinceLast:
+                        if (bothInPast)
+                            sb.append(dscEnd.getExplain(false, nStyleOption));
+                        else
+                            sb.append(dsc3.getExplain(false, nStyleOption));
 
                         sb.append("\n");
                         break;

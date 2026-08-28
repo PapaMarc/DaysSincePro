@@ -121,12 +121,14 @@
 
     <string-array name="since_until">
         <item>Days Since</item>
-        <item>Days Until</item>
+        <item>Since Last</item>
+        <item>Until Next</item>
     </string-array>
 
     <string-array name="since_until_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 
 
