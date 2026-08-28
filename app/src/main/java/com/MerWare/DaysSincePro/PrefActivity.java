@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;

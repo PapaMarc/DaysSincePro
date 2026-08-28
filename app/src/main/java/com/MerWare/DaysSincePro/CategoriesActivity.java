@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 
 /* http://stackoverflow.com/questions/11815831/saving-listview-simple-list-item-multiple-choice-checkbox-state-using-an-array-a */

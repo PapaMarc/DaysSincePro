@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 import java.util.ArrayList;
 import java.util.Calendar;

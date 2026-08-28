@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 /**
  * Created by Alex on 1/2/2015.

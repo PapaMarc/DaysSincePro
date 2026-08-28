@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

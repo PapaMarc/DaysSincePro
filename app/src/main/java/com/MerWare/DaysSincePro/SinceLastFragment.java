@@ -1,4 +1,4 @@
-package com.MerWare.DaysSincePro;
+package com.merware.dayssincepro;
 
 /**
  * Middle tab: days since the most recent recurrence of an event.
