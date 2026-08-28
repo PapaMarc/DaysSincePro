@@ -931,8 +931,8 @@ public class CategoriesActivity extends ListActivity {
     protected void onDestroy() {
         if (cursor != null)
             cursor.close();
-        if (db != null)
-            db.close();
+        // db is the shared DatabaseHelper singleton - don't close it here, other
+        // screens still hold references to it and rely on it staying open.
 
         super.onDestroy();
     }
