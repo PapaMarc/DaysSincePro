@@ -2,7 +2,7 @@
 <resources>
 
     <string name="menu_settings"> Menu </string>
-    <string name="app_name">Days Since Pro 3</string>
+    <string name="app_name">DaysSincePro</string>
     <string name="enter_text">Enter Event</string>
     <string name="edit">Edit</string>
     <string name="add_new">Add</string>
