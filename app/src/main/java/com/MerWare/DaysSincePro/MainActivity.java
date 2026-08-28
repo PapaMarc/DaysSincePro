@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,7 +38,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 
 import android.util.Log;
@@ -466,11 +466,7 @@ public class MainActivity extends AppCompatActivity implements
 
     void doExportDB() {
 
-        InputStream myInput;
-
         try {
-
-            myInput = new FileInputStream(dbName);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
             {
@@ -479,29 +475,18 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            // Set the output file stream up:
+            String backupPath = InternalStorageDirectory.getPath() + "/daysSince.db";
 
-            OutputStream myOutput = new FileOutputStream(InternalStorageDirectory.getPath() + "/daysSince.db");
-
-            // Close db before trying to export
-            SQLiteDatabase db;
-            db = (new DatabaseHelper(getApplicationContext())).getWritableDatabase();
-            db.close();
-
-            // Transfer bytes from the input file to the output file
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = myInput.read(buffer)) > 0) {
-                myOutput.write(buffer, 0, length);
+            // VACUUM INTO asks SQLite itself for a consistent point-in-time snapshot,
+            // so the backup is correct even while other screens hold the shared
+            // connection open - no raw file copy, no need to close every connection.
+            File backupFile = new File(backupPath);
+            if (backupFile.exists()) {
+                backupFile.delete();
             }
-            // Close and clear the streams
 
-            myOutput.flush();
-            myOutput.close();
-            myInput.close();
-
-          //  showToast(getString(R.string.backup_success));
-
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            db.execSQL("VACUUM INTO ?", new Object[]{backupPath});
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.backup_database_success);
@@ -517,18 +502,10 @@ public class MainActivity extends AppCompatActivity implements
 
             builder.show();
 
-
-        } catch (FileNotFoundException e) {
-            showToast(getString(R.string.backup_fail));
-            //	Log.e("file not found", "failed", e);
-
-            showToast(e.getMessage());
-            Log.wtf("FNF", e.getMessage());
-
-        } catch (IOException e) {
+        } catch (SQLiteException e) {
             showToast(getString(R.string.backup_fail));
             showToast(e.getMessage());
-            Log.wtf("IOE", e.getMessage());
+            Log.wtf("SQLE", e.getMessage());
         }
 
     }
@@ -656,7 +633,16 @@ public class MainActivity extends AppCompatActivity implements
 
                         String filename = data.getStringExtra("filename");
 
-                        doImportDB(filename);
+                        if (doImportDB(filename)) {
+                            // The shared DatabaseHelper connection was closed and the db file
+                            // swapped out from under it, so every screen must reopen a fresh
+                            // connection - restart, same as CONFIG_ACTIVITY does.
+                            finish();
+                            Intent restartIntent = new Intent(this, MainActivity.class);
+                            restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(restartIntent);
+                        }
 
                         break;
                     case Activity.RESULT_CANCELED:
@@ -718,14 +704,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    void doImportDB(String filename) {
+    // Returns true if the restore succeeded and the caller should restart the app.
+    boolean doImportDB(String filename) {
 
         try {
 
             if (!isSQLiteFile(filename)) {
                 showToast("Sorry, invalid database file: " + filename);
-                return;
+                return false;
             }
+
+            // Close the one shared connection before touching the file on disk - since
+            // every screen goes through DatabaseHelper.getInstance(), this is now the
+            // only connection that needs to be closed, instead of hoping every
+            // Activity/Fragment/Widget happened to close its own.
+            DatabaseHelper.closeInstance();
 
             FileOutputStream myOutput = new FileOutputStream(dbName);
 
@@ -751,6 +744,8 @@ public class MainActivity extends AppCompatActivity implements
             ed.putString("Categories", "");
             ed.commit();
 
+            return true;
+
         } catch (FileNotFoundException e) {
             showToast(getString(R.string.restore_fail));
             //		Log.e("file not found", "failed", e);
@@ -760,6 +755,7 @@ public class MainActivity extends AppCompatActivity implements
 
             //		Log.e("IO exception", "failed", e);
         }
+        return false;
     }
 
 

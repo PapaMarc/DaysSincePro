@@ -27,6 +27,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
+    // Real SQLite engine for JVM-only tests that exercise actual SQL (VACUUM INTO, etc.)
+    // without needing the Android runtime/emulator.
+    testImplementation 'org.xerial:sqlite-jdbc:3.45.1.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0' 
 }

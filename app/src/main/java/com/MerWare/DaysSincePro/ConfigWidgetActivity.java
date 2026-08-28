@@ -50,7 +50,7 @@ public class ConfigWidgetActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.configwidget);
-        db = (new DatabaseHelper(this)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();

@@ -101,7 +101,7 @@ public class EditEventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event);
 
-        db = (new DatabaseHelper(this)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         eventText = (EditText) findViewById(R.id.editEvent);
         Button btnPickDate = (Button) findViewById(R.id.buttonPickDate);

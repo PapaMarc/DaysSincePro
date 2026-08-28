@@ -61,7 +61,7 @@ public class EventChooserActivity extends Activity {
 
         setContentView(R.layout.event_chooser);
 
-        db = (new DatabaseHelper(this)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         Button okButton = (Button) findViewById(R.id.okButton);
         okButton.setOnClickListener(doneDialog);

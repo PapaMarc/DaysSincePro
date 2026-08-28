@@ -84,7 +84,7 @@ public class PastFutureListFragment extends ListFragment {
             }
         });
 
-        db = (new DatabaseHelper(context)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(context).getWritableDatabase();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         String text = preferences.getString("Categories", "");

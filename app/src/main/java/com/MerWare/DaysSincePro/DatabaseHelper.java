@@ -9,6 +9,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "alex_db";
 
+    // Single shared instance so the whole app uses one connection to alex_db,
+    // instead of every Activity/Fragment opening its own.
+    private static DatabaseHelper instance;
+
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    // Closes and drops the shared instance so a fresh connection is opened next time
+    // getInstance() is called. Used by restore, right before the db file is replaced.
+    public static synchronized void closeInstance() {
+        if (instance != null) {
+            instance.close();
+            instance = null;
+        }
+    }
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 3); // third param is version
         // 1 original version

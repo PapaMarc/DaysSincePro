@@ -68,7 +68,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
 
         percent = getPercent(percentOption);
 
-        SQLiteDatabase db = (new DatabaseHelper(context)).getWritableDatabase();
+        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
 
         SimpleDate now = new SimpleDate(new Date());
         String today = now.getDate(SimpleDate.DateStyle.YMD);

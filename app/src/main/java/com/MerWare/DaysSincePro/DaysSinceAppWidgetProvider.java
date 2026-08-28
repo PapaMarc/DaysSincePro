@@ -19,7 +19,7 @@ public class DaysSinceAppWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
         String APP_NAME = context.getResources().getString(R.string.app_name);
-        db = (new DatabaseHelper(context)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(context).getWritableDatabase();
 
         final int N = appWidgetIds.length;
         // Perform this loop procedure for each App Widget that belongs to this

@@ -246,7 +246,7 @@ public class HistoryActivity extends ListActivity {
         eventId = intent.getLongExtra("eventId", 0);
         catId = intent.getLongExtra("catId", 0);
 
-        db = (new DatabaseHelper(this)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         // get event Name to set title
 

@@ -110,7 +110,7 @@ public class CategoriesActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories);
 
-        db = (new DatabaseHelper(this)).getWritableDatabase();
+        db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         lv = getListView();
         lv.setTextFilterEnabled(true);
@@ -718,7 +718,7 @@ public class CategoriesActivity extends ListActivity {
 
         String sql;
         try {
-            SQLiteDatabase db = (new DatabaseHelper(getApplicationContext())).getWritableDatabase();
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
 
             File directory;
 
@@ -797,7 +797,7 @@ public class CategoriesActivity extends ListActivity {
     {
 
         try {
-            SQLiteDatabase db = (new DatabaseHelper(getApplicationContext())).getWritableDatabase();
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
 
             File f = new File(filename);
 
