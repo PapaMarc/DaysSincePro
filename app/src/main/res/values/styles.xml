@@ -15,6 +15,13 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="actionBarTabTextStyle">@style/AppActionBarTabText</item>
+    </style>
+
+    <!-- Tab titles as Title Case instead of the default ALL CAPS. -->
+    <style name="AppActionBarTabText" parent="Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
     </style>
 
 
