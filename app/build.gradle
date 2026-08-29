@@ -5,15 +5,15 @@ keystoreProperties.load(new FileInputStream(rootProject.file("app/keystore.prope
 
 android {
     namespace "com.merware.dayssincepro"
-    compileSdk 35
+    compileSdk 36
 
 
     defaultConfig {
         applicationId "com.MerWare.DaysSincePro"
         minSdk 30
-        targetSdk 35
-        versionCode 47
-        versionName "3.2.0"
+        targetSdk 36
+        versionCode 48
+        versionName "3.3.05.48"
     }
 
     signingConfigs {
@@ -34,7 +34,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    
+
    compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17

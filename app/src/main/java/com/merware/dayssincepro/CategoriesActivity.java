@@ -5,19 +5,9 @@ package com.merware.dayssincepro;
 
 // based on grocery app 10/13/2013
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 import android.Manifest;
 import android.app.Activity;
@@ -711,79 +701,24 @@ public class CategoriesActivity extends ListActivity {
     };
 
 
-    private String mydir = "DaysSincePro";
-
     private void doExportCSV()
     {
-
-        String sql;
         try {
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
-
-            File directory;
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            {
-                directory = getExternalFilesDir(null);
-            }
-            else {
-
-                // Set the output folder on the SD card
-                directory = new File(Environment.getExternalStorageDirectory() + "/" + mydir);
-
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-            }
 
             cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
             selectedCategory = cursor.getString(1); // 0 is _id
 
-            String csvFileName = directory.getPath() + "/" + selectedCategory + ".csv";
-
-            OutputStream myOutput = new FileOutputStream(csvFileName);
-            final PrintStream printStream = new PrintStream(myOutput);
-
-
-            sql = "select event, date, recur from event where catId = " + exportId;
-            cursor = db.rawQuery(sql, null);
-
-
-            while (cursor.moveToNext()) {
-
-                // should be just one row
-                String event = cursor.getString(0);
-                String date = cursor.getString(1);
-                int recur = cursor.getInt(2);
-
-                printStream.println("'" + event + "','" + date + "'," + recur);
-
-                Log.wtf("dsp", "'" + event + "','" + date + "'," + recur);
+            CsvExportResult result = CsvExporter.exportCategory(this, db, exportId, selectedCategory);
+            if (result.isSuccess()) {
+                showToast(selectedCategory + ".csv saved (" + result.getRowsExported() + " events)");
+            } else {
+                showToast("Export failed: " + result.getErrorMessage());
+                Log.e("DSP_EXPORT", "Export failed: " + result.getErrorMessage());
             }
 
-            // Close and clear the streams
-            printStream.flush();
-            printStream.close();
-
-            myOutput.flush();
-            myOutput.close();
-            showToast(selectedCategory + ".csv saved");
-
-            addFileToMediaStore(csvFileName, getApplicationContext());
-
-        } catch (FileNotFoundException e) {
-            showToast("write CSV failed.");
-
-            Log.wtf("export", e.getMessage());
-
-        }
-        catch (IOException e)
-        {
-            showToast("Write CSV failed IO failed ");
-            Log.e("IO" + "failed", e.getMessage());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
+            Log.e("DSP_EXPORT", "Sorry, export failed.", e);
             showToast("Sorry, export failed. Please check App Storage permissions.");
         }
     }
@@ -795,136 +730,31 @@ public class CategoriesActivity extends ListActivity {
 
     private void doImportCSV(String filename)
     {
-
         try {
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            File file = new File(filename);
 
-            File f = new File(filename);
-
-            BufferedReader b = new BufferedReader(new FileReader(f));
-            String sql = "";
-            String data = "";
-            int n = 0;
-
-            int numTokens = 0;
-
-            String event;
-            String sDate;
-            Date date;
-            int nRecur = 0;
-
-            while ((data = b.readLine()) != null) {
-
-                // validate data here later
-
-                String[] tokens = data.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-
-                numTokens = tokens.length;
-
-                if (numTokens < 2)
-                {
-                    showToast("invalid input " + data);
-                    break;
+            CsvImportResult result = CsvImporter.importCsv(this, db, file, importId);
+            if (result.isSuccess()) {
+                showToast(result.getSummaryMessage());
+                if (result.getCategoriesCreated() > 0) {
+                    listData();
+                    reApplyChecked();
                 }
-
-                // input should be quoted string followed by a quoted date
-
-                tokens[0] = tokens[0].trim();
-
-                if (tokens[0].startsWith("'") && tokens[0].endsWith("'"))
-                {
-                    event = tokens[0].substring(1, tokens[0].length()-1);
-                }
-                else
-                {
-                    event = tokens[0];
-                }
-
-                // input date should be stripped of quotes so can be parsed as a string
-
-                tokens[1] = tokens[1].trim();
-                if (tokens[1].startsWith("'") && tokens[1].endsWith("'"))
-                {
-                    sDate = tokens[1].substring(1, tokens[1].length()-1);
-                }
-                else
-                {
-                    sDate = tokens[1];
-                }
-
-                try {
-                    if (numTokens == 3) {
-
-                        tokens[2] = tokens[2].trim();
-
-                        nRecur = Integer.parseInt(tokens[2]);
-                    }
-                }
-                catch (NumberFormatException npe)
-                {
-                    Log.wtf("import", "invalid recur " + tokens[2]);
-                }
-                // exported with quotes, people making csv should not need to add quotes.
-                // what if other formats?
-
-
-                try {
-                    date = new SimpleDateFormat("yyyy-MM-dd").parse(sDate);
-                } catch (ParseException pe) {
-                    Log.wtf("import", "invalid date (" + sDate + ")");
-                    continue;
-                }
-               
-
-                sql = "insert into event (catId, event, date, recur) values (";
-
-                sql += importId;
-                sql += ",";
-
-                sql += "'";
-                sql += event;
-                sql += "'";
-                sql += ",";
-                sql += "'";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                sql += sdf.format(date);
-                sql += "'";
-                sql += ",";
-                sql += nRecur;
-                sql += ")";
-                n++;
-
-                Log.wtf("import", sql);
-
-                try {
-                    db.execSQL(sql);
-                }
-                catch (SQLiteException se)
-                {
-                    showToast(se.getMessage());
-                    Log.wtf("sql", se.getMessage());
-                }
+            } else {
+                String firstErr = result.getErrors().isEmpty() ? "No events imported." : result.getErrors().get(0);
+                showToast("Import error: " + firstErr);
+                Log.e("DSP_IMPORT", "Import failed: " + firstErr);
             }
-            showToast("Imported " + n +  " events.");
-        }
-
-        catch (FileNotFoundException fnfe)
-        {
-            showToast(fnfe.getMessage());
-        }
-        catch (IOException ioe)
-        {
-            showToast(ioe.getMessage());
+        } catch (Exception e) {
+            Log.e("DSP_IMPORT", "Import failed", e);
+            showToast("Import failed: " + e.getMessage());
         }
     }
 
 
-    public static final void addFileToMediaStore(final String path,Context context) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File file = new File(path);
-        Uri contentUri = Uri.fromFile(file);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
+    public static final void addFileToMediaStore(final String path, Context context) {
+        CsvExporter.addFileToMediaStore(context, path);
     }
 
     @Override
