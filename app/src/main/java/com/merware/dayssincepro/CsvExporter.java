@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -378,6 +379,24 @@ public class CsvExporter {
         } catch (Exception e) {
             Log.e(TAG, "Error during full database export", e);
             return CsvExportResult.failure(e.getMessage());
+        }
+    }
+
+    /**
+     * Obtains a standard initial URI pointing to the public Downloads folder for SAF pickers.
+     * Sets EXTRA_INITIAL_URI when available on Android 8.0+ (API 26+).
+     *
+     * @param intent SAF Intent to configure.
+     */
+    public static void setDownloadsInitialUri(Intent intent) {
+        if (intent == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                Uri downloadsUri = Uri.parse("content://com.android.providers.downloads.documents/tree/downloads");
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, downloadsUri);
+            } catch (Exception e) {
+                Log.w(TAG, "Failed to set EXTRA_INITIAL_URI for Downloads", e);
+            }
         }
     }
 

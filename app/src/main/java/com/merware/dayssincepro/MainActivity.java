@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/vnd.sqlite3");
         intent.putExtra(Intent.EXTRA_TITLE, "daysSince.db");
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_DB_SAF);
     }
 
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/csv");
         intent.putExtra(Intent.EXTRA_TITLE, "daysSince.csv");
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_CSV_SAF);
     }
 
@@ -234,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements
                 "application/x-sqlite3",
                 "application/octet-stream"
         });
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_RESTORE_DB_SAF);
     }
 
@@ -247,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements
                 "text/comma-separated-values",
                 "text/plain"
         });
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_IMPORT_CSV_SAF);
     }
 

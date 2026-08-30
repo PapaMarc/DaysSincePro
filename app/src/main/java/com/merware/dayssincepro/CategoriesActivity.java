@@ -559,6 +559,7 @@ public class CategoriesActivity extends ListActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/csv");
         intent.putExtra(Intent.EXTRA_TITLE, filename);
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_CATEGORY_CSV_SAF);
     }
 
@@ -574,6 +575,7 @@ public class CategoriesActivity extends ListActivity {
                 "text/comma-separated-values",
                 "text/plain"
         });
+        CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_IMPORT_CATEGORY_CSV_SAF);
     }
 
