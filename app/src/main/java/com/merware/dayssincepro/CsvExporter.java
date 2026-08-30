@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -227,6 +228,47 @@ public class CsvExporter {
         }
         writer.flush();
         return count;
+    }
+
+    /**
+     * Exports a specific category directly to an OutputStream (e.g. from Storage Access Framework).
+     *
+     * @param db SQLite database.
+     * @param categoryId Category ID.
+     * @param outputStream Output stream (closed upon completion).
+     * @return CsvExportResult with status and row count.
+     */
+    public static CsvExportResult exportCategory(SQLiteDatabase db, long categoryId, OutputStream outputStream) {
+        if (outputStream == null) {
+            return CsvExportResult.failure("OutputStream is null");
+        }
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
+            int rows = exportCategory(db, categoryId, writer);
+            return CsvExportResult.success(rows, null);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to export category CSV to stream", e);
+            return CsvExportResult.failure(e.getMessage());
+        }
+    }
+
+    /**
+     * Exports all categories across the database directly to an OutputStream (e.g. from SAF).
+     *
+     * @param db SQLite database.
+     * @param outputStream Output stream (closed upon completion).
+     * @return CsvExportResult with status and row count.
+     */
+    public static CsvExportResult exportAllCategories(SQLiteDatabase db, OutputStream outputStream) {
+        if (outputStream == null) {
+            return CsvExportResult.failure("OutputStream is null");
+        }
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
+            int rows = exportAllCategories(db, writer);
+            return CsvExportResult.success(rows, null);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to export all categories CSV to stream", e);
+            return CsvExportResult.failure(e.getMessage());
+        }
     }
 
     /**

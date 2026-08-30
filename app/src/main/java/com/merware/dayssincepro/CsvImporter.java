@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,9 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ============================================================================
@@ -197,6 +201,13 @@ public class CsvImporter {
      * @param raw Raw token string.
      * @return Cleaned field text.
      */
+    /**
+     * Cleans a parsed token: strips leading/trailing whitespace and cleans up
+     * legacy single quotes from earlier DaysSincePro exports (e.g. 'text' or text').
+     *
+     * @param raw Raw token string.
+     * @return Cleaned field text.
+     */
     public static String cleanField(String raw) {
         if (raw == null) {
             return "";
@@ -212,6 +223,98 @@ public class CsvImporter {
             field = field.substring(1);
         }
         return field.trim();
+    }
+
+    /**
+     * Extracts a clean category name stem from a file name or display name.
+     * For example, "Medical.csv" -> "Medical", "Vehicles_Backup.csv" -> "Vehicles_Backup".
+     *
+     * @param filename Raw filename or display name.
+     * @return Extracted category stem or null if generic / empty.
+     */
+    public static String inferCategoryFromFilename(String filename) {
+        if (filename == null || filename.trim().isEmpty()) {
+            return null;
+        }
+        String name = filename.trim();
+        // Remove trailing query or parameters if any
+        int lastSlash = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
+        if (lastSlash >= 0 && lastSlash < name.length() - 1) {
+            name = name.substring(lastSlash + 1);
+        }
+        // Remove extension
+        int dot = name.lastIndexOf('.');
+        if (dot > 0) {
+            name = name.substring(0, dot);
+        }
+        name = name.trim();
+
+        // Ignore generic full-database names
+        if (name.equalsIgnoreCase("daysSince") || name.equalsIgnoreCase("daysSincePro") ||
+            name.equalsIgnoreCase("daysSincePro_All") || name.equalsIgnoreCase("events") ||
+            name.equalsIgnoreCase("export") || name.isEmpty()) {
+            return null;
+        }
+        return name;
+    }
+
+    /**
+     * Queries the display name of a Storage Access Framework Uri.
+     *
+     * @param context Application context.
+     * @param uri Document Uri.
+     * @return The display name (e.g. "Vehicles.csv"), or null if unavailable.
+     */
+    public static String getDisplayNameFromUri(Context context, Uri uri) {
+        if (context == null || uri == null) return null;
+        String displayName = null;
+        try (Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (index >= 0) {
+                    displayName = cursor.getString(index);
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to resolve display name for uri: " + uri, e);
+        }
+        if (displayName == null && uri.getLastPathSegment() != null) {
+            displayName = uri.getLastPathSegment();
+        }
+        return displayName;
+    }
+
+    /**
+     * Builds an in-memory Set of existing event keys (catId + "|" + event + "|" + date + "|" + recur)
+     * to facilitate O(1) duplicate detection during batch imports.
+     *
+     * @param db SQLite database.
+     * @return Set of unique key strings for all existing events.
+     */
+    public static Set<String> loadExistingEventKeys(SQLiteDatabase db) {
+        Set<String> keys = new HashSet<>();
+        if (db == null) return keys;
+        Cursor cursor = db.rawQuery("SELECT catId, event, date, recur FROM event", null);
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    long catId = cursor.getLong(0);
+                    String event = cursor.getString(1);
+                    String date = cursor.getString(2);
+                    int recur = cursor.getInt(3);
+
+                    String isoDate = parseAndFormatIsoDate(date);
+                    if (isoDate == null) isoDate = (date != null ? date.trim() : "");
+                    String key = catId + "|" + (event != null ? event.trim().toLowerCase(Locale.US) : "")
+                            + "|" + isoDate + "|" + recur;
+                    keys.add(key);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return keys;
     }
 
     /**
@@ -333,6 +436,23 @@ public class CsvImporter {
      * @return CsvImportResult with summary metrics and diagnostics.
      */
     public static CsvImportResult importCsv(SQLiteDatabase db, Reader reader, long defaultCategoryId) {
+        return importCsv(db, reader, defaultCategoryId, null, null, true);
+    }
+
+    /**
+     * Imports CSV data from a Reader with full support for duplicate skipping and shared category caches.
+     *
+     * @param db SQLite database.
+     * @param reader Reader providing CSV data.
+     * @param defaultCategoryId Default category ID fallback.
+     * @param categoryCache Optional shared in-memory cache for resolved categories.
+     * @param existingEventKeys Optional shared in-memory set of existing event keys for deduplication.
+     * @param manageTransaction Whether this method should manage beginTransaction/setTransactionSuccessful.
+     * @return CsvImportResult with metrics.
+     */
+    public static CsvImportResult importCsv(SQLiteDatabase db, Reader reader, long defaultCategoryId,
+                                            Map<String, Long> categoryCache, Set<String> existingEventKeys,
+                                            boolean manageTransaction) {
         if (db == null || reader == null) {
             return CsvImportResult.failure("Database or reader is null");
         }
@@ -411,9 +531,16 @@ public class CsvImporter {
         int skippedCount = 0;
         int[] categoryCounter = new int[]{0};
         List<String> errors = new ArrayList<>();
-        Map<String, Long> categoryCache = new HashMap<>();
+        if (categoryCache == null) {
+            categoryCache = new HashMap<>();
+        }
+        if (existingEventKeys == null) {
+            existingEventKeys = loadExistingEventKeys(db);
+        }
 
-        db.beginTransaction();
+        if (manageTransaction) {
+            db.beginTransaction();
+        }
         try {
             for (int r = startIndex; r < records.size(); r++) {
                 List<String> row = records.get(r);
@@ -444,7 +571,7 @@ public class CsvImporter {
                     if (!recurStr.isEmpty()) {
                         try {
                             recur = Integer.parseInt(recurStr);
-                        } catch (NumberFormatException nfe) {
+                        } catch (NumberFormatException npe) {
                             Log.w(TAG, "Row " + rowNumber + ": Invalid recur '" + recurStr + "', defaulting to 0.");
                         }
                     }
@@ -462,6 +589,14 @@ public class CsvImporter {
                     }
                 }
 
+                // Check for duplicates based on (catId, event, isoDate, recur)
+                String eventKey = targetCatId + "|" + eventName.toLowerCase(Locale.US) + "|" + isoDate + "|" + recur;
+                if (existingEventKeys.contains(eventKey)) {
+                    skippedCount++;
+                    // Skipped as duplicate
+                    continue;
+                }
+
                 ContentValues values = new ContentValues();
                 values.put("catId", targetCatId);
                 values.put("event", eventName);
@@ -471,15 +606,20 @@ public class CsvImporter {
                 long insertId = db.insert("event", null, values);
                 if (insertId != -1) {
                     importedCount++;
+                    existingEventKeys.add(eventKey);
                 } else {
                     skippedCount++;
                     errors.add("Row " + rowNumber + " ('" + eventName + "'): Database insert failed.");
                 }
             }
 
-            db.setTransactionSuccessful();
+            if (manageTransaction) {
+                db.setTransactionSuccessful();
+            }
         } finally {
-            db.endTransaction();
+            if (manageTransaction) {
+                db.endTransaction();
+            }
         }
 
         return CsvImportResult.success(totalDataRows, importedCount, skippedCount,
@@ -495,15 +635,103 @@ public class CsvImporter {
      * @return CsvImportResult with summary metrics.
      */
     public static CsvImportResult importCsv(SQLiteDatabase db, InputStream inputStream, long defaultCategoryId) {
+        return importCsv(db, inputStream, defaultCategoryId, null, null, true);
+    }
+
+    /**
+     * Imports CSV data from an InputStream with shared category and duplicate caches.
+     *
+     * @param db SQLite database.
+     * @param inputStream Input stream providing CSV bytes (read as UTF-8).
+     * @param defaultCategoryId Default category ID fallback.
+     * @param categoryCache Optional shared in-memory cache for resolved categories.
+     * @param existingEventKeys Optional shared in-memory set of existing event keys.
+     * @param manageTransaction Whether this method manages begin/end transaction.
+     * @return CsvImportResult with summary metrics.
+     */
+    public static CsvImportResult importCsv(SQLiteDatabase db, InputStream inputStream, long defaultCategoryId,
+                                            Map<String, Long> categoryCache, Set<String> existingEventKeys,
+                                            boolean manageTransaction) {
         if (inputStream == null) {
             return CsvImportResult.failure("InputStream is null");
         }
         try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-            return importCsv(db, reader, defaultCategoryId);
+            return importCsv(db, reader, defaultCategoryId, categoryCache, existingEventKeys, manageTransaction);
         } catch (IOException e) {
             Log.e(TAG, "Error closing InputStream", e);
             return CsvImportResult.failure(e.getMessage());
         }
+    }
+
+    /**
+     * Imports multiple CSV documents represented by Storage Access Framework URIs.
+     * Extracts filename stems to infer categories when not present in headers,
+     * resolves/auto-creates categories, and skips duplicates across all files within a single transaction.
+     *
+     * @param context Application context for ContentResolver.
+     * @param db SQLite database.
+     * @param uris List of document URIs.
+     * @param defaultCategoryId Fallback category ID if filename and header inference both fail.
+     * @return Aggregated CsvImportResult.
+     */
+    public static CsvImportResult importMultipleCsvUris(Context context, SQLiteDatabase db,
+                                                        List<Uri> uris, long defaultCategoryId) {
+        if (context == null || db == null || uris == null || uris.isEmpty()) {
+            return CsvImportResult.failure("Invalid context, database, or empty URIs list");
+        }
+
+        int totalDataRows = 0;
+        int totalImported = 0;
+        int totalSkipped = 0;
+        int initialCategoriesCreated = 0;
+        List<String> combinedErrors = new ArrayList<>();
+        Map<String, Long> sharedCategoryCache = new HashMap<>();
+        Set<String> sharedEventKeys = loadExistingEventKeys(db);
+
+        db.beginTransaction();
+        try {
+            for (Uri uri : uris) {
+                if (uri == null) continue;
+
+                // Determine category from filename stem if applicable
+                String displayName = getDisplayNameFromUri(context, uri);
+                String inferredCategory = inferCategoryFromFilename(displayName);
+                long fileDefaultCatId = defaultCategoryId;
+
+                if (inferredCategory != null && !inferredCategory.isEmpty()) {
+                    int[] counter = new int[]{0};
+                    long resolved = resolveOrCreateCategory(db, inferredCategory, sharedCategoryCache, counter);
+                    if (resolved != -1) {
+                        fileDefaultCatId = resolved;
+                    }
+                    initialCategoriesCreated += counter[0];
+                }
+
+                try (InputStream is = context.getContentResolver().openInputStream(uri)) {
+                    if (is != null) {
+                        CsvImportResult res = importCsv(db, is, fileDefaultCatId,
+                                sharedCategoryCache, sharedEventKeys, false);
+                        totalDataRows += res.getTotalRows();
+                        totalImported += res.getImportedCount();
+                        totalSkipped += res.getSkippedCount();
+                        initialCategoriesCreated += res.getCategoriesCreated();
+                        combinedErrors.addAll(res.getErrors());
+                    } else {
+                        combinedErrors.add("Unable to open stream for URI: " + uri);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error importing URI: " + uri, e);
+                    combinedErrors.add("Error reading " + (displayName != null ? displayName : uri) + ": " + e.getMessage());
+                }
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        return CsvImportResult.success(totalDataRows, totalImported, totalSkipped,
+                initialCategoriesCreated, combinedErrors);
     }
 
     /**

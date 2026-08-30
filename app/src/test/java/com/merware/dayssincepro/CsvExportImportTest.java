@@ -205,4 +205,20 @@ public class CsvExportImportTest {
         assertEquals("Exported_Category", CsvExporter.sanitizeFilename(""));
         assertEquals("CleanCategory", CsvExporter.sanitizeFilename("CleanCategory"));
     }
+
+    @Test
+    public void testInferCategoryFromFilename() {
+        assertEquals("Vehicles", CsvImporter.inferCategoryFromFilename("Vehicles.csv"));
+        assertEquals("Home Maintenance", CsvImporter.inferCategoryFromFilename("Home Maintenance.csv"));
+        assertEquals("Doctor Visits", CsvImporter.inferCategoryFromFilename("/storage/emulated/0/Download/Doctor Visits.csv"));
+        assertEquals("Taxes", CsvImporter.inferCategoryFromFilename("C:\\Exports\\Taxes.CSV"));
+
+        // Generic filenames should not be inferred as categories
+        assertNull(CsvImporter.inferCategoryFromFilename("daysSince.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename("daysSincePro.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename("daysSincePro_All.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename("events.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename(""));
+        assertNull(CsvImporter.inferCategoryFromFilename(null));
+    }
 }

@@ -44,7 +44,6 @@
 
 
         <activity android:name="PrefActivity" />
-        <activity android:name="FileExplore" />
         <activity
             android:name="ConfigWidgetActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

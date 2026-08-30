@@ -171,4 +171,12 @@
     <string name="about_maintained">maintained</string>
     <string name="about_republished">republished</string>
     <string name="about_maintained_and_republished">DaysSincePro — %1$s and %2$s by Marc Seinfeld / MerWare</string>
+
+    <!-- Menu bucket & Data I/O strings -->
+    <string name="export_to_files">Export to file(s)</string>
+    <string name="import_from_files">Import from file(s)</string>
+    <string name="export_db_option">SQLite Database (.db)</string>
+    <string name="export_csv_option">CSV File (.csv)</string>
+    <string name="restore_db_option">Restore Database (.db)</string>
+    <string name="import_csv_option">Import CSV Events (.csv)</string>
 </resources>

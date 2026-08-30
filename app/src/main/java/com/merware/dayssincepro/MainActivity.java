@@ -1,28 +1,23 @@
 package com.merware.dayssincepro;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
@@ -38,7 +33,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.util.Log;
 
@@ -54,9 +52,10 @@ public class MainActivity extends AppCompatActivity implements
 
     AlarmHelper alarmHelp;
 
-    File InternalStorageDirectory;
-    String Days_Since_DB = ""; // full path of daysSince.db
-    String Days_Since_DB_Internal = "";
+    private static final int REQUEST_EXPORT_DB_SAF = 10;
+    private static final int REQUEST_EXPORT_CSV_SAF = 11;
+    private static final int REQUEST_RESTORE_DB_SAF = 12;
+    private static final int REQUEST_IMPORT_CSV_SAF = 13;
 
 
     @Override
@@ -127,9 +126,6 @@ public class MainActivity extends AppCompatActivity implements
 
         if (iTab != 0)
             mViewPager.setCurrentItem(iTab);
-
-        // for backup and restore
-        SetDBName();
     }
 
     MenuItem searchMenuItem;
@@ -181,50 +177,27 @@ public class MainActivity extends AppCompatActivity implements
         } else if (itemId == R.id.action_settings) {
             settings();
 
-        } else if (itemId == R.id.menu_export) {
+        } else if (itemId == R.id.menu_export_db) {
+            launchExportDbPicker();
+
+        } else if (itemId == R.id.menu_export_csv) {
+            launchExportCsvPicker();
+
+        } else if (itemId == R.id.menu_import_db) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.backup_database);
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                builder.setMessage(R.string.no_permission_are_you_sure);
-            }
-            else {
-                builder.setMessage(R.string.permission_are_you_sure);
-            }
-
-
-            builder.setPositiveButton(R.string.yes, backupListener);
-            builder.setNegativeButton(R.string.no, backupListener);
+            builder.setTitle(R.string.restore_from_database);
+            builder.setMessage(getString(R.string.replace_data) + " " + getString(R.string.are_you_sure));
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    launchRestoreDbPicker();
+                }
+            });
+            builder.setNegativeButton(R.string.no, null);
             builder.show();
 
-        } else if (itemId == R.id.menu_import) {
-
-            // if folder is empty another message
-            File[] files = InternalStorageDirectory.listFiles();
-            if (files.length == 0)
-            {
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.restore_from_database)
-                        .setMessage(Days_Since_DB_Internal + " is not found.")
-                        .setCancelable(false)
-                        .setNeutralButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }).show();
-            }
-            else {
-
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle(R.string.restore_from_database);
-                builder2.setMessage(getString(R.string.replace_data) + " "
-                        + getString(R.string.are_you_sure));
-                builder2.setPositiveButton(R.string.yes, restoreListener);
-                builder2.setNegativeButton(R.string.no, restoreListener);
-                builder2.show();
-            }
+        } else if (itemId == R.id.menu_import_csv) {
+            launchImportCsvPicker();
 
         } else if (itemId == R.id.menu_notify) {
             alarmHelp.setAlarm(1);
@@ -234,6 +207,47 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchExportDbPicker() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/vnd.sqlite3");
+        intent.putExtra(Intent.EXTRA_TITLE, "daysSince.db");
+        startActivityForResult(intent, REQUEST_EXPORT_DB_SAF);
+    }
+
+    private void launchExportCsvPicker() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, "daysSince.csv");
+        startActivityForResult(intent, REQUEST_EXPORT_CSV_SAF);
+    }
+
+    private void launchRestoreDbPicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                "application/vnd.sqlite3",
+                "application/x-sqlite3",
+                "application/octet-stream"
+        });
+        startActivityForResult(intent, REQUEST_RESTORE_DB_SAF);
+    }
+
+    private void launchImportCsvPicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                "text/csv",
+                "text/comma-separated-values",
+                "text/plain"
+        });
+        startActivityForResult(intent, REQUEST_IMPORT_CSV_SAF);
     }
 
 
@@ -403,158 +417,169 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-    DialogInterface.OnClickListener backupListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    // Yes button clicked
-
-                    Log.wtf("DSP", "Andorid SDK version is " + Build.VERSION.SDK_INT);
-                    Log.wtf("DSP", "Andorid SDK R is " + Build.VERSION_CODES.R);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                    {
-                        doExportDB();  // don't even ask
-                    }
-                    else
-                    {
-                        // old way that still worked with API 30
-                        beforeBackup(); // its call back will call doExportDB()
-                    }
-
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // No button clicked
-                    break;
-            }
-        }
-    };
-
-    private void ToastAndLog(String description, String msg)
-    {
-        showToast(description + ": " + msg);
-        Log.wtf("dsp", description + ": " +  msg);
+    private File getLiveDbFile() {
+        return getDatabasePath(DatabaseHelper.DATABASE_NAME);
     }
 
-    private void ToastAndLog(String msg)
-    {
-        showToast(msg);
-        Log.wtf("dsp", msg);
-    }
-
-    private String mydir = "DaysSincePro";
-    private String dbName = "/data/data/com.MerWare.DaysSincePro/databases/alex_db";
-    private final int BACKUP_PERMISSION = 1;
-
-
-    private void beforeBackup()
-    {
-       // If Noguat ask for permission
-        // given Manifest permissions still need to ask
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, BACKUP_PERMISSION);
-        }
-        else
-        {
-            Log.wtf("dsp", "Permission already granted");
-            doExportDB();
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch(requestCode)
-        {
-            case BACKUP_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    doExportDB();
-                }
-                else
-                {
-                    Log.wtf("dsp", "permission denied");
-                }
-                break;
-            default:
-                Log.wtf("dsp", "request code is " + requestCode);
-                break;
-        }
-    }
-
-    void doExportDB() {
-
+    private void handleExportDbSaf(Uri uri) {
+        if (uri == null) return;
+        File tempSnapshot = null;
         try {
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-            {
-                if (!InternalStorageDirectory.exists()) {
-                    InternalStorageDirectory.mkdirs();
-                }
-            }
-
-            String backupPath = InternalStorageDirectory.getPath() + "/daysSince.db";
-
-            // VACUUM INTO asks SQLite itself for a consistent point-in-time snapshot,
-            // so the backup is correct even while other screens hold the shared
-            // connection open - no raw file copy, no need to close every connection.
-            File backupFile = new File(backupPath);
-            if (backupFile.exists()) {
-                backupFile.delete();
+            tempSnapshot = File.createTempFile("daysSince_export", ".db", getCacheDir());
+            if (tempSnapshot.exists()) {
+                tempSnapshot.delete();
             }
 
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
-            db.execSQL("VACUUM INTO ?", new Object[]{backupPath});
+            db.execSQL("VACUUM INTO ?", new Object[]{tempSnapshot.getAbsolutePath()});
+
+            try (InputStream in = new FileInputStream(tempSnapshot);
+                 OutputStream out = getContentResolver().openOutputStream(uri)) {
+                if (out == null) {
+                    showToast(getString(R.string.backup_fail));
+                    return;
+                }
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                out.flush();
+            }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.backup_database_success);
             builder.setCancelable(true);
-
-            builder.setMessage("Database exported to " + Days_Since_DB_Internal);
-            builder.setNeutralButton(android.R.string.ok,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-
+            builder.setMessage(getString(R.string.backup_success));
+            builder.setNeutralButton(android.R.string.ok, null);
             builder.show();
 
-        } catch (SQLiteException e) {
-            showToast(getString(R.string.backup_fail));
-            showToast(e.getMessage());
-            Log.wtf("SQLE", e.getMessage());
-        }
-
-    }
-
-
-    DialogInterface.OnClickListener restoreListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    // Yes button clicked
-                    explore();
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // No button clicked
-                    break;
+        } catch (Exception e) {
+            Log.e("DSP_EXPORT_DB", "Failed to export db", e);
+            showToast(getString(R.string.backup_fail) + ": " + e.getMessage());
+        } finally {
+            if (tempSnapshot != null && tempSnapshot.exists()) {
+                tempSnapshot.delete();
             }
         }
-    };
+    }
 
+    private void handleExportCsvSaf(Uri uri) {
+        if (uri == null) return;
+        try {
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            OutputStream out = getContentResolver().openOutputStream(uri);
+            if (out == null) {
+                showToast("Failed to open output stream");
+                return;
+            }
+            CsvExportResult result = CsvExporter.exportAllCategories(db, out);
+            if (result.isSuccess()) {
+                showToast("daysSince.csv saved (" + result.getRowsExported() + " events)");
+            } else {
+                showToast("Export failed: " + result.getErrorMessage());
+                Log.e("DSP_EXPORT_CSV", "CSV export failed: " + result.getErrorMessage());
+            }
+        } catch (Exception e) {
+            Log.e("DSP_EXPORT_CSV", "CSV export failed", e);
+            showToast("Export failed: " + e.getMessage());
+        }
+    }
 
-    void explore() {
-        Intent intent = new Intent(this, FileExplore.class);
-        startActivityForResult(intent, EXPLORE_ACTIVITY);
+    private void handleRestoreDbSaf(Uri uri) {
+        if (uri == null) return;
+        try {
+            // Verify SQLite header magic string before overwriting database
+            try (InputStream testIn = getContentResolver().openInputStream(uri)) {
+                if (testIn == null) {
+                    showToast(getString(R.string.restore_fail));
+                    return;
+                }
+                byte[] byteArr = new byte[6];
+                int read = testIn.read(byteArr);
+                if (read < 6 || !Arrays.equals(byteArr, "SQLite".getBytes())) {
+                    showToast("Sorry, invalid database file.");
+                    return;
+                }
+            }
+
+            // Close shared database connection before replacing file
+            DatabaseHelper.closeInstance();
+
+            File liveDbFile = getLiveDbFile();
+            File dbDir = liveDbFile.getParentFile();
+            if (dbDir != null && !dbDir.exists()) {
+                dbDir.mkdirs();
+            }
+
+            try (InputStream in = getContentResolver().openInputStream(uri);
+                 OutputStream out = new FileOutputStream(liveDbFile)) {
+                if (in == null) {
+                    showToast(getString(R.string.restore_fail));
+                    return;
+                }
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                out.flush();
+            }
+
+            showToast(getString(R.string.restore_success));
+            setTitle(R.string.all_categories);
+
+            SharedPreferences.Editor ed = preferences.edit();
+            ed.putString("CategoryIds", "");
+            ed.putString("Categories", "");
+            ed.commit();
+
+            // Restart Activity to re-bind fresh SQLite helpers and reload fragments
+            finish();
+            Intent restartIntent = new Intent(this, MainActivity.class);
+            restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(restartIntent);
+
+        } catch (Exception e) {
+            Log.e("DSP_RESTORE_DB", "Database restore failed", e);
+            showToast(getString(R.string.restore_fail) + ": " + e.getMessage());
+        }
+    }
+
+    private void handleImportCsvSaf(Intent data) {
+        if (data == null) return;
+        List<Uri> uris = new ArrayList<>();
+        if (data.getClipData() != null) {
+            ClipData clip = data.getClipData();
+            for (int i = 0; i < clip.getItemCount(); i++) {
+                ClipData.Item item = clip.getItemAt(i);
+                if (item != null && item.getUri() != null) {
+                    uris.add(item.getUri());
+                }
+            }
+        } else if (data.getData() != null) {
+            uris.add(data.getData());
+        }
+
+        if (uris.isEmpty()) return;
+
+        try {
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            CsvImportResult result = CsvImporter.importMultipleCsvUris(this, db, uris, 0);
+
+            if (result.isSuccess()) {
+                showToast(result.getSummaryMessage());
+                refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+            } else {
+                String firstErr = result.getErrors().isEmpty() ? "No events imported." : result.getErrors().get(0);
+                showToast("Import error: " + firstErr);
+                Log.e("DSP_IMPORT_CSV", "CSV import failed: " + firstErr);
+            }
+        } catch (Exception e) {
+            Log.e("DSP_IMPORT_CSV", "CSV import error", e);
+            showToast("Import failed: " + e.getMessage());
+        }
     }
 
     private boolean inData(long target) {
@@ -572,59 +597,65 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
         switch (requestCode) {
+            case REQUEST_EXPORT_DB_SAF:
+                if (data != null) handleExportDbSaf(data.getData());
+                break;
+            case REQUEST_EXPORT_CSV_SAF:
+                if (data != null) handleExportCsvSaf(data.getData());
+                break;
+            case REQUEST_RESTORE_DB_SAF:
+                if (data != null) handleRestoreDbSaf(data.getData());
+                break;
+            case REQUEST_IMPORT_CSV_SAF:
+                if (data != null) handleImportCsvSaf(data);
+                break;
 
             case ADD_ACTIVITY:
-                switch (resultCode) {
+                boolean isFuture;
+                long nRecur;
+                int notifyHour = 0;
+                int notifyMinute = 0;
 
-                    case Activity.RESULT_OK:
-                        boolean isFuture;
-                        long nRecur;
-                        int notifyHour = 0;
-                        int notifyMinute = 0;
+                if (data != null) {
+                    notifyHour = data.getIntExtra("notifyHour", 0);
+                    notifyMinute = data.getIntExtra("notifyMinute", 0);
 
-                        notifyHour = data.getIntExtra("notifyHour", 0);
-                        notifyMinute = data.getIntExtra("notifyMinute", 0);
+                    long id = data.getLongExtra("id", 0);
 
-                        long id = data.getLongExtra("id", 0);
+                    isFuture = data.getBooleanExtra("future", false);
+                    nRecur = data.getLongExtra("nRecur", 0);
 
-                        isFuture = data.getBooleanExtra("future", false);
-                        nRecur = data.getLongExtra("nRecur", 0);
+                    int kind = mViewPager.getCurrentItem();
 
-                        int kind = mViewPager.getCurrentItem();
-                        //showToast("Look I am on tab: " + mViewPager.getCurrentItem());
-
-                        if (kind == 0) {
-                            if (isFuture) {
-                                showToast(getString(R.string.msg_until));
-                            }
-                        } else {
-                            if (!isFuture && nRecur == 0)
-                                showToast(getString(R.string.msg_since));
+                    if (kind == 0) {
+                        if (isFuture) {
+                            showToast(getString(R.string.msg_until));
                         }
+                    } else {
+                        if (!isFuture && nRecur == 0)
+                            showToast(getString(R.string.msg_since));
+                    }
 
-                        // tabs not yet visited/instantiated by the pager have a null fragment reference
-                        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+                    refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
 
-                        chosenID = data.getLongExtra("catId", 0);
+                    chosenID = data.getLongExtra("catId", 0);
 
-                        if (!inData(chosenID)) {
-                            showToast(getString(R.string.not_chosen));
-                        }
+                    if (!inData(chosenID)) {
+                        showToast(getString(R.string.not_chosen));
+                    }
 
-                        // save to reference
-
-                        if (notifyHour == 0 && notifyMinute == 0) {
-                            // don't bother to send a new alarm, use what's there.
-                        } else {
-                            showToast("ADD new now go set alarm for id " + id + " at "
-                                    + notifyHour + " " + notifyMinute);
-                            alarmHelp.setAlarm(id, notifyHour, notifyMinute);
-                        }
-
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        break;
+                    if (notifyHour == 0 && notifyMinute == 0) {
+                        // don't bother to send a new alarm, use what's there.
+                    } else {
+                        showToast("ADD new now go set alarm for id " + id + " at "
+                                + notifyHour + " " + notifyMinute);
+                        alarmHelp.setAlarm(id, notifyHour, notifyMinute);
+                    }
                 }
                 break;
             case CONFIG_ACTIVITY:
@@ -649,129 +680,19 @@ public class MainActivity extends AppCompatActivity implements
 
                 break;
 
-            case EXPLORE_ACTIVITY:
-
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-
-                        String filename = data.getStringExtra("filename");
-
-                        if (doImportDB(filename)) {
-                            // The shared DatabaseHelper connection was closed and the db file
-                            // swapped out from under it, so every screen must reopen a fresh
-                            // connection - restart, same as CONFIG_ACTIVITY does.
-                            finish();
-                            Intent restartIntent = new Intent(this, MainActivity.class);
-                            restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(restartIntent);
-                        }
-
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        break;
-                }
-                break;
             case CATEGORY_ACTIVITY:
+                // reset title
+                String text = preferences.getString("Categories", "");
 
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-
-                        // reset title
-                        String text = preferences.getString("Categories", "");
-
-                        if (text == "") {
-                            text = getString(R.string.uncategorized);
-                        }
-
-                        setTitle(text);
-                        // must do it here
-                        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
-
-                        break;
-                    case Activity.RESULT_CANCELED:
-
-                        break;
+                if (text == null || text.isEmpty()) {
+                    text = getString(R.string.uncategorized);
                 }
+
+                setTitle(text);
+                refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+                break;
         }
 
-    }
-
-    // Read a few bytes make sure it says SQLite
-    boolean isSQLiteFile(String filename) throws FileNotFoundException,
-            IOException {
-
-        FileInputStream fis = new FileInputStream(filename);
-
-        int numOfBytes = 6; // SQLite
-        byte byteArr[] = new byte[numOfBytes];
-
-        fis.read(byteArr);
-
-        String str = new String("SQLite");
-        byte byteArr2[] = str.getBytes();
-
-        fis.close();
-
-        if (Arrays.equals(byteArr, byteArr2)) {
-            return true;
-        }
-        return false;
-    }
-
-
-    // Returns true if the restore succeeded and the caller should restart the app.
-    boolean doImportDB(String filename) {
-
-        try {
-
-            if (!isSQLiteFile(filename)) {
-                showToast("Sorry, invalid database file: " + filename);
-                return false;
-            }
-
-            // Close the one shared connection before touching the file on disk - since
-            // every screen goes through DatabaseHelper.getInstance(), this is now the
-            // only connection that needs to be closed, instead of hoping every
-            // Activity/Fragment/Widget happened to close its own.
-            DatabaseHelper.closeInstance();
-
-            FileOutputStream myOutput = new FileOutputStream(dbName);
-
-            InputStream myInputs = new FileInputStream(filename);
-
-            // Transfer bytes from the input file to the output file
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = myInputs.read(buffer)) > 0) {
-                myOutput.write(buffer, 0, length);
-            }
-
-            // Close and clear the streams
-            myOutput.flush();
-            myOutput.close();
-            myInputs.close();
-
-            showToast(getString(R.string.restore_success));
-            setTitle(R.string.all_categories);
-
-            SharedPreferences.Editor ed = preferences.edit();
-            ed.putString("CategoryIds", "");
-            ed.putString("Categories", "");
-            ed.commit();
-
-            return true;
-
-        } catch (FileNotFoundException e) {
-            showToast(getString(R.string.restore_fail));
-            //		Log.e("file not found", "failed", e);
-
-        } catch (IOException e) {
-            showToast(getString(R.string.restore_fail));
-
-            //		Log.e("IO exception", "failed", e);
-        }
-        return false;
     }
 
 
@@ -826,28 +747,5 @@ public class MainActivity extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
-
-    private void SetDBName()
-    {
-        InternalStorageDirectory = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            // new android only have access to this folder
-            InternalStorageDirectory = getExternalFilesDir(null);
-        }
-        else {
-            // classic way add a folder
-            // Set the output folder on the SDcard
-            InternalStorageDirectory = new File(Environment.getExternalStorageDirectory() + "/" + mydir);
-        }
-
-        if (InternalStorageDirectory != null) {
-            Days_Since_DB = InternalStorageDirectory.getPath() + "/daysSince.db";
-            Days_Since_DB_Internal = Days_Since_DB.replace("/storage/emulated/0", "Internal Storage");
-        }
-
-    }
-
 
 }

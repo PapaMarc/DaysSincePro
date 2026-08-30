@@ -1,18 +1,16 @@
 package com.merware.dayssincepro;
 
-
 /* http://stackoverflow.com/questions/11815831/saving-listview-simple-list-item-multiple-choice-checkbox-state-using-an-array-a */
 
 // based on grocery app 10/13/2013
 
-import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.content.Context;
 import android.app.AlertDialog;
@@ -24,13 +22,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.ContextMenu;
@@ -64,7 +57,8 @@ public class CategoriesActivity extends ListActivity {
     static final private int MENU_EXPORT = Menu.FIRST + 2;
     static final private int MENU_IMPORT = Menu.FIRST + 3;
 
-    private static final int EXPLORE_ACTIVITY = 5;
+    private static final int REQUEST_EXPORT_CATEGORY_CSV_SAF = 20;
+    private static final int REQUEST_IMPORT_CATEGORY_CSV_SAF = 21;
 
     long removeId;
     long exportId;
@@ -544,31 +538,43 @@ public class CategoriesActivity extends ListActivity {
             case MENU_EXPORT:
                 exportId = menuInfo.id;
                 selectedPosition = menuInfo.position;
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle(R.string.export_category);
-                builder2.setMessage(getString(R.string.permission_are_you_sure));
-                builder2.setPositiveButton(R.string.yes, exportCSVListener);
-                builder2.setNegativeButton(R.string.no, exportCSVListener);
-                builder2.show();
+                launchExportCategoryCsvPicker();
                 break;
             case MENU_IMPORT:
                 importId = menuInfo.id;
                 selectedPosition = menuInfo.position;
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-                builder3.setTitle(R.string.import_word);
-
-                cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
-                selectedCategory = cursor.getString(1); // 0 is _id
-                String msg = getString(R.string.import_csv) +  " to " + selectedCategory + ".\n" + getString(R.string.are_you_sure);
-
-                builder3.setMessage(msg);
-                builder3.setPositiveButton(R.string.yes, importCSVListener);
-                builder3.setNegativeButton(R.string.no, importCSVListener);
-                builder3.show();
+                launchImportCategoryCsvPicker();
                 break;
         }
 
         return true;
+    }
+
+    private void launchExportCategoryCsvPicker() {
+        cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
+        selectedCategory = cursor.getString(1); // 0 is _id
+        String filename = CsvExporter.sanitizeFilename(selectedCategory) + ".csv";
+
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, filename);
+        startActivityForResult(intent, REQUEST_EXPORT_CATEGORY_CSV_SAF);
+    }
+
+    private void launchImportCategoryCsvPicker() {
+        cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
+        selectedCategory = cursor.getString(1); // 0 is _id
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                "text/csv",
+                "text/comma-separated-values",
+                "text/plain"
+        });
+        startActivityForResult(intent, REQUEST_IMPORT_CATEGORY_CSV_SAF);
     }
 
     DialogInterface.OnClickListener yesNoDialogClickListenerOK = new DialogInterface.OnClickListener() {
@@ -614,130 +620,38 @@ public class CategoriesActivity extends ListActivity {
         }
     };
 
-
-    private final int BACKUP_PERMISSION = 1;
-    private void beforeBackup()
-    {
-        // If Nougat ask for permission
-        // given Manifest permissions still need to ask
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, BACKUP_PERMISSION);
-        }
-        else
-        {
-            Log.wtf("dsp", "Permission already granted");
-            doExportCSV();
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch(requestCode)
-        {
-            case BACKUP_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    doExportCSV();
-                }
-                else
-                {
-                    Log.wtf("dsp", "permission denied");
-                }
-                break;
-        }
-    }
-
-    DialogInterface.OnClickListener exportCSVListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    // Yes button clicked
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                    {
-                        doExportCSV();  // don't even ask
-                    }
-                    else
-                    {
-                        // old way that still worked with API 30
-                        beforeBackup(); // its call back will call doExportDB()
-                    }
-
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // No button clicked
-                    break;
-            }
-        }
-    };
-
-    DialogInterface.OnClickListener importCSVListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    // Yes button clicked
-
-                    try {
-                        explore();
-                    }
-                    catch (Exception exp)
-                    {
-                        Log.wtf("import", exp.getMessage());
-                    }
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // No button clicked
-                    break;
-            }
-        }
-    };
-
-
-    private void doExportCSV()
-    {
+    private void handleExportCategoryCsvSaf(Uri uri) {
+        if (uri == null) return;
         try {
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
-
-            cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
-            selectedCategory = cursor.getString(1); // 0 is _id
-
-            CsvExportResult result = CsvExporter.exportCategory(this, db, exportId, selectedCategory);
+            OutputStream os = getContentResolver().openOutputStream(uri);
+            if (os == null) {
+                showToast("Failed to open output stream");
+                return;
+            }
+            CsvExportResult result = CsvExporter.exportCategory(db, exportId, os);
             if (result.isSuccess()) {
                 showToast(selectedCategory + ".csv saved (" + result.getRowsExported() + " events)");
             } else {
                 showToast("Export failed: " + result.getErrorMessage());
                 Log.e("DSP_EXPORT", "Export failed: " + result.getErrorMessage());
             }
-
         } catch (Exception e) {
-            Log.e("DSP_EXPORT", "Sorry, export failed.", e);
-            showToast("Sorry, export failed. Please check App Storage permissions.");
+            Log.e("DSP_EXPORT", "Export error", e);
+            showToast("Export failed: " + e.getMessage());
         }
     }
 
-    void explore() {
-        Intent intent = new Intent(this, FileExplore.class);
-        startActivityForResult(intent, EXPLORE_ACTIVITY);
-    }
-
-    private void doImportCSV(String filename)
-    {
+    private void handleImportCategoryCsvSaf(Uri uri) {
+        if (uri == null) return;
         try {
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
-            File file = new File(filename);
+            CsvImportResult result = CsvImporter.importMultipleCsvUris(this, db,
+                    Collections.singletonList(uri), importId);
 
-            CsvImportResult result = CsvImporter.importCsv(this, db, file, importId);
             if (result.isSuccess()) {
                 showToast(result.getSummaryMessage());
-                if (result.getCategoriesCreated() > 0) {
+                if (result.getCategoriesCreated() > 0 || result.getImportedCount() > 0) {
                     listData();
                     reApplyChecked();
                 }
@@ -747,11 +661,10 @@ public class CategoriesActivity extends ListActivity {
                 Log.e("DSP_IMPORT", "Import failed: " + firstErr);
             }
         } catch (Exception e) {
-            Log.e("DSP_IMPORT", "Import failed", e);
+            Log.e("DSP_IMPORT", "Import error", e);
             showToast("Import failed: " + e.getMessage());
         }
     }
-
 
     public static final void addFileToMediaStore(final String path, Context context) {
         CsvExporter.addFileToMediaStore(context, path);
@@ -771,20 +684,16 @@ public class CategoriesActivity extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return;
+        }
+
         switch (requestCode) {
-            case EXPLORE_ACTIVITY:
-
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-
-                        String filename = data.getStringExtra("filename");
-
-                        doImportCSV(filename);
-
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        break;
-                }
+            case REQUEST_EXPORT_CATEGORY_CSV_SAF:
+                handleExportCategoryCsvSaf(data.getData());
+                break;
+            case REQUEST_IMPORT_CATEGORY_CSV_SAF:
+                handleImportCategoryCsvSaf(data.getData());
                 break;
         }
     }

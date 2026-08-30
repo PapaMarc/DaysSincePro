@@ -2,65 +2,93 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
+    <!-- Action Bar Persistent Icons -->
     <item
         android:id="@+id/action_add"
-        android:orderInCategory="100"
+        android:orderInCategory="10"
         android:icon="@android:drawable/ic_menu_add"
         app:showAsAction="always"
         android:title="@string/add"/>
 
-
     <item
         android:id="@+id/action_open"
-        android:orderInCategory="100"
+        android:orderInCategory="20"
         android:icon="@drawable/ic_action_file_folder_open"
         android:title="@string/categories"
         app:showAsAction="always"/>
 
-
     <item android:id="@+id/action_search"
-        android:orderInCategory="100"
+        android:orderInCategory="30"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
 
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+    <!-- GROUP 1: ACTIONS -->
+    <group android:id="@+id/menu_group_actions" android:orderInCategory="100">
+        <item
+            android:id="@+id/menu_daysdiff"
+            android:orderInCategory="101"
+            app:showAsAction="never"
+            android:title="@string/days_diff"/>
+        <item
+            android:id="@+id/menu_notify"
+            android:orderInCategory="102"
+            app:showAsAction="never"
+            android:title="@string/notify"/>
+    </group>
 
-    <item
-        android:id="@+id/menu_export"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/export"/>
-    <item
-        android:id="@+id/menu_import"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/importdb"/>
-    <item
-        android:id="@+id/menu_notify"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/notify"/>
+    <!-- GROUP 2: DATA I/O -->
+    <group android:id="@+id/menu_group_data_io" android:orderInCategory="200">
+        <!-- Export Submenu -->
+        <item
+            android:id="@+id/menu_export_parent"
+            android:orderInCategory="201"
+            app:showAsAction="never"
+            android:title="@string/export_to_files">
+            <menu>
+                <item
+                    android:id="@+id/menu_export_db"
+                    android:orderInCategory="202"
+                    android:title="@string/export_db_option" />
+                <item
+                    android:id="@+id/menu_export_csv"
+                    android:orderInCategory="203"
+                    android:title="@string/export_csv_option" />
+            </menu>
+        </item>
 
-    <item
-        android:id="@+id/menu_daysdiff"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/days_diff"/>
+        <!-- Import Submenu -->
+        <item
+            android:id="@+id/menu_import_parent"
+            android:orderInCategory="204"
+            app:showAsAction="never"
+            android:title="@string/import_from_files">
+            <menu>
+                <item
+                    android:id="@+id/menu_import_db"
+                    android:orderInCategory="205"
+                    android:title="@string/restore_db_option" />
+                <item
+                    android:id="@+id/menu_import_csv"
+                    android:orderInCategory="206"
+                    android:title="@string/import_csv_option" />
+            </menu>
+        </item>
+    </group>
 
-
-    <item
-        android:id="@+id/menu_about"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:orderInCategory="100"
-        android:title="@string/about"
-        app:showAsAction="never"/>
-
-
-
+    <!-- GROUP 3: META -->
+    <group android:id="@+id/menu_group_meta" android:orderInCategory="300">
+        <item android:id="@+id/action_settings"
+            android:title="@string/action_settings"
+            android:orderInCategory="301"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/menu_about"
+            android:icon="@android:drawable/ic_dialog_info"
+            android:orderInCategory="302"
+            android:title="@string/about"
+            app:showAsAction="never"/>
+    </group>
 
 </menu>
