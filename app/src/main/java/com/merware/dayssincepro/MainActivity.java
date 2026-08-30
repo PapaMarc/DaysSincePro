@@ -336,6 +336,18 @@ public class MainActivity extends AppCompatActivity implements
             daysUntil.listData();
     }
 
+    // package-private + static so it can be unit tested without an Activity/pager instance.
+    // Skips any tab fragment not yet instantiated by the pager (i.e. never visited/scrolled to).
+    static void dispatchSearch(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
+                               PastFutureListFragment daysUntil, String query) {
+        if (daysSince != null)
+            daysSince.listDataAjax(query);
+        if (sinceLast != null)
+            sinceLast.listDataAjax(query);
+        if (daysUntil != null)
+            daysUntil.listDataAjax(query);
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -766,36 +778,30 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onQueryTextSubmit(String query) {
 
-        daysSinceFragment.listDataAjax(query);
-        sinceLastFragment.listDataAjax(query);
-        daysUntilFragment.listDataAjax(query);
+        dispatchSearch(daysSinceFragment, sinceLastFragment, daysUntilFragment, query);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
 
-        // from Crashes and ANRs
-        if (daysSinceFragment == null || sinceLastFragment == null || daysUntilFragment == null)
-            return false;
-
         if (newText == null)
             return false;
 
         if (newText.length() == 0) {
-            daysSinceFragment.unsetSearchText();
-            sinceLastFragment.unsetSearchText();
-            daysUntilFragment.unsetSearchText();
+            // from Crashes and ANRs
+            if (daysSinceFragment != null)
+                daysSinceFragment.unsetSearchText();
+            if (sinceLastFragment != null)
+                sinceLastFragment.unsetSearchText();
+            if (daysUntilFragment != null)
+                daysUntilFragment.unsetSearchText();
 
-            daysSinceFragment.listData();
-            sinceLastFragment.listData();
-            daysUntilFragment.listData();
+            refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
             return true;
         }
 
-        daysSinceFragment.listDataAjax(newText);
-        sinceLastFragment.listDataAjax(newText);
-        daysUntilFragment.listDataAjax(newText);
+        dispatchSearch(daysSinceFragment, sinceLastFragment, daysUntilFragment, newText);
         return true;
     }
 
