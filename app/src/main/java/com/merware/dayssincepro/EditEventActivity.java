@@ -171,7 +171,7 @@ public class EditEventActivity extends Activity {
             mMonth = c.get(Calendar.MONTH);
             mDay = c.get(Calendar.DAY_OF_MONTH);
 
-            notifyHour = 0;
+            notifyHour = 8;
             notifyMinute = 0;
 
             showEndDateFields(false);

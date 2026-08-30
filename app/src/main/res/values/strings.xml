@@ -83,8 +83,8 @@
     <string name="recurrence"> Recurrence</string>
     <string name="send_noti"> Send Daily Notifications </string>
     <string name="no_send_noti"> Do Not Send Notifications</string>
-    <string name="next_noti">"The next notifications will be sent at midnight."</string>
-    <string name="notify">Notify</string>
+    <string name="next_noti">"The next notifications will be sent at 8:00 AM."</string>
+    <string name="notify">Review timely events now</string>
     <string name="input_order">Input Order</string>
     <string name="medium">Medium</string>
     <string name="years_months_days">Years Months Days</string>
@@ -145,7 +145,7 @@
     <string name="restore_fail">Sorry, restore failed.</string>
     <string name="not_found">not found.</string>
     <string name="opaque">Opaque</string>
-    <string name="notify_midnight">Notify at Midnight</string>
+    <string name="notify_midnight">Notify at 8:00 AM</string>
     <string name="days_diff">Days Between</string>
     <string name="days_events_diff">Days Between Events</string>
     <string name="click_choose">Date or Event</string>
@@ -179,4 +179,12 @@
     <string name="export_csv_option">CSV File (.csv)</string>
     <string name="restore_db_option">Restore Database (.db)</string>
     <string name="import_csv_option">Import CSV Events (.csv)</string>
+
+    <string name="review_no_events">Review complete: No events require notification.</string>
+    <string name="review_notifications_created">Review complete: Notifications added to Android notification drawer.</string>
+    <string name="review_notifications_blocked">Review complete: Notifications generated but blocked by Android settings.</string>
+    <string name="enable_notifications_title">Enable Notifications</string>
+    <string name="enable_notifications_msg">To receive alerts for due or upcoming events, please enable notifications for DaysSincePro in Android Settings.</string>
+    <string name="notification_permission_rationale">Notifications are required to alert you when events are due or approaching recurrence.</string>
+    <string name="open_settings">Open Settings</string>
 </resources>

@@ -78,8 +78,8 @@ public class AlarmHelper {
                     pendingIntent1);
         }
 
-        // set alarm at midnight
-        cal.set(Calendar.HOUR_OF_DAY, 0);
+        // set alarm at 8:00 AM
+        cal.set(Calendar.HOUR_OF_DAY, 8);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 1);
         cal.set(Calendar.MILLISECOND, 0);

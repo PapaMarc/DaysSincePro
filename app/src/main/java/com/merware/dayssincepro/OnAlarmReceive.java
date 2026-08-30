@@ -161,6 +161,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
         // make notification
 
         // showToast("Alarm received! for all!");
+        int notificationCount = 0;
 
         sql = "select _id, catID, event, date, recur, date(date, '+' || recur || ' day') as nextdate from event where "
                 + dateCondition;
@@ -206,6 +207,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
             if (nEstDays == 0 && dsc1.getDaysSinceEvent() == 0) {
                 // one time today
                 createNotification(id, event, 3, "");
+                notificationCount++;
             }
 
 
@@ -218,9 +220,11 @@ public class OnAlarmReceive extends BroadcastReceiver {
                             + nEstDays + " " + context.getString(R.string.days);
 
                     createNotification(id, event, 3, todayExplain);
+                    notificationCount++;
                 } else if (dsc1.getDaysSinceEvent() > nEstDays) {
                     // red - style 1 is number of days - for shortest.
                     createNotification(id, event, 1, dsc1.getExplain(true, 1));
+                    notificationCount++;
 
                 } else if (dsc1.getDaysSinceEvent() > nEstDays * percent) {
                     // yellow
@@ -232,6 +236,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                     if (daysTill <= 7) {
 
                         createNotification(id, event, 2, dsc1.getExplain(true, 1));
+                        notificationCount++;
                     }
                 }
             }
@@ -241,6 +246,16 @@ public class OnAlarmReceive extends BroadcastReceiver {
         // showToast(rowCount + " rows!");
 
         cursor.close();
+
+        if (notificationCount > 0) {
+            if (NotificationPermissionHelper.areNotificationsEnabled(context)) {
+                showToast(context.getString(R.string.review_notifications_created));
+            } else {
+                showToast(context.getString(R.string.review_notifications_blocked));
+            }
+        } else {
+            showToast(context.getString(R.string.review_no_events));
+        }
     }
 
     void showToast(String s) {

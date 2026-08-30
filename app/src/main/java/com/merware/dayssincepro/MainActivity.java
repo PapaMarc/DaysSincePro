@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -206,7 +207,11 @@ public class MainActivity extends AppCompatActivity implements
             launchImportCsvPicker();
 
         } else if (itemId == R.id.menu_notify) {
-            alarmHelp.setAlarm(1);
+            if (NotificationPermissionHelper.areNotificationsEnabled(this)) {
+                alarmHelp.setAlarm(1);
+            } else {
+                NotificationPermissionHelper.promptEnableNotifications(this);
+            }
 
         } else if (itemId == R.id.action_search) {
             // no-op
@@ -755,6 +760,18 @@ public class MainActivity extends AppCompatActivity implements
         else
         {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NotificationPermissionHelper.REQUEST_NOTIF_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                alarmHelp.setAlarm(1);
+            } else {
+                NotificationPermissionHelper.showNotificationSettingsDialog(this);
+            }
         }
     }
 
