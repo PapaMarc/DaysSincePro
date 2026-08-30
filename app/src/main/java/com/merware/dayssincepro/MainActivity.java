@@ -22,6 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -135,6 +136,11 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Draws a divider between the menu's <group> sections in the overflow popup.
+        if (menu instanceof MenuBuilder) {
+            ((MenuBuilder) menu).setGroupDividerEnabled(true);
+        }
 
         SearchManager searchManager = (SearchManager)
                 getSystemService(Context.SEARCH_SERVICE);

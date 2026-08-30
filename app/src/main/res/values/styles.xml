@@ -29,9 +29,6 @@
     </style>
 
     <style name="AppDropDownListView" parent="Widget.AppCompat.ListView.DropDown">
-        <item name="android:divider">@drawable/menu_divider</item>
-        <item name="android:dividerHeight">1dp</item>
-        <item name="android:showDividers">beginning|middle|end</item>
     </style>
 
     <!-- Tab titles as Title Case instead of the default ALL CAPS. -->
