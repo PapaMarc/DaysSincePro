@@ -324,6 +324,18 @@ public class MainActivity extends AppCompatActivity implements
     SinceLastFragment sinceLastFragment;
     DaysUntilFragment daysUntilFragment;
 
+    // package-private + static so it can be unit tested without an Activity/pager instance.
+    // Skips any tab fragment not yet instantiated by the pager (i.e. never visited/scrolled to).
+    static void refreshTabs(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
+                            PastFutureListFragment daysUntil) {
+        if (daysSince != null)
+            daysSince.listData();
+        if (sinceLast != null)
+            sinceLast.listData();
+        if (daysUntil != null)
+            daysUntil.listData();
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -579,9 +591,8 @@ public class MainActivity extends AppCompatActivity implements
                                 showToast(getString(R.string.msg_since));
                         }
 
-                        daysSinceFragment.listData();
-                        sinceLastFragment.listData();
-                        daysUntilFragment.listData();
+                        // tabs not yet visited/instantiated by the pager have a null fragment reference
+                        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
 
                         chosenID = data.getLongExtra("catId", 0);
 
@@ -663,14 +674,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         setTitle(text);
                         // must do it here
-                        if (daysSinceFragment != null)
-                            daysSinceFragment.listData();
-
-                        if (sinceLastFragment != null)
-                            sinceLastFragment.listData();
-
-                        if (daysUntilFragment != null)
-                            daysUntilFragment.listData();
+                        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
 
                         break;
                     case Activity.RESULT_CANCELED:
