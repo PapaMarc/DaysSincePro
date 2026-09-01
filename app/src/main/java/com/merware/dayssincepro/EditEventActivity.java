@@ -391,64 +391,94 @@ public class EditEventActivity extends AppCompatActivity {
 
     private OnClickListener endDateDialogListener = new OnClickListener() {
         public void onClick(View v) {
-            long initial;
-
-            if (mEndMonth == 0 && mEndDay == 0 && mEndYear == 0) {
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DAY_OF_MONTH, mDay);
-                cal.set(Calendar.MONTH, mMonth);
-                cal.set(Calendar.YEAR, mYear);
-
-                switch (iRecur) {
-                    case 0: // one time; use today
-                        cal = Calendar.getInstance();
-                        break;
-                    case 7: // weekly
-                        cal.add(Calendar.DAY_OF_MONTH, 7);
-                        break;
-                    case 14: // biweekly
-                        cal.add(Calendar.DAY_OF_MONTH, 14);
-                        break;
-                    case 30:
-                        cal.add(Calendar.DAY_OF_MONTH, 30);
-                        break;
-                    case 90: // quarter
-                        cal.add(Calendar.MONTH, 3);
-                        break;
-                    case 180: // semi annually
-                        cal.add(Calendar.MONTH, 6);
-                        break;
-                    case 365:
-                        cal.add(Calendar.YEAR, 1);
-                        break;
-                    default:
-                }
-
-                initial = DatePickerSupport.utcMillis(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-            } else {
-                initial = DatePickerSupport.utcMillis(mEndYear, mEndMonth, mEndDay);
-            }
-
-            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
-            picker.addOnPositiveButtonClickListener(selection -> {
-                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
-                mEndYear = cal.get(Calendar.YEAR);
-                mEndMonth = cal.get(Calendar.MONTH);
-                mEndDay = cal.get(Calendar.DAY_OF_MONTH);
-
-                SimpleDate eventDate = new SimpleDate(mYear, mMonth, mDay);
-                SimpleDate endDate = new SimpleDate(mEndYear, mEndMonth, mEndDay);
-
-                if (endDate.getDate().before(eventDate.getDate())) {
-                    showToast("End date should not be earlier than the Date");
-                } else {
-                    updateDisplay();
-                    showEndDateFields(true);
-                }
-            });
-            picker.show(getSupportFragmentManager(), "endDatePicker");
+            openEndDatePicker(false);
         }
     };
+
+    private void openEndDatePicker(boolean fromEndDayCheckbox) {
+        long initial;
+
+        if (mEndMonth == 0 && mEndDay == 0 && mEndYear == 0) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_MONTH, mDay);
+            cal.set(Calendar.MONTH, mMonth);
+            cal.set(Calendar.YEAR, mYear);
+
+            switch (iRecur) {
+                case 0: // one time; use today
+                    cal = Calendar.getInstance();
+                    break;
+                case 7: // weekly
+                    cal.add(Calendar.DAY_OF_MONTH, 7);
+                    break;
+                case 14: // biweekly
+                    cal.add(Calendar.DAY_OF_MONTH, 14);
+                    break;
+                case 30:
+                    cal.add(Calendar.DAY_OF_MONTH, 30);
+                    break;
+                case 90: // quarter
+                    cal.add(Calendar.MONTH, 3);
+                    break;
+                case 180: // semi annually
+                    cal.add(Calendar.MONTH, 6);
+                    break;
+                case 365:
+                    cal.add(Calendar.YEAR, 1);
+                    break;
+                default:
+            }
+
+            initial = DatePickerSupport.utcMillis(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        } else {
+            initial = DatePickerSupport.utcMillis(mEndYear, mEndMonth, mEndDay);
+        }
+
+        MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+        picker.addOnPositiveButtonClickListener(selection -> {
+            Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+            mEndYear = cal.get(Calendar.YEAR);
+            mEndMonth = cal.get(Calendar.MONTH);
+            mEndDay = cal.get(Calendar.DAY_OF_MONTH);
+
+            SimpleDate eventDate = new SimpleDate(mYear, mMonth, mDay);
+            SimpleDate endDate = new SimpleDate(mEndYear, mEndMonth, mEndDay);
+
+            if (endDate.getDate().before(eventDate.getDate())) {
+                showToast("End date should not be earlier than the Date");
+                if (fromEndDayCheckbox) {
+                    cbEndDay.setChecked(false);
+                    mEndYear = 0;
+                    mEndMonth = 0;
+                    mEndDay = 0;
+                    showEndDateFields(false);
+                }
+            } else {
+                cbEndDay.setChecked(true);
+                updateDisplay();
+                showEndDateFields(true);
+            }
+        });
+
+        if (fromEndDayCheckbox) {
+            picker.addOnNegativeButtonClickListener(view -> {
+                cbEndDay.setChecked(false);
+                mEndYear = 0;
+                mEndMonth = 0;
+                mEndDay = 0;
+                showEndDateFields(false);
+            });
+            picker.addOnCancelListener(dialog -> {
+                cbEndDay.setChecked(false);
+                mEndYear = 0;
+                mEndMonth = 0;
+                mEndDay = 0;
+                showEndDateFields(false);
+            });
+        }
+
+        picker.show(getSupportFragmentManager(), "endDatePicker");
+    }
 
     private OnClickListener timeDialogListener = new OnClickListener() {
 
@@ -753,10 +783,13 @@ public class EditEventActivity extends AppCompatActivity {
         @Override
         public void onClick(View arg0) {
             if (cbEndDay.isChecked()) {
-                updateDisplay();
-                showEndDateFields(true);
+                showEndDateFields(false);
+                openEndDatePicker(true);
             }
             else {
+                mEndYear = 0;
+                mEndMonth = 0;
+                mEndDay = 0;
                 showEndDateFields(false);
             }
         }

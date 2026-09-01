@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="@string/end_day" />
+                    android:text="@string/choose_day" />
             </RelativeLayout>
 
             <RelativeLayout
