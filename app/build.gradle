@@ -12,8 +12,8 @@ android {
         applicationId "com.MerWare.DaysSincePro"
         minSdk 30
         targetSdk 36
-        versionCode 48
-        versionName "3.5.11.48"
+        versionCode 49
+        versionName "3.5.12.48"
     }
 
     signingConfigs {
