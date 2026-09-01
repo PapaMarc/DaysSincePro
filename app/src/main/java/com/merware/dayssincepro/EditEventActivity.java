@@ -199,21 +199,24 @@ public class EditEventActivity extends Activity {
                 case 7: // weekly
                     recurSpinner.setSelection(1);
                     break;
-                case 30:
+                case 14: // biweekly
                     recurSpinner.setSelection(2);
                     break;
-                case 90: // quarter
+                case 30:
                     recurSpinner.setSelection(3);
                     break;
-                case 180: // semi annually
+                case 90: // quarter
                     recurSpinner.setSelection(4);
                     break;
-                case 365:
+                case 180: // semi annually
                     recurSpinner.setSelection(5);
+                    break;
+                case 365:
+                    recurSpinner.setSelection(6);
                     break;
                 default:
                     selectCount--; // anti effect
-                    recurSpinner.setSelection(6);
+                    recurSpinner.setSelection(7);
             }
 
             eventID = intent.getLongExtra("id", 0);
@@ -830,18 +833,21 @@ public class EditEventActivity extends Activity {
                     setRecurText("7");
                     break;
                 case 2:
-                    setRecurText("30");
+                    setRecurText("14");
                     break;
                 case 3:
-                    setRecurText("90");
+                    setRecurText("30");
                     break;
                 case 4:
-                    setRecurText("180");
+                    setRecurText("90");
                     break;
                 case 5:
-                    setRecurText("365");
+                    setRecurText("180");
                     break;
                 case 6:
+                    setRecurText("365");
+                    break;
+                case 7:
                     if (selectCount > 0)
                         recurCallback();
 

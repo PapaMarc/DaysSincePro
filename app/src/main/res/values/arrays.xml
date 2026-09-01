@@ -95,10 +95,11 @@
     <string-array name="recur">
         <item>One Time Event</item>
         <item>Weekly</item>
+        <item>BiWeekly</item>
         <item>Monthly</item>
         <item>Quarterly</item>
         <item>Semi-annually</item>
-        <item>Yearly</item>
+        <item>Annual</item>
         <item>Number of Days</item>
     </string-array>
 
