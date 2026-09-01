@@ -26,29 +26,6 @@ public class MyEventAdapter extends SimpleCursorAdapter {
     SharedPreferences preferences;
     int themeOption;
 
-    // Advances cal by one recurrence interval. Standard intervals use calendar
-    // fields (month/year) instead of a fixed day count, so leap years don't
-    // cause the recurring date to drift away from its original month/day.
-    private static void addRecurrenceInterval(Calendar cal, long nEstDays) {
-        switch ((int) nEstDays) {
-            case 30:
-                cal.add(Calendar.MONTH, 1);
-                break;
-            case 90:
-                cal.add(Calendar.MONTH, 3);
-                break;
-            case 180:
-                cal.add(Calendar.MONTH, 6);
-                break;
-            case 365:
-                cal.add(Calendar.YEAR, 1);
-                break;
-            default:
-                cal.add(Calendar.DAY_OF_YEAR, (int) nEstDays);
-                break;
-        }
-    }
-
     public MyEventAdapter(Context context, int layout, Cursor c, String[] from,
                           int[] to, String systemDateFormat, TabKind kind) {
         super(context, layout, c, from, to);
@@ -102,25 +79,10 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         Calendar now = Calendar.getInstance();
 
         if (nEstDays != 0) {
-            // Calculate the next scheduled recurrence date after today
-            Calendar recurCal = Calendar.getInstance();
-            recurCal.setTime(sd.getDate());
-            Calendar nowCal = Calendar.getInstance();
-            nowCal.setTime(now.getTime());
-
-            // If the event date is in the future, use it
-            if (recurCal.after(nowCal)) {
-                nextDate = new SimpleDate(recurCal.getTime());
-            } else {
-                // Find the last occurrence on/before today, and the next occurrence after today
-                Calendar lastCal = (Calendar) recurCal.clone();
-                while (!recurCal.after(nowCal)) {
-                    lastCal = (Calendar) recurCal.clone();
-                    addRecurrenceInterval(recurCal, nEstDays);
-                }
-                nextDate = new SimpleDate(recurCal.getTime());
-                lastDate = new SimpleDate(lastCal.getTime());
-            }
+            RecurrenceCycle.Occurrences occurrences =
+                    RecurrenceCycle.computeOccurrences(sd, nEstDays, now);
+            lastDate = occurrences.lastOccurrence;
+            nextDate = occurrences.nextOccurrence;
             dsc2 = new DaysSinceCalculations(nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }

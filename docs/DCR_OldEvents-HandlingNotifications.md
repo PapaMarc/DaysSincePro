@@ -50,7 +50,11 @@ So at the point the notification feature was last reworked (`f891895e`), the cyc
 
 ## 3. Proposed Fix (No Schema Change Required) — **recommended for front-of-queue prioritization**
 
-This is a pure bug fix with no schema impact, and should be prioritized at the front of the overall implementation plan — the same way [DCR_schemaChangesAndProperMigration.md §3](DCR_schemaChangesAndProperMigration.md#3-critical-pre-existing-risk-destructive-onupgrade-fallback) (the destructive `onUpgrade` fallback) and [DCR_evolveToMaterialDatePicker.md §7.3](DCR_evolveToMaterialDatePicker.md#73-materialdatepickers-practical-bounds-need-empirical-verification--floor-is-the-adjustable-lever-not-the-picker-choice) (year-grid range investigation) are both flagged as early-priority items in their respective documents. All three are cases where later feature work depends on (or is safer after) resolving them first.
+**Status: IMPLEMENTED (Phase 0, 2026-09-01).**
+
+This was a pure bug fix with no schema impact, prioritized at the front of the overall implementation plan alongside [DCR_schemaChangesAndProperMigration.md §3](DCR_schemaChangesAndProperMigration.md#3-critical-pre-existing-risk-destructive-onupgrade-fallback) (the destructive `onUpgrade` fallback) — see [DCR_090126PhasedImpl.md §2](DCR_090126PhasedImpl.md#2-phase-0--standalone-bug-fixes--risk-reduction-no-schema-change-highest-priority) for the completed Phase 0 record.
+
+**Implemented as:** a new shared `RecurrenceCycle` class (`computeOccurrences()`) used by both `MyEventAdapter` and `OnAlarmReceive`, plus a package-visible, unit-tested `OnAlarmReceive.computeUrgency(daysSinceLastOccurrence, nEstDays, percent)` pure decision function and `OnAlarmReceive.currentCycleCalculations(usDate, nEstDays)` helper. Test coverage: `RecurrenceCycleTest`, `OnAlarmReceiveUrgencyTest`.
 
 1. Extract `MyEventAdapter.addRecurrenceInterval()` (or an equivalent "compute last/next occurrence for a recurring event" helper) into a shared, statically-testable location (e.g. a small utility class, following the existing project convention of extracting testable static helpers — see repo memory notes on `MainActivity.refreshTabs()`/`dispatchSearch()`).
 2. Update `OnAlarmReceive`'s recurring-event branch to compute its red/yellow/green urgency thresholds relative to the _current cycle's_ occurrence (i.e., days since `lastDate`, or days until `nextDate`), matching what the list view already displays — rather than relative to the event's original stored `date`.

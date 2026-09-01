@@ -62,7 +62,20 @@ public class DaysSinceCalculations {
     String s_was;
 
     // m is for minutes, M is for month
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    // Explicitly proleptic Gregorian (no Julian/Gregorian cutover): java.text.SimpleDateFormat
+    // parses via a default GregorianCalendar whose implicit cutover (Oct 15, 1582) otherwise
+    // interprets dates before that as Julian, silently mixing calendar systems in day-count
+    // math for pre-1582 dates. Verified that GregorianCalendar.setGregorianChange() only has
+    // an effect when applied to the calendar used for field<->millis conversion at parse time
+    // (here) - applying it inside daysBetween()'s own Calendar objects (which only ever call
+    // setTime()/getTimeInMillis(), never re-deriving fields) has no effect at all.
+    SimpleDateFormat formatter = newProlepticGregorianFormatter("yyyy-MM-dd");
+
+    private static SimpleDateFormat newProlepticGregorianFormatter(String pattern) {
+        SimpleDateFormat fmt = new SimpleDateFormat(pattern);
+        ((GregorianCalendar) fmt.getCalendar()).setGregorianChange(new Date(Long.MIN_VALUE));
+        return fmt;
+    }
 
     boolean isFrench = false;
 

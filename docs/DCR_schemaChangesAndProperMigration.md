@@ -66,7 +66,11 @@ Current CSV schema ([CsvExporter.java](../app/src/main/java/com/merware/dayssinc
 
 ## 3. Critical Pre-Existing Risk: Destructive `onUpgrade` Fallback
 
-**This must be addressed before adding schema version 4**, independent of what the new column(s) turn out to be.
+**Status: IMPLEMENTED (Phase 0, 2026-09-01).**
+
+**This was addressed before adding schema version 4**, independent of what the new column(s) turn out to be. See [DCR_090126PhasedImpl.md §2](DCR_090126PhasedImpl.md#2-phase-0--standalone-bug-fixes--risk-reduction-no-schema-change-highest-priority) for the completed Phase 0 record.
+
+**Implemented as:** `DatabaseHelper.onUpgrade()` now delegates to a pure, unit-tested `getMigrationStatements(oldVersion, newVersion)` function that chains per-version-step SQL (currently 1→2, 2→3) rather than matching `(oldVersion, newVersion)` pairs combinatorially. An unrecognized transition now throws `IllegalStateException` instead of silently dropping all tables. Test coverage: `DatabaseMigrationTest` (pure-function assertions plus real-SQLite-backed migration execution via `org.xerial:sqlite-jdbc`, verifying v1→v3 and v2→v3 preserve all existing rows and reach the correct final schema).
 
 [DatabaseHelper.onUpgrade()](../app/src/main/java/com/merware/dayssincepro/DatabaseHelper.java#L70-L91) currently handles only three explicit transitions:
 

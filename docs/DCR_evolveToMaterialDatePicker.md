@@ -67,22 +67,32 @@ implementation 'com.google.android.material:material:1.12.0'
 
 ## 5. Julian → Gregorian Calendar Cutover Fix
 
+**Status: IMPLEMENTED (Phase 0, 2026-09-01).**
+
 Extending the supported date range back past **October 15, 1582** surfaces a latent correctness issue independent of the picker UI itself.
 
-**Issue:** [DaysSinceCalculations.daysBetween()](../app/src/main/java/com/merware/dayssincepro/DaysSinceCalculations.java#L233-L246) constructs `new GregorianCalendar()` with default settings. `java.util.GregorianCalendar` has an implicit cutover date (`getGregorianChange()`, default Oct 15, 1582) before which it interprets dates using the **Julian** calendar, not proleptic Gregorian. Any day-count math spanning that boundary is therefore computed using two different calendar systems.
+**Issue:** `java.util.GregorianCalendar` has an implicit cutover date (`getGregorianChange()`, default Oct 15, 1582) before which it interprets dates using the **Julian** calendar, not proleptic Gregorian. Any day-count math spanning that boundary would therefore be computed using two different calendar systems.
 
-**Fix:**
+**Correction to this document's original investigation:** the fix was initially assumed to belong inside [DaysSinceCalculations.daysBetween()](../app/src/main/java/com/merware/dayssincepro/DaysSinceCalculations.java), by calling `setGregorianChange()` on its two `GregorianCalendar` instances. Empirical verification (a throwaway JDK experiment) during implementation showed this was **incorrect and would have been a no-op**: `daysBetween()`'s calendars only ever call `setTime()`/`getTimeInMillis()` (raw millisecond arithmetic), and the cutover only affects `Calendar`'s field↔millis _conversion_ — it has zero effect on a calendar whose fields are never read. The actual Julian/Gregorian ambiguity is introduced earlier, at the point an ISO date **string** is parsed into a `Date` (i.e. `SimpleDateFormat.parse()`), since that internally converts calendar fields to millis using its own default-cutover `Calendar`.
+
+**Actual fix implemented:** [DaysSinceCalculations.java](../app/src/main/java/com/merware/dayssincepro/DaysSinceCalculations.java)'s `yyyy-MM-dd` parsing `formatter` field is now constructed via a small factory that configures its underlying calendar for proleptic Gregorian before any parsing happens:
 
 ```java
-gc1.setGregorianChange(new Date(Long.MIN_VALUE));
-gc2.setGregorianChange(new Date(Long.MIN_VALUE));
+SimpleDateFormat formatter = newProlepticGregorianFormatter("yyyy-MM-dd");
+
+private static SimpleDateFormat newProlepticGregorianFormatter(String pattern) {
+    SimpleDateFormat fmt = new SimpleDateFormat(pattern);
+    ((GregorianCalendar) fmt.getCalendar()).setGregorianChange(new Date(Long.MIN_VALUE));
+    return fmt;
+}
 ```
 
-applied to both `GregorianCalendar` instances in `daysBetween()`, forcing proleptic Gregorian for all dates.
+Verified empirically that this location — not `daysBetween()` — is where the fix takes effect, and that it doesn't alter behavior for ordinary post-1582 dates.
 
-- **Effort:** Trivial — two lines in one method. No other `Calendar`/`GregorianCalendar` usage in the codebase performs cross-date arithmetic (other usages are "what is today's date" lookups, unaffected by the cutover).
-- **Risk:** Low. `setGregorianChange` is a long-stable, non-deprecated JDK API with identical behavior across Android API levels. The only real behavior change is for stored events dated before 1582 (if any exist), whose computed day-count would shift by the historical Julian/Gregorian drift (~10–14 days depending on century) — a correctness _improvement_, but worth a dedicated regression test to confirm intentionally.
-- **Test to add:** A `daysBetween()` unit test asserting correct day-count across a date pair straddling 1582, following the existing pattern in [DaysUntilTest.java](../app/src/test/java/com/merware/dayssincepro/DaysUntilTest.java).
+- **Scope note:** this fixes the dominant, direct string-parsing path (`new DaysSinceCalculations(String)`, used throughout the app for day-count math from raw DB date strings). It intentionally does **not** touch [SimpleDate.java](../app/src/main/java/com/merware/dayssincepro/SimpleDate.java)'s own separate `formatter`/field-extraction `SimpleDateFormat`s (used for display/UI formatting), since a full audit of that class's multiple format paths remains explicitly open investigation work in [§7.2](#72-simpledates-multiple-format-paths-must-agree--open-investigation-not-yet-resolved) (Phase 1). Full correctness for `SimpleDate`-originated pre-1582 dates (e.g. display formatting) is tracked there, not claimed as resolved by this fix.
+- **Effort:** Small, contained to one field's construction in one class.
+- **Risk:** Low. `setGregorianChange` is a long-stable, non-deprecated JDK API with identical behavior across Android API levels. The only real behavior change is for stored events dated before 1582 (if any exist), whose computed day-count would shift by the historical Julian/Gregorian drift — a correctness _improvement_.
+- **Tests added:** [DaysSinceCalculationsCutoverTest.java](../app/src/test/java/com/merware/dayssincepro/DaysSinceCalculationsCutoverTest.java) — asserts correct proleptic-Gregorian day-count using a clean, well-known Julian/Gregorian divergence (year 1500: a Julian leap year, not a proleptic-Gregorian one), plus sanity checks that ordinary modern-date math is unaffected.
 
 ---
 

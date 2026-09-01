@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "alex_db";
@@ -68,35 +71,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        // history table new for version 2
-        String sql3 = "CREATE TABLE IF NOT EXISTS history ("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "eventId INTEGER, catID INTEGER, date DATE, onTime INTEGER, note TEXT, UNIQUE(eventId, date))";
-
-        String sql4 = "ALTER TABLE event ADD COLUMN end_date DATE";
-
-        if (oldVersion == 1 && newVersion == 2)
-        {
-            db.execSQL(sql3);
+        List<String> statements = getMigrationStatements(oldVersion, newVersion);
+        if (statements == null) {
+            // No known incremental migration path for this version transition. The
+            // previous behavior here silently DROPped and recreated every table (category,
+            // event, history) for any unmatched (oldVersion, newVersion) pair, which meant
+            // any user on an older version than expected would lose all their data with no
+            // warning. Refuse loudly instead - a crash surfaces the problem for a fix,
+            // rather than silently destroying user data.
+            throw new IllegalStateException("No migration path from DB version "
+                    + oldVersion + " to " + newVersion);
         }
-        if (oldVersion == 1 && newVersion == 3)
-        {
-            db.execSQL(sql3);
-            db.execSQL(sql4);
+        for (String sql : statements) {
+            db.execSQL(sql);
         }
-        else if (oldVersion == 2 && newVersion == 3)
-        {
-            db.execSQL(sql4);
-        }
-        else {
+    }
 
-            db.execSQL("DROP TABLE IF EXISTS category");
-            db.execSQL("DROP TABLE IF EXISTS event");
-            db.execSQL("DROP TABLE IF EXISTS history");
+    // history table, new for version 2.
+    static final String CREATE_HISTORY_TABLE_SQL = "CREATE TABLE IF NOT EXISTS history ("
+            + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "eventId INTEGER, catID INTEGER, date DATE, onTime INTEGER, note TEXT, UNIQUE(eventId, date))";
 
-            onCreate(db);
+    // event.end_date column, new for version 3.
+    static final String ADD_END_DATE_COLUMN_SQL = "ALTER TABLE event ADD COLUMN end_date DATE";
+
+    /**
+     * Returns the ordered SQL statements needed to migrate a database from oldVersion to
+     * newVersion, by applying each intermediate version step in sequence - rather than
+     * matching specific (oldVersion, newVersion) pairs combinatorially, which silently
+     * fails to cover every possible starting version as new schema versions are added.
+     * Pure function (no Android types), so it's unit-testable on the plain JVM. Returns
+     * null if any step in the chain has no known migration (an unsupported/invalid
+     * transition), so the caller can refuse rather than fall back to a destructive rebuild.
+     */
+    static List<String> getMigrationStatements(int oldVersion, int newVersion) {
+        if (oldVersion < 1 || newVersion < oldVersion) {
+            return null;
         }
+        List<String> statements = new ArrayList<>();
+        for (int v = oldVersion; v < newVersion; v++) {
+            List<String> step = getStepStatements(v, v + 1);
+            if (step == null) {
+                return null;
+            }
+            statements.addAll(step);
+        }
+        return statements;
+    }
+
+    private static List<String> getStepStatements(int fromVersion, int toVersion) {
+        if (fromVersion == 1 && toVersion == 2) {
+            List<String> step = new ArrayList<>();
+            step.add(CREATE_HISTORY_TABLE_SQL);
+            return step;
+        }
+        if (fromVersion == 2 && toVersion == 3) {
+            List<String> step = new ArrayList<>();
+            step.add(ADD_END_DATE_COLUMN_SQL);
+            return step;
+        }
+        return null;
     }
 
 }

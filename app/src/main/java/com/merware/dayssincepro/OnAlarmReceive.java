@@ -50,6 +50,47 @@ public class OnAlarmReceive extends BroadcastReceiver {
         return percent;
     }
 
+    /** Notification urgency for a single event, evaluated relative to its current recurrence cycle. */
+    enum Urgency { NONE, GREEN, YELLOW, RED }
+
+    /**
+     * Determines notification urgency from days elapsed since an event's most recent
+     * occurrence, relative to its recurrence interval. Pure function (no Android/DB
+     * dependencies), extracted so cycle-aware urgency can be verified without a real
+     * alarm/notification pipeline - see OnAlarmReceiveUrgencyTest.
+     */
+    static Urgency computeUrgency(long daysSinceLastOccurrence, long nEstDays, double percent) {
+        if (nEstDays == 0) {
+            return daysSinceLastOccurrence == 0 ? Urgency.GREEN : Urgency.NONE;
+        }
+        if (daysSinceLastOccurrence == 0) {
+            return Urgency.GREEN;
+        }
+        if (daysSinceLastOccurrence > nEstDays) {
+            return Urgency.RED;
+        }
+        if (daysSinceLastOccurrence > nEstDays * percent) {
+            long daysTill = (long) (daysSinceLastOccurrence - (nEstDays * percent));
+            if (daysTill <= 7) {
+                return Urgency.YELLOW;
+            }
+        }
+        return Urgency.NONE;
+    }
+
+    /**
+     * Builds day-count calculations relative to the event's most recent recurrence (its
+     * "last occurrence"), not its original stored date - this is the fix for the
+     * perpetual-overdue bug, where a years-old recurring event was always treated as
+     * overdue relative to when it was first created, rather than its current cycle.
+     */
+    static DaysSinceCalculations currentCycleCalculations(String usDate, long nEstDays) {
+        SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
+        RecurrenceCycle.Occurrences occurrences =
+                RecurrenceCycle.computeOccurrences(sd, nEstDays, Calendar.getInstance());
+        return new DaysSinceCalculations(occurrences.lastOccurrence);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -121,38 +162,29 @@ public class OnAlarmReceive extends BroadcastReceiver {
             event = cursor.getString(2);
             usDate = cursor.getString(3); // date
             nEstDays = cursor.getLong(4); // recur
-            dsc1 = new DaysSinceCalculations(usDate);
+            dsc1 = currentCycleCalculations(usDate, nEstDays);
 
-            if (nEstDays == 0 && dsc1.getDaysSinceEvent() == 0) {
-                // one time today
-                createNotification(id, event, 3, "");
-            }
-
-            if (nEstDays != 0) {
-
-                if (dsc1.getDaysSinceEvent() == 0) {
-                    // green
-                    String todayExplain = event + " "
-                            + context.getString(R.string.repeats_every) + " "
-                            + nEstDays + " " + context.getString(R.string.days);
-
-                    createNotification(id, event, 3, todayExplain);
-                } else if (dsc1.getDaysSinceEvent() > nEstDays) {
-                    // red - style 1 is number of days - for shortest.
-                    createNotification(id, event, 1, dsc1.getExplain(true, 1));
-
-                } else if (dsc1.getDaysSinceEvent() > nEstDays * percent) {
-                    // yellow
-
-                    long daysTill = (long) (dsc1.getDaysSinceEvent() - (nEstDays * percent));
-
-                    // only send notification if less than a week left
-
-                    if (daysTill <= 7) {
-
-                        createNotification(id, event, 2, dsc1.getExplain(true, 1));
+            switch (computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent)) {
+                case GREEN:
+                    if (nEstDays == 0) {
+                        createNotification(id, event, 3, "");
+                    } else {
+                        String todayExplain = event + " "
+                                + context.getString(R.string.repeats_every) + " "
+                                + nEstDays + " " + context.getString(R.string.days);
+                        createNotification(id, event, 3, todayExplain);
                     }
-                }
+                    break;
+                case RED:
+                    // style 1 is number of days - for shortest.
+                    createNotification(id, event, 1, dsc1.getExplain(true, 1));
+                    break;
+                case YELLOW:
+                    createNotification(id, event, 2, dsc1.getExplain(true, 1));
+                    break;
+                case NONE:
+                default:
+                    break;
             }
 
             return;
@@ -175,7 +207,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
             event = cursor.getString(2);
             usDate = cursor.getString(3); // date
             nEstDays = cursor.getLong(4); // recur
-            dsc1 = new DaysSinceCalculations(usDate);
+            dsc1 = currentCycleCalculations(usDate, nEstDays);
 
             // cross check with preference.
             boolean letItGo = false;
@@ -204,41 +236,29 @@ public class OnAlarmReceive extends BroadcastReceiver {
                 continue;
             }
 
-            if (nEstDays == 0 && dsc1.getDaysSinceEvent() == 0) {
-                // one time today
-                createNotification(id, event, 3, "");
-                notificationCount++;
-            }
-
-
-            if (nEstDays != 0) {
-
-                if (dsc1.getDaysSinceEvent() == 0) {
-                    // green
-                    String todayExplain = event + " "
-                            + context.getString(R.string.repeats_every) + " "
-                            + nEstDays + " " + context.getString(R.string.days);
-
-                    createNotification(id, event, 3, todayExplain);
+            switch (computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent)) {
+                case GREEN:
+                    if (nEstDays == 0) {
+                        createNotification(id, event, 3, "");
+                    } else {
+                        String todayExplain = event + " "
+                                + context.getString(R.string.repeats_every) + " "
+                                + nEstDays + " " + context.getString(R.string.days);
+                        createNotification(id, event, 3, todayExplain);
+                    }
                     notificationCount++;
-                } else if (dsc1.getDaysSinceEvent() > nEstDays) {
-                    // red - style 1 is number of days - for shortest.
+                    break;
+                case RED:
                     createNotification(id, event, 1, dsc1.getExplain(true, 1));
                     notificationCount++;
-
-                } else if (dsc1.getDaysSinceEvent() > nEstDays * percent) {
-                    // yellow
-
-                    long daysTill = (long) (dsc1.getDaysSinceEvent() - (nEstDays * percent));
-
-                    // only send notification if less than a week left
-
-                    if (daysTill <= 7) {
-
-                        createNotification(id, event, 2, dsc1.getExplain(true, 1));
-                        notificationCount++;
-                    }
-                }
+                    break;
+                case YELLOW:
+                    createNotification(id, event, 2, dsc1.getExplain(true, 1));
+                    notificationCount++;
+                    break;
+                case NONE:
+                default:
+                    break;
             }
             cursor.moveToNext();
         }
