@@ -48,14 +48,25 @@ No user-visible feature work; pure correctness/safety fixes. Shipped ahead of ev
 
 ## 3. Phase 1 — Investigation Spikes (gate Phase 2's scope)
 
-Two open investigation items from DCR-A must resolve before the picker UI implementation locks in its final parameters. No user-facing changes in this phase.
+**Status: ✅ COMPLETE (2026-09-01).**
 
-| Item                                                                                                 | Source                                                                                                                                                                   | Resolves                                                                                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Audit all `SimpleDate` format strings for correct behavior with years < 1000                         | [DCR-A §7.2](DCR_evolveToMaterialDatePicker.md#72-simpledates-multiple-format-paths-must-agree--open-investigation-not-yet-resolved)                                     | Confirms (or fixes) date parsing/formatting correctness ahead of allowing such dates to be entered.                                                                                                        |
-| Empirically verify `MaterialDatePicker`'s year-grid behavior at a ~2000-year span down to 0001-01-01 | [DCR-A §7.3](DCR_evolveToMaterialDatePicker.md#73-materialdatepickers-practical-bounds-need-empirical-verification--floor-is-the-adjustable-lever-not-the-picker-choice) | Confirms whether the 0001-01-01 floor (§7.4) holds as-is, or must be raised to a value where the year-grid performs acceptably — this is a **hard gate** on Phase 2's `CalendarConstraints` configuration. |
+Two open investigation items from DCR-A must resolve before the picker UI implementation locks in its final parameters. The `SimpleDate` audit is pure code/test investigation with no user-facing footprint; the `MaterialDatePicker` item cannot be observed without actually instantiating the widget, so it used a **throwaway spike** (Option A): a minimal, disposable harness (`SpikeMaterialDatePickerActivity`, a temporary debug `Activity` launched via `adb`, observed on a real emulator via screenshots and UI dumps, then fully removed). The permanent, production wiring across all 5 call sites still happens in Phase 2 — the spike existed solely to answer the "does this even work at this range" question first.
 
-**Output of this phase:** a confirmed final minimum-date floor value (target: 0001-01-01, per [DCR-A §7.4](DCR_evolveToMaterialDatePicker.md#74-minimum-date-floor-01010001), subject to adjustment if the year-grid investigation says otherwise) and a confirmed-correct `SimpleDate` formatting behavior for that range.
+| Item                                                                                                                                                                                   | Source                                                                                                                                                                   | Resolves                                                                                                                                                                                                   | Status                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Audit all `SimpleDate` format strings for correct behavior with years < 1000                                                                                                           | [DCR-A §7.2](DCR_evolveToMaterialDatePicker.md#72-simpledates-multiple-format-paths-must-agree--open-investigation-not-yet-resolved)                                     | Confirms (or fixes) date parsing/formatting correctness ahead of allowing such dates to be entered.                                                                                                        | ✅ Fixed                  |
+| Empirically verify `MaterialDatePicker`'s year-grid behavior at a ~2000-year span down to 0001-01-01, via a throwaway spike (Option A) — not part of the permanent Phase 2 integration | [DCR-A §7.3](DCR_evolveToMaterialDatePicker.md#73-materialdatepickers-practical-bounds-need-empirical-verification--floor-is-the-adjustable-lever-not-the-picker-choice) | Confirms whether the 0001-01-01 floor (§7.4) holds as-is, or must be raised to a value where the year-grid performs acceptably — this is a **hard gate** on Phase 2's `CalendarConstraints` configuration. | ✅ Confirmed, floor holds |
+
+**Implementation notes:**
+
+- New shared `DateFormats.prolepticGregorian(pattern)` factory used by both `DaysSinceCalculations` (Phase 0) and now `SimpleDate` (all format/parse paths), closing a cross-class inconsistency the audit found between the two.
+- The spike confirmed the year-grid renders correctly at the exact `0001-01-01` boundary (starts cleanly at `1`, no glitch/negative year/crash) and at mid-range navigation (tapping a distant year cell), with correct weekday/calendar math (Jan 1, year 1 proleptic Gregorian correctly renders as a Saturday) and correctly disabled "previous" navigation at the floor.
+- **New Phase 2 prerequisite surfaced by the spike:** `MaterialDatePicker` requires a `Theme.MaterialComponents` (or descendant) host theme; the app's actual theme (`Theme.Holo.Light` / `Theme.AppCompat.*`) does not satisfy this. Phase 2 must apply a `Theme.MaterialComponents` overlay to the 3 activities hosting date pickers (recommended, lower-risk than an app-wide theme migration). See [DCR-A §8](DCR_evolveToMaterialDatePicker.md#8-resolved-decisions--remaining-open-items).
+- All spike artifacts (throwaway `Activity`, manifest entry, theme override, screenshots, UI dumps) were removed after the observation was recorded; only the material version bump (already planned for Phase 2, done early to unblock the spike) and the `SimpleDate`/`DateFormats` fix remain.
+
+**Tests added:** `SimpleDateProlepticGregorianTest` (round-trip for years below 1000, unpadded-input parsing, and cross-class agreement with `DaysSinceCalculations`). Full test suite and `assembleDebug` re-verified clean after removing the spike.
+
+**Output of this phase:** confirmed final minimum-date floor: **0001-01-01** (no adjustment needed), and confirmed-correct `SimpleDate` formatting behavior for that range.
 
 ---
 
@@ -63,14 +74,15 @@ Two open investigation items from DCR-A must resolve before the picker UI implem
 
 Depends on: Phase 1's confirmed floor value; independent of Phases 3–4.
 
-1. Bump `com.google.android.material:material` from 1.12.0 to 1.14.0 ([DCR-A §4](DCR_evolveToMaterialDatePicker.md#4-material-components-library-version)).
-2. Replace all 5 `DatePickerDialog` call sites with `MaterialDatePicker`, sharing one common minimum-date constant ([DCR-A §2, §7.4](DCR_evolveToMaterialDatePicker.md#2-current-state--date-picker-call-sites)):
+1. Bump `com.google.android.material:material` from 1.12.0 to 1.14.0 ([DCR-A §4](DCR_evolveToMaterialDatePicker.md#4-material-components-library-version)) — **done early in Phase 1 to unblock the spike; carries forward, no further action needed.**
+2. **Apply a `Theme.MaterialComponents` theme overlay to the 3 activities hosting date pickers** (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`) — new prerequisite surfaced by the Phase 1 spike; the app's current theme does not satisfy `MaterialDatePicker`'s theming requirement (see [DCR-A §8](DCR_evolveToMaterialDatePicker.md#8-resolved-decisions--remaining-open-items)).
+3. Replace all 5 `DatePickerDialog` call sites with `MaterialDatePicker`, sharing one common minimum-date constant ([DCR-A §2, §7.4](DCR_evolveToMaterialDatePicker.md#2-current-state--date-picker-call-sites)):
    - `DaysDiffActivity` (date A, date B)
    - `EditEventActivity` (start date, end date — preserving the recurrence-based end-date default-prefill logic, including the previously-missing `recur = 14` biweekly case per [DCR-A §7.5](DCR_evolveToMaterialDatePicker.md#75-preserve-editeventactivitys-end-date-default-prefill-logic))
    - `EditHistory` (history entry date)
-3. Route picker output through the existing `SimpleDate`/formatter classes rather than trusting picker-returned strings directly ([DCR-A §7.6](DCR_evolveToMaterialDatePicker.md#76-localedate-format-display--confirmed-no-open-questions)).
+4. Route picker output through the existing `SimpleDate`/formatter classes rather than trusting picker-returned strings directly ([DCR-A §7.6](DCR_evolveToMaterialDatePicker.md#76-localedate-format-display--confirmed-no-open-questions)).
 
-**Tests:** per [DCR-A §7.7](DCR_evolveToMaterialDatePicker.md#77-testing-scope-and-sequencing--confirmed-no-open-questions) — `SimpleDate` round-trip for years 1–999, recurrence-interval logic including `recur = 14`. (Julian/Gregorian cutover test already landed in Phase 0.)
+**Tests:** per [DCR-A §7.7](DCR_evolveToMaterialDatePicker.md#77-testing-scope-and-sequencing--confirmed-no-open-questions) — recurrence-interval logic including `recur = 14`. (`SimpleDate`/Julian-Gregorian cutover tests already landed in Phase 0/Phase 1.)
 
 ---
 

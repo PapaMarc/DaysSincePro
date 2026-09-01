@@ -113,17 +113,28 @@ This DCR covers:
 
 ### 7.1 Storage/parsing format is separate from the picker — and it's fragile
 
-[SimpleDate.java](../app/src/main/java/com/merware/dayssincepro/SimpleDate.java) and [DaysSinceCalculations.java](../app/src/main/java/com/merware/dayssincepro/DaysSinceCalculations.java#L65) use `SimpleDateFormat("yyyy-MM-dd")` for DB storage/parsing; CSV import/export ([CsvExporter.java](../app/src/main/java/com/merware/dayssincepro/CsvExporter.java#L142), [CsvImporter.java](../app/src/main/java/com/merware/dayssincepro/CsvImporter.java#L355)) use the same ISO pattern plus fallback patterns. The `"yyyy"` pattern token handles small years (e.g. `"0001-01-01"`) correctly in principle, but this has not been verified with a test and must be, independent of the picker UI change.
+**Status: fixed as part of Phase 0/Phase 1.** [SimpleDate.java](../app/src/main/java/com/merware/dayssincepro/SimpleDate.java) and [DaysSinceCalculations.java](../app/src/main/java/com/merware/dayssincepro/DaysSinceCalculations.java#L65) use `SimpleDateFormat("yyyy-MM-dd")` for DB storage/parsing; CSV import/export ([CsvExporter.java](../app/src/main/java/com/merware/dayssincepro/CsvExporter.java#L142), [CsvImporter.java](../app/src/main/java/com/merware/dayssincepro/CsvImporter.java#L355)) use the same ISO pattern plus fallback patterns. The `"yyyy"` pattern token handles small years (e.g. `"0001-01-01"`) correctly — verified via `SimpleDateProlepticGregorianTest`, including the unpadded `SimpleDate(int,int,int)` constructor path.
 
-### 7.2 `SimpleDate`'s multiple format paths must agree — **open investigation, not yet resolved**
+### 7.2 `SimpleDate`'s multiple format paths must agree — open investigation, not yet resolved
 
-`SimpleDate` contains several distinct `SimpleDateFormat` patterns for different date styles (US/EU/ISO, plus long-form display strings). All must consistently zero-pad/represent years below 1000 the same way. This has **not** been audited yet — it remains open investigation work: each format string in [SimpleDate.java](../app/src/main/java/com/merware/dayssincepro/SimpleDate.java) needs to be individually verified (e.g. via a quick unit test per pattern) to confirm it round-trips a year-45 or year-1 date correctly before the picker floor is relied upon. Treat as a required pre-requisite check, not an assumption.
+**Status: RESOLVED (Phase 1, 2026-09-01).**
+
+`SimpleDate` contains several distinct `SimpleDateFormat` patterns for different date styles (US/EU/ISO, plus long-form display strings). Audit completed: every one of them (`monthFormat`, `dayFormat`, `yearFormat`, `formatter`, plus the two per-call formatters built inside `getDate()`/`getDate2()`) has been reconfigured for proleptic Gregorian via a new shared [DateFormats.java](../app/src/main/java/com/merware/dayssincepro/DateFormats.java) factory — the same fix already applied to `DaysSinceCalculations` in Phase 0. This closes a cross-class inconsistency the audit uncovered: prior to this fix, `SimpleDate` still used the JDK's default Julian-before-1582 cutover even after `DaysSinceCalculations` had been fixed, meaning the same nominal date produced different day-counts depending on which class parsed it (`DaysSinceCalculations(String)` vs `DaysSinceCalculations(SimpleDate)`). Verified via `SimpleDateProlepticGregorianTest`, including a cross-class agreement test between the two classes.
 
 ### 7.3 `MaterialDatePicker`'s practical bounds need empirical verification — floor is the adjustable lever, not the picker choice
 
-`CalendarConstraints` accepts arbitrary `long` millis bounds via the API, but its internal year-grid/month-index implementation is designed around "reasonable" ranges (e.g. birthdates, a few decades to ~a century). A ~2000-year span (year 1 → present) is far outside typical usage and should be manually tested for any internal overflow, lag, or degraded scroll performance in the year-grid view.
+**Status: RESOLVED (Phase 1 empirical spike, 2026-09-01) — floor holds as-is, no adjustment needed.**
 
-**Decision on how to respond if this investigation turns up problems:** do not maintain a second hand-rolled picker code path (Option C) as a fallback — that trades a UX limitation for permanent code/maintenance overhead. Instead, if the year-grid proves impractical below some point (e.g. below year 1000), the response is to **raise the minimum-date floor itself** to whatever value empirically works well, and accept that adjusted floor as the real constraint, rather than solving it with more code. This keeps exactly one picker implementation in the app, permanently.
+`CalendarConstraints` accepts arbitrary `long` millis bounds via the API; empirically verified (Option A throwaway spike, per [DCR_090126PhasedImpl.md §3](DCR_090126PhasedImpl.md#3-phase-1--investigation-spikes-gate-phase-2s-scope), built and run on a real emulator, then discarded) that the year-grid handles a `CalendarConstraints.Builder().setStart(...)` bound at `0001-01-01` UTC correctly:
+
+- Builds and shows with no exception, for both an initial selection near the present and one at the exact floor.
+- The calendar month/day grid renders correctly at `Jan 1, 1`, including correct weekday alignment (Jan 1, year 1 proleptic Gregorian falls on a Saturday — confirmed matching), and correctly disables the "previous month" navigation arrow at the floor.
+- The year-grid view renders correctly both mid-range (tested jumping from 2026 to 1993 by tapping a year cell — no crash, immediate navigation) and exactly at the boundary (opened with the picker's initial position at year 1: the grid cleanly starts at `1` with no negative/garbled year, no glitch, `1` shown as the selected pill, followed by `2, 3, 4, 5, ...`).
+- No crashes, exceptions, or ANRs observed in logcat across all of the above.
+
+**Conclusion: no adjustment to the 0001-01-01 floor is needed** — the year-grid performs acceptably at the full ~2000-year range. Per the decision already recorded here, no hand-rolled fallback (Option C) was needed or considered.
+
+**New finding surfaced during the spike (not previously identified):** `MaterialDatePicker` requires a `Theme.MaterialComponents` (or descendant) host theme. The app's actual runtime theme ([AndroidManifest.xml](../app/src/main/AndroidManifest.xml)) is `@android:style/Theme.Holo.Light` — not even AppCompat, let alone MaterialComponents — and the app's own defined themes ([styles.xml](../app/src/main/res/values/styles.xml)) are `Theme.AppCompat.*`, also insufficient. The spike only worked by applying a dedicated `Theme.MaterialComponents.Light.NoActionBar`-based theme override directly to the spike `Activity`. **This is a new Phase 2 prerequisite**, not previously called out in this document: Phase 2 must either (a) migrate the app's base theme to a `Theme.MaterialComponents` descendant (affects overall app styling, needs its own visual regression pass), or (b) apply a `Theme.MaterialComponents` theme overlay scoped only to the specific activities hosting date pickers (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`). Recommend (b) as the lower-risk option, scoped only to what's needed. Flagged for explicit resolution at the start of Phase 2.
 
 ### 7.4 Minimum date floor: 01/01/0001
 
@@ -159,12 +170,17 @@ Because [DaysSinceCalculations.java](../app/src/main/java/com/merware/dayssincep
 
 ## 8. Resolved Decisions & Remaining Open Items
 
-1. **Minimum-date floor value — RESOLVED, see §7.4: 01/01/0001.**
-2. **`MaterialDatePicker` year-grid performance at ~2000-year span — RESOLVED: no hybrid/dual-picker approach.** If the §7.3 investigation finds the year-grid impractical below some point, the fix is to raise the floor to whatever value works well empirically — not to add a second (Option C) picker implementation as a parallel code path.
+1. **Minimum-date floor value — RESOLVED, see §7.4: 01/01/0001.** Confirmed to hold as-is by the §7.3 empirical spike — no adjustment needed.
+2. **`MaterialDatePicker` year-grid performance at ~2000-year span — RESOLVED: no hybrid/dual-picker approach, and the year-grid performs correctly at this range (§7.3).** No Option C fallback was needed.
 3. **Interaction with [DCR_schemaChangesAndProperMigration.md](DCR_schemaChangesAndProperMigration.md) — RESOLVED.** Both documents now agree: missing `end_date` in CSV/DB is represented as `""` (empty string) / `NULL`, never a sentinel date, precisely to avoid collision with a legitimate real date once this document's floor (§7.4) extends selection down to year 1. See [DCR_schemaChangesAndProperMigration.md §5 and §7 item 6](DCR_schemaChangesAndProperMigration.md#5-csv-format-evolution--the-missing-value-placeholder-question) for the full resolution.
-4. **Rollout scope for the Gregorian-cutover fix, and phasing generally — pending, deferred until scope is locked.** This DCR and the schema DCR are intended to ship as part of a common release update. Once total scope across both documents is finalized, they should be jointly updated with an agreed phased implementation/check-in sequence (e.g. which fixes land in which order/PRs). Not yet defined — intentionally deferred rather than guessed at this stage.
+4. **Rollout scope for the Gregorian-cutover fix, and phasing generally — RESOLVED, see [DCR_090126PhasedImpl.md](DCR_090126PhasedImpl.md).** The cutover fix shipped in Phase 0; this document's remaining items are sequenced across Phase 1 (this section) and Phase 2 there.
 
-**Remaining open item still requiring investigation (not yet resolved):**
+**New open item surfaced by the Phase 1 spike (not previously identified):**
 
-- §7.2 — audit of all `SimpleDate` format strings for correct behavior with years below 1000, still open.
-- §7.3 — empirical verification of `MaterialDatePicker`'s year-grid behavior at the year-1 floor, still open (drives whether §7.4's floor holds as-is or needs adjustment).
+- **App theme prerequisite for `MaterialDatePicker` (§7.3):** the app's current theme (`Theme.Holo.Light` at the manifest level; `Theme.AppCompat.*` for the app's own defined themes) does not satisfy `MaterialDatePicker`'s `Theme.MaterialComponents` requirement. Phase 2 must resolve this — recommended approach: a `Theme.MaterialComponents` theme overlay scoped to just the 3 activities hosting date pickers (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`), rather than an app-wide base theme migration. Needs to be explicitly scoped as part of Phase 2's implementation, not assumed away.
+
+**Previously-open items — now resolved (Phase 1, 2026-09-01):**
+
+- §7.1 — `DaysSinceCalculations`/`SimpleDate` string-parsing round-trip for small years: fixed and verified.
+- §7.2 — audit of all `SimpleDate` format strings for correct behavior with years below 1000: complete, fixed, and verified.
+- §7.3 — empirical verification of `MaterialDatePicker`'s year-grid behavior at the year-1 floor: complete, floor confirmed as-is, no adjustment needed.

@@ -33,12 +33,12 @@ public class SimpleDate {
     Date date;
     DateStyle style;
 
-    SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
-    SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
-    SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    SimpleDateFormat monthFormat = DateFormats.prolepticGregorian("MM");
+    SimpleDateFormat dayFormat = DateFormats.prolepticGregorian("dd");
+    SimpleDateFormat yearFormat = DateFormats.prolepticGregorian("yyyy");
 
     // m is for minutes, M is for month
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat formatter = DateFormats.prolepticGregorian("yyyy-MM-dd");
 
     // US
     public SimpleDate(String sDate) {
@@ -67,7 +67,7 @@ public class SimpleDate {
 
         this.style = style;
         if (style == DateStyle.UK)
-            formatter = new SimpleDateFormat("MM-dd-yyyy");
+            formatter = DateFormats.prolepticGregorian("MM-dd-yyyy");
 
         month = 0;
         day = 0;
@@ -141,16 +141,16 @@ public class SimpleDate {
         SimpleDateFormat sdf = null;
         switch (style) {
             case US:
-                sdf = new SimpleDateFormat("MM-dd-yyyy");
+                sdf = DateFormats.prolepticGregorian("MM-dd-yyyy");
                 break;
             case UK:
-                sdf = new SimpleDateFormat("dd-MM-yyyy");
+                sdf = DateFormats.prolepticGregorian("dd-MM-yyyy");
                 break;
             case YMD:
-                sdf = new SimpleDateFormat("yyyy-MM-dd");
+                sdf = DateFormats.prolepticGregorian("yyyy-MM-dd");
                 break;
             case MYD:
-                sdf = new SimpleDateFormat("MM-dd-yyyy");
+                sdf = DateFormats.prolepticGregorian("MM-dd-yyyy");
                 break;
         }
         return sdf.format(date);
@@ -160,16 +160,16 @@ public class SimpleDate {
         SimpleDateFormat sdf = null;
         switch (style) {
             case US:
-                sdf = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+                sdf = DateFormats.prolepticGregorian("EEEE, MMMM dd, yyyy");
                 break;
             case UK:
-                sdf = new SimpleDateFormat("EEEE, dd MMMM, yyyy");
+                sdf = DateFormats.prolepticGregorian("EEEE, dd MMMM, yyyy");
                 break;
             case YMD:
-                sdf = new SimpleDateFormat("EEEE, yyyy MMMM dd");
+                sdf = DateFormats.prolepticGregorian("EEEE, yyyy MMMM dd");
                 break;
             case MYD:
-                sdf = new SimpleDateFormat("EEEE, MMM, dd, yyyy");
+                sdf = DateFormats.prolepticGregorian("EEEE, MMM, dd, yyyy");
                 break;
         }
         return sdf.format(date);

@@ -18,6 +18,7 @@
             android:name=".CategoriesActivity"
             android:label="@string/show_categories"></activity>
 
+
         <activity
             android:name=".MainActivity"
             android:uiOptions="splitActionBarWhenNarrow"
