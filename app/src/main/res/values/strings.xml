@@ -3,7 +3,8 @@
 
     <string name="menu_settings"> Menu </string>
     <string name="app_name">DaysSincePro</string>
-    <string name="enter_text">Enter Event</string>
+    <string name="enter_text">&lt;Enter New Event&gt;</string>
+    <string name="enter_category">&lt;Enter New Category&gt;</string>
     <string name="edit">Edit</string>
     <string name="add_new">Add</string>
     <string name="remove">Remove</string>

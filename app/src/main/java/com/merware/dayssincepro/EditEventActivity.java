@@ -22,6 +22,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -248,6 +249,19 @@ public class EditEventActivity extends Activity {
         updateDisplay();
 
         eventText.setHint(R.string.enter_text);
+
+        if (mode.equals("Add")) {
+            eventText.requestFocus();
+            eventText.post(new Runnable() {
+                @Override
+                public void run() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+            });
+        }
     }
 
     // create date suitable for SQL

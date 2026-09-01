@@ -36,6 +36,7 @@
         <activity
             android:name=".EditEventActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateVisible"
             android:label="@string/edit_event"></activity>
 
         <activity

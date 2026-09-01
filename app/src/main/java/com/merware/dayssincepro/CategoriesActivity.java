@@ -22,6 +22,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -31,9 +33,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -45,7 +49,7 @@ public class CategoriesActivity extends ListActivity {
     protected SQLiteDatabase db;
     private ListView lv;
     Button okButton;
-    Button addButton;
+    ImageButton addButton;
     Button doneButton;
     Button all_clearButton; // all or clear
     Boolean isClearButton = true;
@@ -102,7 +106,12 @@ public class CategoriesActivity extends ListActivity {
 
         registerForContextMenu(lv);
 
-        addButton = (Button) findViewById(R.id.addButton);
+        addButton = (ImageButton) findViewById(R.id.addButton);
+        if (theme == 1) {
+            addButton.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        } else {
+            addButton.setColorFilter(0xFF333333, PorterDuff.Mode.SRC_IN);
+        }
         addButton.setOnClickListener(addListener);
 
         doneButton = (Button) findViewById(R.id.doneButton);
@@ -418,6 +427,7 @@ public class CategoriesActivity extends ListActivity {
             final EditText input = new EditText(CategoriesActivity.this);
             input.setInputType(InputType.TYPE_CLASS_TEXT
                     | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            input.setHint(R.string.enter_category);
 
             builder.setView(input);
 
@@ -451,7 +461,12 @@ public class CategoriesActivity extends ListActivity {
                         }
                     });
 
-            builder.show();
+            AlertDialog dialog = builder.create();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+            dialog.show();
+            input.requestFocus();
         }
 
     };
