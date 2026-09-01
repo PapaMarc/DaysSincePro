@@ -6,4 +6,12 @@
     <color name="holo_yellow">#FFFFC107</color>
     <color name="holo_red">#FFF44336</color>
 
+    <!-- Material 3 primaryContainer/onPrimaryContainer pairs carried forward from
+         holo_green_dark for the date-picker host themes (see styles.xml). Hand-picked
+         light/dark tints rather than a generated tonal palette (DCR_evolveToMaterialDatePicker.md §4). -->
+    <color name="picker_primary_container_light">#E1F0C4</color>
+    <color name="picker_on_primary_container_light">#1B2900</color>
+    <color name="picker_primary_container_dark">#3A4D00</color>
+    <color name="picker_on_primary_container_dark">#E1F0C4</color>
+
 </resources>

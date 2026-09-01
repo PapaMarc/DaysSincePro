@@ -63,5 +63,23 @@
         <item name="colorAccent">@color/holo_green_dark</item>
     </style>
 
+    <!-- Material 3 dialog-styled themes for the 3 activities hosting MaterialDatePicker
+         (DaysDiffActivity, EditEventActivity, EditHistory) - applied via setTheme() at
+         runtime alongside the existing light/dark preference toggle, same pattern as
+         AppDialogTheme/AppDialogTheme2 but scoped separately so the other activities
+         sharing those two styles are unaffected. See DCR_evolveToMaterialDatePicker.md §4/§8. -->
+    <style name="DatePickerHostThemeLight" parent="Theme.Material3.Light.Dialog">
+        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
+        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
+    </style>
+
+    <style name="DatePickerHostThemeDark" parent="Theme.Material3.Dark.Dialog">
+        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
+        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
+    </style>
 
 </resources>

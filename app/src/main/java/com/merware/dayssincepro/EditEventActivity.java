@@ -3,9 +3,7 @@ package com.merware.dayssincepro;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
@@ -28,7 +26,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -36,9 +33,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.merware.dayssincepro.SimpleDate.DateStyle;
 
-public class EditEventActivity extends Activity {
+public class EditEventActivity extends AppCompatActivity {
 
     EditText eventText;
 
@@ -58,9 +58,7 @@ public class EditEventActivity extends Activity {
     protected SQLiteDatabase db;
 
     private String mode;
-    static final int DATE_DIALOG_ID = 0;
     static final int TIME_DIALOG_ID = 1;
-    static final int END_DATE_DIALOG_ID = 2;
 
     private int mYear;
     private int mMonth;
@@ -94,9 +92,9 @@ public class EditEventActivity extends Activity {
 
 
         if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
+            setTheme(R.style.DatePickerHostThemeDark);
         } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
+            setTheme(R.style.DatePickerHostThemeLight);
         }
 
         super.onCreate(savedInstanceState);
@@ -396,13 +394,77 @@ public class EditEventActivity extends Activity {
 
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
-            showDialog(DATE_DIALOG_ID);
+            long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+                mYear = cal.get(Calendar.YEAR);
+                mMonth = cal.get(Calendar.MONTH);
+                mDay = cal.get(Calendar.DAY_OF_MONTH);
+                updateDisplay();
+            });
+            picker.show(getSupportFragmentManager(), "startDatePicker");
         }
     };
 
     private OnClickListener endDateDialogListener = new OnClickListener() {
         public void onClick(View v) {
-            showDialog(END_DATE_DIALOG_ID);
+            long initial;
+
+            if (mEndMonth == 0 && mEndDay == 0 && mEndYear == 0) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.DAY_OF_MONTH, mDay);
+                cal.set(Calendar.MONTH, mMonth);
+                cal.set(Calendar.YEAR, mYear);
+
+                switch (iRecur) {
+                    case 0: // one time; use today
+                        cal = Calendar.getInstance();
+                        break;
+                    case 7: // weekly
+                        cal.add(Calendar.DAY_OF_MONTH, 7);
+                        break;
+                    case 14: // biweekly
+                        cal.add(Calendar.DAY_OF_MONTH, 14);
+                        break;
+                    case 30:
+                        cal.add(Calendar.DAY_OF_MONTH, 30);
+                        break;
+                    case 90: // quarter
+                        cal.add(Calendar.MONTH, 3);
+                        break;
+                    case 180: // semi annually
+                        cal.add(Calendar.MONTH, 6);
+                        break;
+                    case 365:
+                        cal.add(Calendar.YEAR, 1);
+                        break;
+                    default:
+                }
+
+                initial = DatePickerSupport.utcMillis(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            } else {
+                initial = DatePickerSupport.utcMillis(mEndYear, mEndMonth, mEndDay);
+            }
+
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+                mEndYear = cal.get(Calendar.YEAR);
+                mEndMonth = cal.get(Calendar.MONTH);
+                mEndDay = cal.get(Calendar.DAY_OF_MONTH);
+
+                SimpleDate eventDate = new SimpleDate(mYear, mMonth, mDay);
+                SimpleDate endDate = new SimpleDate(mEndYear, mEndMonth, mEndDay);
+
+                if (endDate.getDate().before(eventDate.getDate())) {
+                    showToast("End date should not be earlier than the Date");
+                } else {
+                    updateDisplay();
+                    showEndDateFields(true);
+                }
+            });
+            picker.show(getSupportFragmentManager(), "endDatePicker");
         }
     };
 
@@ -526,45 +588,6 @@ public class EditEventActivity extends Activity {
     }
 
     // the call-back received when the user "sets" the date in the dialog
-    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mYear = year;
-            mMonth = monthOfYear;
-            mDay = dayOfMonth;
-            updateDisplay();
-        }
-    };
-
-    private DatePickerDialog.OnDateSetListener mEndDateSetListener = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mEndYear = year;
-            mEndMonth = monthOfYear;
-            mEndDay = dayOfMonth;
-
-
-            if (mEndYear == 0 && mEndMonth == 0 && mEndDay == 0)
-            {
-
-            }
-            else {
-                SimpleDate eventDate = new SimpleDate(mYear, mMonth, mDay);
-                SimpleDate endDate = new SimpleDate(mEndYear, mEndMonth, mEndDay);
-
-                if (endDate.getDate().before(eventDate.getDate())) {
-                    showToast("End date should not be earlier than the Date");
-                } else {
-                    updateDisplay();
-                    showEndDateFields(true);
-                }
-            }
-
-            //updateDisplay();
-        }
-    };
 
     private String formatHourMinute(int hour, int minute) {
         // format display
@@ -617,56 +640,9 @@ public class EditEventActivity extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-            case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, R.style.AccentDialogTheme, mDateSetListener,
-                        mYear, mMonth, mDay);
             case TIME_DIALOG_ID:
                 return new TimePickerDialog(this, mTimeSetListener, notifyHour,
                         notifyMinute, false);
-            case END_DATE_DIALOG_ID:
-
-                if (mEndMonth == 0 && mEndDay == 0 && mEndYear == 0)
-                {
-                    Calendar cal = Calendar.getInstance();
-                    cal.set(Calendar.DAY_OF_MONTH, mDay);
-                    cal.set(Calendar.MONTH, mMonth);
-                    cal.set(Calendar.YEAR, mYear);
-
-                    switch (iRecur)
-                    {
-                        case 0: // one time; use today
-                            cal = Calendar.getInstance();
-                            break;
-                        case 7: // weekly
-                            cal.add(Calendar.DAY_OF_MONTH, 7);
-                            break;
-                        case 30:
-                            cal.add(Calendar.DAY_OF_MONTH, 30);
-                            break;
-                        case 90: // quarter
-                            cal.add(Calendar.MONTH, 3);
-                            break;
-                        case 180: // semi annually
-                            cal.add(Calendar.MONTH, 6 );
-                            break;
-                        case 365:
-                            cal.add(Calendar.YEAR, 1);
-                            break;
-                        default:
-                    }
-
-                    int future_y = cal.get(Calendar.YEAR);
-                    int future_m = cal.get(Calendar.MONTH);
-                    int future_d = cal.get(Calendar.DAY_OF_MONTH);
-
-                    return new DatePickerDialog(this, R.style.AccentDialogTheme, mEndDateSetListener,
-                            future_y, future_m, future_d);
-
-                }
-                else {
-                    return new DatePickerDialog(this, R.style.AccentDialogTheme, mEndDateSetListener,
-                            mEndYear, mEndMonth, mEndDay);
-                }
         }
         return null;
     }

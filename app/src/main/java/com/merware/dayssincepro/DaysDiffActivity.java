@@ -2,9 +2,6 @@ package com.merware.dayssincepro;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,15 +10,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DaysDiffActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
+
+public class DaysDiffActivity extends AppCompatActivity {
 
     SharedPreferences preferences;
-    static final int DATE_DIALOG_ID1 = 1;
-    static final int DATE_DIALOG_ID2 = 2;
 
     private int mYear;
     private int mMonth;
@@ -43,9 +41,9 @@ public class DaysDiffActivity extends Activity {
         theme = Integer.parseInt(stheme);
 
         if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
+            setTheme(R.style.DatePickerHostThemeDark);
         } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
+            setTheme(R.style.DatePickerHostThemeLight);
         }
         super.onCreate(savedInstanceState);
         click_choose = getString(R.string.click_choose);
@@ -85,63 +83,43 @@ public class DaysDiffActivity extends Activity {
 
     private OnClickListener buttonACallback = new OnClickListener() {
         public void onClick(View v) {
-            chooseDialog(DATE_DIALOG_ID1);
+            long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+                mYear = cal.get(Calendar.YEAR);
+                mMonth = cal.get(Calendar.MONTH);
+                mDay = cal.get(Calendar.DAY_OF_MONTH);
+
+                int month = mMonth + 1;
+                usDate1 = mYear + "-" + month + "-" + mDay;
+                updateDisplay(usDate1, dateText);
+            });
+            picker.show(getSupportFragmentManager(), "datePickerA");
         }
     };
 
     private OnClickListener buttonBCallback = new OnClickListener() {
         public void onClick(View v) {
-            chooseDialog(DATE_DIALOG_ID2);
+            long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+                mYear = cal.get(Calendar.YEAR);
+                mMonth = cal.get(Calendar.MONTH);
+                mDay = cal.get(Calendar.DAY_OF_MONTH);
+
+                int month = mMonth + 1;
+                usDate2 = mYear + "-" + month + "-" + mDay;
+                updateDisplay(usDate2, dateText2);
+            });
+            picker.show(getSupportFragmentManager(), "datePickerB");
         }
     };
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DATE_DIALOG_ID1:
-                return new DatePickerDialog(this, R.style.AccentDialogTheme, mDateSetListener1,
-                        mYear, mMonth, mDay);
-            case DATE_DIALOG_ID2:
-                return new DatePickerDialog(this, R.style.AccentDialogTheme, mDateSetListener2,
-                        mYear, mMonth, mDay);
-        }
-        return null;
-    }
-
-    private void chooseDialog(int key) {
-        showDialog(key);
-    }
 
     String usDate1 = click_choose;
-    private DatePickerDialog.OnDateSetListener mDateSetListener1 = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mYear = year;
-            mMonth = monthOfYear;
-            mDay = dayOfMonth;
-
-            int month = mMonth + 1;
-            usDate1 = mYear + "-" + month + "-" + mDay;
-            updateDisplay(usDate1, dateText);
-        }
-    };
 
     String usDate2 = click_choose;
-    private DatePickerDialog.OnDateSetListener mDateSetListener2 = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mYear = year;
-            mMonth = monthOfYear;
-            mDay = dayOfMonth;
-
-            int month = mMonth + 1;
-            usDate2 = mYear + "-" + month + "-" + mDay;
-
-            updateDisplay(usDate2, dateText2);
-        }
-    };
 
     private static final int EVENT_A_ACTIVITY = 0;
     private static final int EVENT_B_ACTIVITY = 1;

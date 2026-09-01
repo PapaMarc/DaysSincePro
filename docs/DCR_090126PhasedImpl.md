@@ -72,17 +72,24 @@ Two open investigation items from DCR-A must resolve before the picker UI implem
 
 ## 4. Phase 2 — MaterialDatePicker Rollout
 
+**Status: ✅ COMPLETE (2026-09-01).**
+
 Depends on: Phase 1's confirmed floor value; independent of Phases 3–4.
 
-1. Bump `com.google.android.material:material` from 1.12.0 to 1.14.0 ([DCR-A §4](DCR_evolveToMaterialDatePicker.md#4-material-components-library-version)) — **done early in Phase 1 to unblock the spike; carries forward, no further action needed.**
-2. **Apply a `Theme.MaterialComponents` theme overlay to the 3 activities hosting date pickers** (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`) — new prerequisite surfaced by the Phase 1 spike; the app's current theme does not satisfy `MaterialDatePicker`'s theming requirement (see [DCR-A §8](DCR_evolveToMaterialDatePicker.md#8-resolved-decisions--remaining-open-items)).
-3. Replace all 5 `DatePickerDialog` call sites with `MaterialDatePicker`, sharing one common minimum-date constant ([DCR-A §2, §7.4](DCR_evolveToMaterialDatePicker.md#2-current-state--date-picker-call-sites)):
+1. Bump `com.google.android.material:material` from 1.12.0 to 1.14.0 ([DCR-A §4](DCR_evolveToMaterialDatePicker.md#4-material-components-library-version)) — done in Phase 1 to unblock the spike; carried forward.
+2. **Theme:** applied Material 3 (not Expressive), scoped to just the 3 date-picker-hosting activities, per discussion with the user — not an app-wide migration. New `DatePickerHostThemeLight`/`DatePickerHostThemeDark` styles (`Theme.Material3.Light.Dialog` / `Theme.Material3.Dark.Dialog` parents) applied via `setTheme()` in each activity's `onCreate()`, following the app's existing light/dark-preference `setTheme()` convention (matches the `AppTheme`/`AppTheme2`, `AppDialogTheme`/`AppDialogTheme2` pattern already used elsewhere). Accent color carried forward as-is from the existing `holo_green_dark` (`#669900`), with hand-picked (not generated) light/dark `primaryContainer`/`onPrimaryContainer` pairs — see [colors.xml](../app/src/main/res/values/colors.xml) and [styles.xml](../app/src/main/res/values/styles.xml).
+3. Replaced all 5 `DatePickerDialog` call sites with `MaterialDatePicker`, sharing one common minimum-date constant via a new `DatePickerSupport` helper class ([DCR-A §2, §7.4](DCR_evolveToMaterialDatePicker.md#2-current-state--date-picker-call-sites)):
    - `DaysDiffActivity` (date A, date B)
-   - `EditEventActivity` (start date, end date — preserving the recurrence-based end-date default-prefill logic, including the previously-missing `recur = 14` biweekly case per [DCR-A §7.5](DCR_evolveToMaterialDatePicker.md#75-preserve-editeventactivitys-end-date-default-prefill-logic))
+   - `EditEventActivity` (start date, end date — recurrence-based end-date default-prefill logic preserved, including the previously-missing `recur = 14` biweekly case per [DCR-A §7.5](DCR_evolveToMaterialDatePicker.md#75-preserve-editeventactivitys-end-date-default-prefill-logic))
    - `EditHistory` (history entry date)
-4. Route picker output through the existing `SimpleDate`/formatter classes rather than trusting picker-returned strings directly ([DCR-A §7.6](DCR_evolveToMaterialDatePicker.md#76-localedate-format-display--confirmed-no-open-questions)).
 
-**Tests:** per [DCR-A §7.7](DCR_evolveToMaterialDatePicker.md#77-testing-scope-and-sequencing--confirmed-no-open-questions) — recurrence-interval logic including `recur = 14`. (`SimpleDate`/Julian-Gregorian cutover tests already landed in Phase 0/Phase 1.)
+   All 3 activities were changed from `Activity` to `AppCompatActivity` (required for `getSupportFragmentManager()`, which `MaterialDatePicker.show()` needs). Legacy `DatePickerDialog`/`onCreateDialog`/`showDialog` code fully removed at each of the 5 sites (confirmed via code review — no dead code left behind; `EditEventActivity`'s `onCreateDialog` still exists solely for its unrelated `TimePickerDialog`).
+
+4. Picker output is converted via `DatePickerSupport.toUtcCalendar()` and routed through the existing `SimpleDate`/formatter classes rather than trusting picker-returned strings directly ([DCR-A §7.6](DCR_evolveToMaterialDatePicker.md#76-localedate-format-display--confirmed-no-open-questions)).
+
+**New shared class:** `DatePickerSupport` (`MIN_DATE_UTC_MILLIS`, `utcMillis()`, `newPicker()`, `toUtcCalendar()`) — single source of truth for the `0001-01-01` floor and UTC-normalized millis conversion across all 5 call sites.
+
+**Tests added:** `DatePickerSupportTest` (min-date floor value, UTC millis round-trip, year-below-1000 handling, time-zone independence of the conversion — `newPicker()`/`MaterialDatePicker` itself is UI/Android-framework code and intentionally left to on-device verification, not unit-tested). Full test suite + `compileDebugJavaWithJavac` + `assembleDebug` re-verified clean. On-device/emulator verification of the actual picker UI is being done separately by the user, not as part of this automated pass.
 
 ---
 

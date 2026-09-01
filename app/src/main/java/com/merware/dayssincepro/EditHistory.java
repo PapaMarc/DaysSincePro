@@ -2,9 +2,6 @@ package com.merware.dayssincepro;
 
 import java.util.Calendar;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -15,17 +12,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.merware.dayssincepro.SimpleDate.DateStyle;
 
-public class EditHistory extends Activity {
+public class EditHistory extends AppCompatActivity {
 
     SharedPreferences preferences;
-    static final int DATE_DIALOG_ID = 0;
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -46,9 +44,9 @@ public class EditHistory extends Activity {
         int theme = Integer.parseInt(sTheme);
 
         if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
+            setTheme(R.style.DatePickerHostThemeDark);
         } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
+            setTheme(R.style.DatePickerHostThemeLight);
         }
 
         super.onCreate(savedInstanceState);
@@ -116,29 +114,16 @@ public class EditHistory extends Activity {
 
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
-            showDialog(DATE_DIALOG_ID);
-        }
-    };
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, R.style.AccentDialogTheme, mDateSetListener,
-                        mYear, mMonth, mDay);
-        }
-        return null;
-    }
-
-    // the call-back received when the user "sets" the date in the dialog
-    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mYear = year;
-            mMonth = monthOfYear;
-            mDay = dayOfMonth;
-            updateDisplay();
+            long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar cal = DatePickerSupport.toUtcCalendar(selection);
+                mYear = cal.get(Calendar.YEAR);
+                mMonth = cal.get(Calendar.MONTH);
+                mDay = cal.get(Calendar.DAY_OF_MONTH);
+                updateDisplay();
+            });
+            picker.show(getSupportFragmentManager(), "historyDatePicker");
         }
     };
 
