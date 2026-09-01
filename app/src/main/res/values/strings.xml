@@ -163,7 +163,7 @@
 
     <string name="search">Search</string>
     <string name="exit">Are you sure you want to exit?</string>
-    <string name="choose_day">Day</string>
+    <string name="choose_day">Edit Date</string>
     <string name="choose_time">Time</string>
     <string name="end_day">End Day</string>
     <string name="touch_here">Touch Here</string>
