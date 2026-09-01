@@ -133,8 +133,7 @@ public class EditHistory extends AppCompatActivity {
 
         String systemDateFormat = DateFormat.GetSystemDateFormat(this);
 
-        int month = mMonth + 1;
-        String usDate = mYear + "-" + month + "-" + mDay;
+        String usDate = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
         SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
 
         chosenDate = sd;
@@ -168,20 +167,7 @@ public class EditHistory extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent();
 
-            String dateText = mYear + "-";
-            int month = mMonth + 1;
-            int day = mDay;
-
-            // pad 0
-            if (month < 10)
-                dateText = dateText + "0";
-
-            dateText = dateText + month + "-";
-
-            if (day < 10)
-                dateText = dateText + "0";
-
-            dateText = dateText + day;
+            String dateText = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
 
             intent.putExtra("date", dateText);
             intent.putExtra("onTime", isOnTime);

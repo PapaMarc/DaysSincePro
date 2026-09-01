@@ -265,24 +265,6 @@ public class EditEventActivity extends AppCompatActivity {
         }
     }
 
-    // create date suitable for SQL
-    private String composeDateText(int y, int m, int d)
-    {
-        String dateText  = y + "-";
-        int end_month = m + 1;  // January is 0
-        if (end_month < 10)
-            dateText = dateText + "0";
-
-        dateText = dateText + end_month + "-";
-
-        if (d < 10)
-            dateText = dateText + "0";
-
-        dateText = dateText + d;
-
-        return dateText;
-    }
-
 
 
     private OnClickListener eventOK = new OnClickListener() {
@@ -297,7 +279,7 @@ public class EditEventActivity extends AppCompatActivity {
 
             categoryID = 0;
 
-            String dateText = composeDateText(mYear, mMonth, mDay);
+            String dateText = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
             values.put("date", dateText);
 
             String endDateText = null;
@@ -315,7 +297,7 @@ public class EditEventActivity extends AppCompatActivity {
             }
             else {
 
-                endDateText = composeDateText(mEndYear, mEndMonth, mEndDay);
+                endDateText = DatePickerSupport.isoDateString(mEndYear, mEndMonth, mEndDay);
                 values.put("end_date", endDateText);
             }
 
@@ -541,7 +523,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         String systemDateFormat = DateFormat.GetSystemDateFormat(this);
 
-        String usDate = mYear + "-" + (mMonth +1) + "-" + mDay;
+        String usDate = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
         SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
 
         if (systemDateFormat.equals(getString(R.string.uk_date_style))) {
@@ -555,7 +537,7 @@ public class EditEventActivity extends AppCompatActivity {
             endDateText.setText( getString(R.string.no_end_date_specified));
         }
         else {
-            String usEndDate = mEndYear + "-" + (mEndMonth + 1) + "-" + mEndDay;
+            String usEndDate = DatePickerSupport.isoDateString(mEndYear, mEndMonth, mEndDay);
             sd = new SimpleDate(usEndDate, SimpleDate.DateStyle.US);
 
             if (systemDateFormat.equals(getString(R.string.uk_date_style))) {

@@ -91,8 +91,7 @@ public class DaysDiffActivity extends AppCompatActivity {
                 mMonth = cal.get(Calendar.MONTH);
                 mDay = cal.get(Calendar.DAY_OF_MONTH);
 
-                int month = mMonth + 1;
-                usDate1 = mYear + "-" + month + "-" + mDay;
+                usDate1 = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
                 updateDisplay(usDate1, dateText);
             });
             picker.show(getSupportFragmentManager(), "datePickerA");
@@ -109,8 +108,7 @@ public class DaysDiffActivity extends AppCompatActivity {
                 mMonth = cal.get(Calendar.MONTH);
                 mDay = cal.get(Calendar.DAY_OF_MONTH);
 
-                int month = mMonth + 1;
-                usDate2 = mYear + "-" + month + "-" + mDay;
+                usDate2 = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
                 updateDisplay(usDate2, dateText2);
             });
             picker.show(getSupportFragmentManager(), "datePickerB");
