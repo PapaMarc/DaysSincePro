@@ -736,8 +736,9 @@ public class MainActivity extends AppCompatActivity implements
                     if (notifyHour == 0 && notifyMinute == 0) {
                         // don't bother to send a new alarm, use what's there.
                     } else {
-                        showToast("ADD new now go set alarm for id " + id + " at "
-                                + notifyHour + " " + notifyMinute);
+                        // Legacy developer debug toast; keep suppressed for production UX clarity.
+                        // showToast("ADD new now go set alarm for id " + id + " at "
+                        //         + notifyHour + " " + notifyMinute);
                         alarmHelp.setAlarm(id, notifyHour, notifyMinute);
                     }
                 }
