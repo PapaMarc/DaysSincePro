@@ -23,6 +23,12 @@ local.properties
 app/keystore.properties
 
 # ----------------------------------------
+# Internal local-only documentation
+# ----------------------------------------
+docs/internal/
+docs/internal/**
+
+# ----------------------------------------
 # OS-specific junk
 # ----------------------------------------
 .DS_Store
