@@ -327,6 +327,7 @@ Rationale:
   - Add Event category picker now includes synthetic top-row action <Add New Category>.
   - Option 2 enforcement: when Add Event is launched from uncategorized context (catId 0), default category selection is <Add New Category>.
   - Option 2 enforcement: save is blocked while <Add New Category> remains selected, requiring explicit user category action.
+  - Option 1 follow-up implementation: Add Event category picker control switched to SelectAgainSpinner so selecting an already-selected <Add New Category> row still dispatches selection callback and launches category creation flow.
   - Selecting the synthetic action opens Categories and auto-opens Add Category input.
   - Add Event no longer hides category controls in zero/zero first-time state; the guided action remains visible.
   - Add Event save path guards against persisting synthetic action ids.
@@ -336,6 +337,7 @@ Rationale:
   - Targeted test: :app:testDebugUnitTest --tests com.merware.dayssincepro.CategorySelectionPolicyTest passed.
   - Full regression sweep: :app:testDebugUnitTest passed.
   - Full build gate: bundleRelease passed.
+  - Root-cause follow-up note: standard Spinner can ignore same-item reselection events; this could suppress launch when <Add New Category> was already the selected default. Option 1 resolves this by using SelectAgainSpinner for Add Event category picker.
 - Build/version note for Phase 5 completion: versionName advanced from 3.10.60.49 to 3.10.62.49.
 
 ### Proposed Phases

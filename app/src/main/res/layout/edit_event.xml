@@ -143,7 +143,7 @@
                 android:maxLines="4"
                 android:minLines="2" />
 
-            <Spinner
+            <com.merware.dayssincepro.SelectAgainSpinner
                 android:id="@+id/catSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

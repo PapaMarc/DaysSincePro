@@ -21,9 +21,18 @@ public class SelectAgainSpinner extends Spinner {
     public void setSelection(int position)
     {
         super.setSelection(position);
+        dispatchReselectionCallback(position);
+    }
 
-        if (position == getSelectedItemPosition())
-        {
+    @Override
+    public void setSelection(int position, boolean animate)
+    {
+        super.setSelection(position, animate);
+        dispatchReselectionCallback(position);
+    }
+
+    private void dispatchReselectionCallback(int position) {
+        if (listener != null && position == getSelectedItemPosition()) {
             listener.onItemSelected(null, null, position, 0);
         }
     }
