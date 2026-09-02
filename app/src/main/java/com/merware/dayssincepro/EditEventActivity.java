@@ -52,7 +52,7 @@ public class EditEventActivity extends AppCompatActivity {
     TextView endDateText;
     TextView recurTextView;
     TextView notifyAtView;
-    Spinner catSpinner;
+    SelectAgainSpinner catSpinner;
     CheckBox checkbox;
     CheckBox cbEndDay;
     TextView explainText;
@@ -88,7 +88,8 @@ public class EditEventActivity extends AppCompatActivity {
     int theme = 0;
 
     ArrayList<Long> listCatId = new ArrayList<>();
-    private boolean suppressCategorySelectionCallback = false;
+    private boolean isBindingCategorySpinner = false;
+    private boolean isRestoringCategorySpinner = false;
     private int lastPersistableSpinnerPosition = -1;
 
     @Override
@@ -142,7 +143,7 @@ public class EditEventActivity extends AppCompatActivity {
         Button cancelButton = (Button) findViewById(R.id.eventCancel);
         cancelButton.setOnClickListener(eventCancel);
 
-        catSpinner = (Spinner) findViewById(R.id.catSpinner);
+        catSpinner = (SelectAgainSpinner) findViewById(R.id.catSpinner);
         catSpinner.setOnItemSelectedListener(categorySelectionListener);
         recurSpinner = (SelectAgainSpinner) findViewById(R.id.recur_spinner);
         checkbox = (CheckBox) findViewById(R.id.checkBox1);
@@ -765,8 +766,7 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     private void launchAddCategoryFromPicker() {
-        Intent intent = new Intent(this, CategoriesActivity.class);
-        intent.putExtra(CategoriesActivity.EXTRA_AUTO_OPEN_ADD_CATEGORY, true);
+        Intent intent = new Intent(this, CreateCategoryActivity.class);
         startActivityForResult(intent, REQUEST_ADD_EVENT_CATEGORY);
     }
 
@@ -776,8 +776,9 @@ public class EditEventActivity extends AppCompatActivity {
             targetPosition = findFirstPersistableSpinnerPosition();
         }
         if (targetPosition >= 0) {
-            suppressCategorySelectionCallback = true;
+            isRestoringCategorySpinner = true;
             catSpinner.setSelection(targetPosition);
+            isRestoringCategorySpinner = false;
         }
     }
 
@@ -785,8 +786,7 @@ public class EditEventActivity extends AppCompatActivity {
             new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (suppressCategorySelectionCallback) {
-                        suppressCategorySelectionCallback = false;
+                    if (isBindingCategorySpinner || isRestoringCategorySpinner) {
                         return;
                     }
 
@@ -812,6 +812,7 @@ public class EditEventActivity extends AppCompatActivity {
             };
 
     private void listCategories() {
+        isBindingCategorySpinner = true;
 
         String option = preferences.getString("category_sort_order", "0");
         int iOption = Integer.parseInt(option);
@@ -888,7 +889,6 @@ public class EditEventActivity extends AppCompatActivity {
             sca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
-        suppressCategorySelectionCallback = true;
         catSpinner.setAdapter(sca);
 
         // set spinner
@@ -935,7 +935,6 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         if (gotPosition) {
-            suppressCategorySelectionCallback = true;
             catSpinner.setSelection(setPosition);
             catSpinner.setEnabled(true);
             checkbox.setEnabled(true);
@@ -946,6 +945,7 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         startManagingCursor(cursor);
+        isBindingCategorySpinner = false;
     }
 
     private OnClickListener checkListener = new OnClickListener() {
@@ -1044,9 +1044,12 @@ public class EditEventActivity extends AppCompatActivity {
             return;
         }
 
+        isBindingCategorySpinner = false;
+        isRestoringCategorySpinner = false;
+
         long createdCategoryId = -1L;
         if (data != null) {
-            createdCategoryId = data.getLongExtra(CategoriesActivity.EXTRA_CREATED_CATEGORY_ID, -1L);
+            createdCategoryId = data.getLongExtra(CreateCategoryActivity.EXTRA_CREATED_CATEGORY_ID, -1L);
         }
 
         if (createdCategoryId > 0) {

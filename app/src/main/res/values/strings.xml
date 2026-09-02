@@ -139,6 +139,8 @@
     <string name="is_near_due">is near due.</string>
     <string name="remove_category">Remove Category</string>
     <string name="category_name_reserved">Category name "Uncategorized" is reserved.</string>
+    <string name="category_name_required">Please enter a category name.</string>
+    <string name="category_create_failed">Unable to create category. Please try again.</string>
     <string name="add_new_category_action">&lt;Add New Category&gt;</string>
     <string name="add_event_category_nudge">Create a category to keep events organized. Choose Add New Category.</string>
     <string name="choose_or_create_category">Choose a category, or select Add New Category first.</string>

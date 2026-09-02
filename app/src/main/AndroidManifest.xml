@@ -41,6 +41,10 @@
             android:label="@string/edit_event"></activity>
 
         <activity
+            android:name=".CreateCategoryActivity"
+            android:label="@string/add_a_category"></activity>
+
+        <activity
             android:name=".EditHistory"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/history"></activity>
