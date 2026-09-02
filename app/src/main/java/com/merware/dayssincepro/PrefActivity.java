@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MenuItem;
 
 public class PrefActivity extends PreferenceActivity implements
         OnSharedPreferenceChangeListener {
@@ -40,6 +41,11 @@ public class PrefActivity extends PreferenceActivity implements
         super.onCreate(savedInstanceState);
         EdgeToEdgeUtil.applyContentInsets(this);
 
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
+
         addPreferencesFromResource(R.xml.options);
 
         getPreferenceScreen().getSharedPreferences()
@@ -61,6 +67,15 @@ public class PrefActivity extends PreferenceActivity implements
                 "remind_percent");
         tabStylePref = (ListPreference) getPreferenceScreen().findPreference(
                 "tab_style");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
