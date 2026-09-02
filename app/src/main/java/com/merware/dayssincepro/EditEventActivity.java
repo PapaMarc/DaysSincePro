@@ -328,11 +328,11 @@ public class EditEventActivity extends AppCompatActivity {
 
                 if (listCatId.size() > 0) {
                     long selectedCategoryId = listCatId.get(catSpinner.getSelectedItemPosition());
-                    if (CategorySelectionPolicy.isPersistableCategoryId(selectedCategoryId)) {
-                        categoryID = selectedCategoryId;
-                    } else {
-                        categoryID = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+                    if (CategorySelectionPolicy.isAddNewCategoryActionId(selectedCategoryId)) {
+                        showToast(getString(R.string.choose_or_create_category));
+                        return;
                     }
+                    categoryID = selectedCategoryId;
                 }
             }
 
@@ -755,6 +755,15 @@ public class EditEventActivity extends AppCompatActivity {
         return -1;
     }
 
+    private int findSpinnerPositionByCategoryId(long targetCategoryId) {
+        for (int i = 0; i < listCatId.size(); i++) {
+            if (listCatId.get(i) == targetCategoryId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void launchAddCategoryFromPicker() {
         Intent intent = new Intent(this, CategoriesActivity.class);
         intent.putExtra(CategoriesActivity.EXTRA_AUTO_OPEN_ADD_CATEGORY, true);
@@ -913,12 +922,15 @@ public class EditEventActivity extends AppCompatActivity {
         // if add to uncategorized don't bother to pick category even if there
         // are some.
         if (mode.equals("Add")) {
-
-            // showToast("total Categories : " + totalCategories + " catID " + categoryID);
-
-            if (totalCategories > 0 && categoryID != 0) {
+            if (CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(true, categoryID)) {
+                int addActionPosition = findSpinnerPositionByCategoryId(
+                        CategorySelectionPolicy.ACTION_ADD_NEW_CATEGORY_ID);
+                if (addActionPosition >= 0) {
+                    setPosition = addActionPosition;
+                    gotPosition = true;
+                }
+            } else if (totalCategories > 0 && categoryID != 0) {
                 gotPosition = true;
-                // setPosition = 0; // need to find position given categoryID
             }
         }
 

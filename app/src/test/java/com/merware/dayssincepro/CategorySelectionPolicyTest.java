@@ -93,4 +93,11 @@ public class CategorySelectionPolicyTest {
         assertTrue(CategorySelectionPolicy.isPersistableCategoryId(7));
         assertFalse(CategorySelectionPolicy.isPersistableCategoryId(-1));
     }
+
+    @Test
+    public void shouldDefaultToAddNewCategoryAction_onlyForAddModeFromUncategorizedContext() {
+        assertTrue(CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(true, 0));
+        assertFalse(CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(false, 0));
+        assertFalse(CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(true, 4));
+    }
 }

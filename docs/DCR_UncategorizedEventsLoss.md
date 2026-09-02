@@ -325,6 +325,8 @@ Rationale:
 - Existing-user gating rule: users who already have one or more real categories do not see this nudge after update.
 - Completed deliverables:
   - Add Event category picker now includes synthetic top-row action <Add New Category>.
+  - Option 2 enforcement: when Add Event is launched from uncategorized context (catId 0), default category selection is <Add New Category>.
+  - Option 2 enforcement: save is blocked while <Add New Category> remains selected, requiring explicit user category action.
   - Selecting the synthetic action opens Categories and auto-opens Add Category input.
   - Add Event no longer hides category controls in zero/zero first-time state; the guided action remains visible.
   - Add Event save path guards against persisting synthetic action ids.
@@ -334,7 +336,7 @@ Rationale:
   - Targeted test: :app:testDebugUnitTest --tests com.merware.dayssincepro.CategorySelectionPolicyTest passed.
   - Full regression sweep: :app:testDebugUnitTest passed.
   - Full build gate: bundleRelease passed.
-- Build/version note for Phase 5 completion: versionName advanced from 3.10.60.49 to 3.10.61.49.
+- Build/version note for Phase 5 completion: versionName advanced from 3.10.60.49 to 3.10.62.49.
 
 ### Proposed Phases
 
@@ -452,6 +454,8 @@ The following criteria are frozen for phase pass/fail.
 
 - Introduce <Add New Category> as a non-persisted synthetic action row in Add Event category picker.
 - If there are zero real categories and zero uncategorized events, do not hide category controls; show <Add New Category> immediately as the first-time default action.
+- Option 2 guardrail: when Add Event is opened from an Uncategorized filter context (incoming catId 0), default spinner selection to <Add New Category> rather than Uncategorized.
+- Option 2 guardrail: if save is attempted while <Add New Category> remains selected, block save and require an explicit category selection action (choose real category, explicitly choose Uncategorized, or create a category).
 - Selecting that row launches Categories and auto-opens the Add Category dialog.
 - On return to Add Event:
   - if a category was created, rebind spinner and auto-select that new category;
@@ -487,6 +491,9 @@ The following criteria are frozen for phase pass/fail.
   - synthetic action-row identity is never treated as a persistable category id.
   - Add Event option-order rules put <Add New Category> before Uncategorized when shown.
 - Add Event selection-state tests:
+  - when entering Add Event from an Uncategorized filter context, default spinner selection is <Add New Category>.
+  - save attempt while <Add New Category> is still selected is blocked and does not persist event.
+  - explicit user selection of Uncategorized still persists catId 0.
   - selecting <Add New Category> triggers navigation intent instead of save-path category resolution.
   - cancel return path restores prior valid category selection.
   - create return path auto-selects newly created category.

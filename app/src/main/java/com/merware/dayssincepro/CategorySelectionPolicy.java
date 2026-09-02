@@ -32,6 +32,11 @@ public final class CategorySelectionPolicy {
         return categoryId >= 0;
     }
 
+    public static boolean shouldDefaultToAddNewCategoryAction(boolean isAddMode,
+                                                              long requestedCategoryId) {
+        return isAddMode && requestedCategoryId == UNCATEGORIZED_CAT_ID;
+    }
+
     public static String normalizeCategoryToken(String rawCategory) {
         return rawCategory == null ? "" : rawCategory.trim();
     }

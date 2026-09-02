@@ -141,6 +141,7 @@
     <string name="category_name_reserved">Category name "Uncategorized" is reserved.</string>
     <string name="add_new_category_action">&lt;Add New Category&gt;</string>
     <string name="add_event_category_nudge">Create a category to keep events organized. Choose Add New Category.</string>
+    <string name="choose_or_create_category">Choose a category, or select Add New Category first.</string>
     <string name="remove_cat_msg">This will also delete all events associated with this category. Are you sure?</string>
     <string name="repeats_every">repeats every</string>
     <string name="backup_success">Backup database success!</string>
