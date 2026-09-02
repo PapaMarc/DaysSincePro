@@ -29,6 +29,16 @@ public class CreateCategoryFlowWiringTest {
         assertTrue(manifest.contains("android:name=\".CreateCategoryActivity\""));
     }
 
+    @Test
+    public void createAndEditFlows_includeDuplicateGuards() throws IOException {
+        String createSource = readFile("src/main/java/com/merware/dayssincepro/CreateCategoryActivity.java");
+        String categoriesSource = readFile("src/main/java/com/merware/dayssincepro/CategoriesActivity.java");
+
+        assertTrue(createSource.contains("categoryExistsByName(newCategory, -1L)"));
+        assertTrue(categoriesSource.contains("categoryExistsByName(newCategory, -1L)"));
+        assertTrue(categoriesSource.contains("!CategorySelectionPolicy.areCategoryNamesEquivalent(newName, name)"));
+    }
+
     private static String readFile(String relativePath) throws IOException {
         return new String(Files.readAllBytes(Paths.get(relativePath)), StandardCharsets.UTF_8);
     }

@@ -37,6 +37,15 @@ public final class CategorySelectionPolicy {
         return isAddMode && requestedCategoryId == UNCATEGORIZED_CAT_ID;
     }
 
+    public static String normalizeCategoryNameForLookup(String rawCategoryName) {
+        return normalizeCategoryToken(rawCategoryName).toLowerCase(Locale.US);
+    }
+
+    public static boolean areCategoryNamesEquivalent(String first, String second) {
+        return normalizeCategoryNameForLookup(first)
+                .equals(normalizeCategoryNameForLookup(second));
+    }
+
     public static String normalizeCategoryToken(String rawCategory) {
         return rawCategory == null ? "" : rawCategory.trim();
     }

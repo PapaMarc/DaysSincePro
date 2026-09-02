@@ -490,8 +490,18 @@ public class CategoriesActivity extends ListActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newCategory = input.getText().toString().trim();
+                        if (newCategory.length() == 0) {
+                            showToast(getString(R.string.category_name_required));
+                            return;
+                        }
+
                         if (CategorySelectionPolicy.isReservedCategoryName(newCategory)) {
                             showToast(getString(R.string.category_name_reserved));
+                            return;
+                        }
+
+                        if (categoryExistsByName(newCategory, -1L)) {
+                            showToast(getString(R.string.category_name_exists));
                             return;
                         }
 
@@ -550,8 +560,19 @@ public class CategoriesActivity extends ListActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 String newName = input.getText().toString().trim();
+                if (newName.length() == 0) {
+                    showToast(getString(R.string.category_name_required));
+                    return;
+                }
+
                 if (CategorySelectionPolicy.isReservedCategoryName(newName)) {
                     showToast(getString(R.string.category_name_reserved));
+                    return;
+                }
+
+                if (!CategorySelectionPolicy.areCategoryNamesEquivalent(newName, name)
+                        && categoryExistsByName(newName, id)) {
+                    showToast(getString(R.string.category_name_exists));
                     return;
                 }
 
@@ -578,6 +599,27 @@ public class CategoriesActivity extends ListActivity {
                 });
 
         builder.show();
+    }
+
+    private boolean categoryExistsByName(String categoryName, long excludeCategoryId) {
+        String normalized = CategorySelectionPolicy.normalizeCategoryNameForLookup(categoryName);
+        StringBuilder sql = new StringBuilder(
+                "SELECT _id FROM category WHERE LOWER(TRIM(category)) = ?");
+
+        String[] args;
+        if (excludeCategoryId > 0) {
+            sql.append(" AND _id <> ?");
+            args = new String[]{normalized, String.valueOf(excludeCategoryId)};
+        } else {
+            args = new String[]{normalized};
+        }
+
+        Cursor matchCursor = db.rawQuery(sql.toString(), args);
+        try {
+            return matchCursor.moveToFirst();
+        } finally {
+            matchCursor.close();
+        }
     }
 
     @Override

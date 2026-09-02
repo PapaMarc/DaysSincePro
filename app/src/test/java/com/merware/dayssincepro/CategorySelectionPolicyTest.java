@@ -100,4 +100,16 @@ public class CategorySelectionPolicyTest {
         assertFalse(CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(false, 0));
         assertFalse(CategorySelectionPolicy.shouldDefaultToAddNewCategoryAction(true, 4));
     }
+
+    @Test
+    public void normalizeCategoryNameForLookup_isTrimmedAndCaseInsensitive() {
+        assertEquals("postoption2", CategorySelectionPolicy.normalizeCategoryNameForLookup(" PostOption2 "));
+        assertEquals("", CategorySelectionPolicy.normalizeCategoryNameForLookup("   "));
+    }
+
+    @Test
+    public void areCategoryNamesEquivalent_matchesTrimmedCaseVariants() {
+        assertTrue(CategorySelectionPolicy.areCategoryNamesEquivalent("PostOption2", " postoption2 "));
+        assertFalse(CategorySelectionPolicy.areCategoryNamesEquivalent("PostOption2", "PostOption3"));
+    }
 }

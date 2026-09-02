@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class EditEventCategoryPickerLayoutTest {
@@ -30,5 +31,11 @@ public class EditEventCategoryPickerLayoutTest {
     private static void assertContainsCategorySelectAgainSpinner(String xml) {
         assertTrue(xml.contains("<com.merware.dayssincepro.SelectAgainSpinner"));
         assertTrue(xml.contains("android:id=\"@+id/catSpinner\""));
+        assertFalse(xml.contains("android:id=\"@+id/checkBox1\""));
+
+        int categorySpinnerIndex = xml.indexOf("android:id=\"@+id/catSpinner\"");
+        int detailsInputIndex = xml.indexOf("android:id=\"@+id/editDetails\"");
+        assertTrue(categorySpinnerIndex >= 0);
+        assertTrue(detailsInputIndex > categorySpinnerIndex);
     }
 }

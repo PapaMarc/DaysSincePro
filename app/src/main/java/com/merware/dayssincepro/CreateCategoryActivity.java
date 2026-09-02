@@ -2,6 +2,7 @@ package com.merware.dayssincepro;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -88,6 +89,11 @@ public class CreateCategoryActivity extends AppCompatActivity {
             return;
         }
 
+        if (categoryExistsByName(newCategory, -1L)) {
+            showToast(getString(R.string.category_name_exists));
+            return;
+        }
+
         ContentValues values = new ContentValues();
         values.put("category", newCategory);
         values.put("type", 0);
@@ -102,6 +108,27 @@ public class CreateCategoryActivity extends AppCompatActivity {
         result.putExtra(EXTRA_CREATED_CATEGORY_ID, createdId);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    private boolean categoryExistsByName(String categoryName, long excludeCategoryId) {
+        String normalized = CategorySelectionPolicy.normalizeCategoryNameForLookup(categoryName);
+        StringBuilder sql = new StringBuilder(
+                "SELECT _id FROM category WHERE LOWER(TRIM(category)) = ?");
+
+        String[] args;
+        if (excludeCategoryId > 0) {
+            sql.append(" AND _id <> ?");
+            args = new String[]{normalized, String.valueOf(excludeCategoryId)};
+        } else {
+            args = new String[]{normalized};
+        }
+
+        Cursor c = db.rawQuery(sql.toString(), args);
+        try {
+            return c.moveToFirst();
+        } finally {
+            c.close();
+        }
     }
 
     private void showToast(String message) {

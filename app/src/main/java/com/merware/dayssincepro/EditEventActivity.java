@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -53,7 +52,6 @@ public class EditEventActivity extends AppCompatActivity {
     TextView recurTextView;
     TextView notifyAtView;
     SelectAgainSpinner catSpinner;
-    CheckBox checkbox;
     CheckBox cbEndDay;
     TextView explainText;
     TextView categoryNudgeText;
@@ -146,8 +144,6 @@ public class EditEventActivity extends AppCompatActivity {
         catSpinner = (SelectAgainSpinner) findViewById(R.id.catSpinner);
         catSpinner.setOnItemSelectedListener(categorySelectionListener);
         recurSpinner = (SelectAgainSpinner) findViewById(R.id.recur_spinner);
-        checkbox = (CheckBox) findViewById(R.id.checkBox1);
-        checkbox.setOnClickListener(checkListener);
         categoryNudgeText = (TextView) findViewById(R.id.categoryNudgeText);
 
         cbEndDay = (CheckBox) findViewById(R.id.checkBoxEndDate);
@@ -323,18 +319,13 @@ public class EditEventActivity extends AppCompatActivity {
 
             // showToast("old categoryID is " + categoryID);
 
-            if (!checkbox.isChecked()) {
-                categoryID = 0;
-            } else {
-
-                if (listCatId.size() > 0) {
-                    long selectedCategoryId = listCatId.get(catSpinner.getSelectedItemPosition());
-                    if (CategorySelectionPolicy.isAddNewCategoryActionId(selectedCategoryId)) {
-                        showToast(getString(R.string.choose_or_create_category));
-                        return;
-                    }
-                    categoryID = selectedCategoryId;
+            if (listCatId.size() > 0) {
+                long selectedCategoryId = listCatId.get(catSpinner.getSelectedItemPosition());
+                if (CategorySelectionPolicy.isAddNewCategoryActionId(selectedCategoryId)) {
+                    showToast(getString(R.string.choose_or_create_category));
+                    return;
                 }
+                categoryID = selectedCategoryId;
             }
 
             //showToast("categoryID is " + categoryID);
@@ -865,16 +856,13 @@ public class EditEventActivity extends AppCompatActivity {
         // showToast("count is " + cursor.getCount());
 
         if (totalCategories == 0) {
-            checkbox.setEnabled(false);
-            checkbox.setVisibility(View.GONE);
-            catSpinner.setVisibility(View.GONE);
+            catSpinner.setEnabled(false);
             if (categoryNudgeText != null) {
                 categoryNudgeText.setVisibility(View.GONE);
             }
         } else {
-            checkbox.setVisibility(View.VISIBLE);
             catSpinner.setVisibility(View.VISIBLE);
-            checkbox.setEnabled(true);
+            catSpinner.setEnabled(true);
         }
 
         SimpleCursorAdapter sca = new SimpleCursorAdapter(this,
@@ -937,8 +925,6 @@ public class EditEventActivity extends AppCompatActivity {
         if (gotPosition) {
             catSpinner.setSelection(setPosition);
             catSpinner.setEnabled(true);
-            checkbox.setEnabled(true);
-            checkbox.setChecked(true);
             if (CategorySelectionPolicy.isPersistableCategoryId(listCatId.get(setPosition))) {
                 lastPersistableSpinnerPosition = setPosition;
             }
@@ -947,18 +933,6 @@ public class EditEventActivity extends AppCompatActivity {
         startManagingCursor(cursor);
         isBindingCategorySpinner = false;
     }
-
-    private OnClickListener checkListener = new OnClickListener() {
-
-        @Override
-        public void onClick(View arg0) {
-            if (catSpinner.isEnabled())
-                catSpinner.setEnabled(false);
-            else
-                catSpinner.setEnabled(true);
-        }
-    };
-
 
     private OnClickListener cbEndDayListener = new OnClickListener() {
 
