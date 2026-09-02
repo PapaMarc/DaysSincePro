@@ -329,6 +329,11 @@ public class CsvImporter {
             name.equalsIgnoreCase("export") || name.isEmpty()) {
             return null;
         }
+
+        if (CategorySelectionPolicy.isReservedCategoryName(name)) {
+            return null;
+        }
+
         return name;
     }
 
@@ -700,7 +705,7 @@ public class CsvImporter {
                             CategorySelectionPolicy.decideImportCategory(
                                     row.get(colCategory),
                                     defaultCategoryId,
-                                    false);
+                                true);
 
                     if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_DEFAULT) {
                         targetCatId = decision.getDefaultCategoryId();
@@ -850,12 +855,24 @@ public class CsvImporter {
                 long fileDefaultCatId = defaultCategoryId;
 
                 if (inferredCategory != null && !inferredCategory.isEmpty()) {
-                    int[] counter = new int[]{0};
-                    long resolved = resolveOrCreateCategory(db, inferredCategory, sharedCategoryCache, counter);
-                    if (resolved != -1) {
-                        fileDefaultCatId = resolved;
+                    CategorySelectionPolicy.ImportCategoryDecision decision =
+                            CategorySelectionPolicy.decideImportCategory(
+                                    inferredCategory,
+                                    defaultCategoryId,
+                                    true);
+
+                    if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL) {
+                        fileDefaultCatId = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.RESOLVE_BY_NAME) {
+                        int[] counter = new int[]{0};
+                        long resolved = resolveOrCreateCategory(db, decision.getCategoryName(), sharedCategoryCache, counter);
+                        if (resolved != -1) {
+                            fileDefaultCatId = resolved;
+                        }
+                        initialCategoriesCreated += counter[0];
+                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_DEFAULT) {
+                        fileDefaultCatId = decision.getDefaultCategoryId();
                     }
-                    initialCategoriesCreated += counter[0];
                 }
 
                 try (InputStream is = context.getContentResolver().openInputStream(uri)) {

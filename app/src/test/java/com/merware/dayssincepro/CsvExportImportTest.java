@@ -44,6 +44,13 @@ public class CsvExportImportTest {
     }
 
     @Test
+    public void testCategoryForExport_usesEmptyForUncategorizedSentinel() {
+        assertEquals("", CsvExporter.categoryForExport(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID, "Uncategorized"));
+        assertEquals("", CsvExporter.categoryForExport(2L, null));
+        assertEquals("LifeDocs", CsvExporter.categoryForExport(2L, "LifeDocs"));
+    }
+
+    @Test
     public void testPhase4HeadersIncludeEndDateAndDetails_only() {
         assertEquals("\"event\",\"date\",\"recur\",\"end_date\",\"details\"",
                 CsvExporter.HEADER_SINGLE_CATEGORY);
@@ -302,7 +309,17 @@ public class CsvExportImportTest {
         assertNull(CsvImporter.inferCategoryFromFilename("daysSincePro.csv"));
         assertNull(CsvImporter.inferCategoryFromFilename("daysSincePro_All.csv"));
         assertNull(CsvImporter.inferCategoryFromFilename("events.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename("Uncategorized.csv"));
+        assertNull(CsvImporter.inferCategoryFromFilename(" uncategorized .csv"));
         assertNull(CsvImporter.inferCategoryFromFilename(""));
         assertNull(CsvImporter.inferCategoryFromFilename(null));
+    }
+
+    @Test
+    public void testImportDecision_reservedUncategorizedTokenMapsToSentinel_whenEnabled() {
+        CategorySelectionPolicy.ImportCategoryDecision decision =
+                CategorySelectionPolicy.decideImportCategory("Uncategorized", 12L, true);
+        assertEquals(CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL, decision.getKind());
+        assertEquals(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID, decision.getDefaultCategoryId());
     }
 }

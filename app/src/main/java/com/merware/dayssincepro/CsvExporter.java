@@ -206,7 +206,7 @@ public class CsvExporter {
         writer.write("\r\n");
 
         int count = 0;
-        String sql = "SELECT COALESCE(c.category, 'Uncategorized'), e.event, e.date, e.recur, e.end_date, e.details " +
+        String sql = "SELECT e.catId, c.category, e.event, e.date, e.recur, e.end_date, e.details " +
                 "FROM event e " +
                 "LEFT JOIN category c ON e.catId = c._id " +
                 "ORDER BY c.category ASC, e.date ASC, e._id ASC";
@@ -215,16 +215,18 @@ public class CsvExporter {
         if (cursor != null) {
             try {
                 while (cursor.moveToNext()) {
-                    String category = cursor.getString(0);
-                    String event = cursor.getString(1);
-                    String date = cursor.getString(2);
-                    int recur = cursor.getInt(3);
-                    String endDate = cursor.getString(4);
-                    String details = cursor.getString(5);
+                    long catId = cursor.getLong(0);
+                    String category = cursor.getString(1);
+                    String event = cursor.getString(2);
+                    String date = cursor.getString(3);
+                    int recur = cursor.getInt(4);
+                    String endDate = cursor.getString(5);
+                    String details = cursor.getString(6);
 
                     String formattedDate = formatIsoDate(date);
                     String formattedEndDate = formatIsoDate(endDate);
-                    String row = formatRow(category, event, formattedDate, String.valueOf(recur), formattedEndDate, details);
+                    String exportCategory = categoryForExport(catId, category);
+                    String row = formatRow(exportCategory, event, formattedDate, String.valueOf(recur), formattedEndDate, details);
                     writer.write(row);
                     writer.write("\r\n");
                     count++;
@@ -235,6 +237,13 @@ public class CsvExporter {
         }
         writer.flush();
         return count;
+    }
+
+    static String categoryForExport(long catId, String categoryName) {
+        if (catId == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
+            return "";
+        }
+        return categoryName == null ? "" : categoryName;
     }
 
     /**

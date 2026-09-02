@@ -296,6 +296,12 @@ Rationale:
 - Verification completed: targeted Phase 2 unit tests and full release bundle build.
 - Build/version note for Phase 2 completion: versionName advanced from 3.10.58.49 to 3.10.59.49.
 
+3. Phase 3: complete.
+
+- Completed deliverables: CSV uncategorized semantic hardening (empty category export representation for uncategorized sentinel rows, reserved-token mapping to catId 0 on import, and no reserved-name category creation via filename inference).
+- Verification completed: targeted CSV/policy unit tests and full release bundle build.
+- Build/version note for Phase 3 completion: versionName advanced from 3.10.59.49 to 3.10.60.49.
+
 ### Proposed Phases
 
 1. Phase 1: Policy and test seams
