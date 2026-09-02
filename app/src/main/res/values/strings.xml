@@ -92,8 +92,8 @@
     <string name="light">Light </string>
     <string name="category_sort_order">Category Sort Order</string>
     <string name="event_sort_order">Event Sort Order</string>
-    <string name="font_size"> Font Size</string>
-    <string name="font_size_for_events">Font Size For Events</string>
+    <string name="font_size"> Event List Font Size</string>
+    <string name="font_size_for_events">Event List Font Size</string>
     <string name="display_style">Days Style</string>
     <string name="date_style">Date Style</string>
 

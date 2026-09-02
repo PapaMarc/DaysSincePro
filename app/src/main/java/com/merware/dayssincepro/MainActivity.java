@@ -58,6 +58,12 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_EXPORT_CSV_SAF = 11;
     private static final int REQUEST_RESTORE_DB_SAF = 12;
     private static final int REQUEST_IMPORT_CSV_SAF = 13;
+    private static final String EXTRA_SELECTED_TAB = "selected_tab";
+    private static final String STATE_SELECTED_TAB = "selected_tab";
+
+    private boolean waitingForSettingsReturn = false;
+    private String themeBeforeSettings = "0";
+    private int selectedTabBeforeSettings = 0;
 
 
     @Override
@@ -123,11 +129,25 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         // set to a tab based on preference
-        String tabStyle = preferences.getString("tab_style", "0");
-        int iTab = Integer.parseInt(tabStyle);
+        int selectedTab = getIntent().getIntExtra(EXTRA_SELECTED_TAB, -1);
 
-        if (iTab != 0)
-            mViewPager.setCurrentItem(iTab);
+        if (savedInstanceState != null) {
+            selectedTab = savedInstanceState.getInt(STATE_SELECTED_TAB, selectedTab);
+        }
+
+        if (selectedTab < 0) {
+            String tabStyle = preferences.getString("tab_style", "0");
+            selectedTab = Integer.parseInt(tabStyle);
+        }
+
+        if (selectedTab != 0)
+            mViewPager.setCurrentItem(selectedTab);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_TAB, mViewPager.getCurrentItem());
     }
 
     MenuItem searchMenuItem;
@@ -317,8 +337,36 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, PrefActivity.class);
 
         notifyOptionBefore = preferences.getBoolean("noti", false);
+        themeBeforeSettings = preferences.getString("theme", "0");
+        selectedTabBeforeSettings = mViewPager.getCurrentItem();
+        waitingForSettingsReturn = true;
 
         startActivityForResult(intent, CONFIG_ACTIVITY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!waitingForSettingsReturn) {
+            return;
+        }
+
+        waitingForSettingsReturn = false;
+
+        String themeNow = preferences.getString("theme", "0");
+        if (!themeNow.equals(themeBeforeSettings)) {
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(EXTRA_SELECTED_TAB, selectedTabBeforeSettings);
+            startActivity(intent);
+            return;
+        }
+
+        refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
+                mViewPager.getCurrentItem());
     }
 
     @Override
@@ -363,6 +411,27 @@ public class MainActivity extends AppCompatActivity implements
             sinceLast.listData();
         if (daysUntil != null)
             daysUntil.listData();
+    }
+
+    static void refreshCurrentTab(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
+                                  PastFutureListFragment daysUntil, int currentTab) {
+        switch (currentTab) {
+            case 0:
+                if (daysSince != null) {
+                    daysSince.listData();
+                }
+                break;
+            case 1:
+                if (sinceLast != null) {
+                    sinceLast.listData();
+                }
+                break;
+            case 2:
+                if (daysUntil != null) {
+                    daysUntil.listData();
+                }
+                break;
+        }
     }
 
     // package-private + static so it can be unit tested without an Activity/pager instance.
