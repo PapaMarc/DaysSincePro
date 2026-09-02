@@ -302,6 +302,17 @@ Rationale:
 - Verification completed: targeted CSV/policy unit tests and full release bundle build.
 - Build/version note for Phase 3 completion: versionName advanced from 3.10.59.49 to 3.10.60.49.
 
+4. Phase 4: complete.
+
+- Completed deliverables: end-to-end validation sweep and release-readiness pass for uncategorized semantics.
+- Validation matrix completed and passing:
+  - DB path validation: BackupRestoreValidationTest passed.
+  - CSV semantics validation: CsvExportImportTest passed.
+  - Policy/selection validation: CategorySelectionPolicyTest and CategorySelectionFilterSqlTest passed.
+  - Full regression sweep: :app:testDebugUnitTest passed.
+  - Full build gate: bundleRelease passed.
+- Build/version note for Phase 4 completion: versionName NOT advanced from 3.10.60.49 as no code was changed and this was strickly intensive validation (and doc only update).
+
 ### Proposed Phases
 
 1. Phase 1: Policy and test seams
