@@ -9,6 +9,8 @@ public final class CategorySelectionPolicy {
 
     public static final long UNCATEGORIZED_CAT_ID = 0L;
     public static final String UNCATEGORIZED_LABEL = "Uncategorized";
+    public static final long ACTION_ADD_NEW_CATEGORY_ID = -100L;
+    public static final String ACTION_ADD_NEW_CATEGORY_LABEL = "<Add New Category>";
 
     private CategorySelectionPolicy() {
         // Utility class; prevent instantiation.
@@ -16,6 +18,18 @@ public final class CategorySelectionPolicy {
 
     public static boolean shouldIncludeSyntheticUncategorized(long uncategorizedEventCount) {
         return uncategorizedEventCount > 0;
+    }
+
+    public static boolean shouldShowCategoryCreationNudge(long realCategoryCount) {
+        return realCategoryCount <= 0;
+    }
+
+    public static boolean isAddNewCategoryActionId(long categoryId) {
+        return categoryId == ACTION_ADD_NEW_CATEGORY_ID;
+    }
+
+    public static boolean isPersistableCategoryId(long categoryId) {
+        return categoryId >= 0;
     }
 
     public static String normalizeCategoryToken(String rawCategory) {

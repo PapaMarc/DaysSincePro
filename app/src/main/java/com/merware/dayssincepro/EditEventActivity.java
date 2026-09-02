@@ -43,6 +43,7 @@ import com.merware.dayssincepro.SimpleDate.DateStyle;
 public class EditEventActivity extends AppCompatActivity {
 
     private static final int MAX_DETAILS_LENGTH = 256;
+    private static final int REQUEST_ADD_EVENT_CATEGORY = 201;
 
     EditText eventText;
     EditText detailsText;
@@ -55,6 +56,7 @@ public class EditEventActivity extends AppCompatActivity {
     CheckBox checkbox;
     CheckBox cbEndDay;
     TextView explainText;
+    TextView categoryNudgeText;
     SelectAgainSpinner recurSpinner;
     Button btnPickEndDate;
 
@@ -86,6 +88,8 @@ public class EditEventActivity extends AppCompatActivity {
     int theme = 0;
 
     ArrayList<Long> listCatId = new ArrayList<>();
+    private boolean suppressCategorySelectionCallback = false;
+    private int lastPersistableSpinnerPosition = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,9 +143,11 @@ public class EditEventActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(eventCancel);
 
         catSpinner = (Spinner) findViewById(R.id.catSpinner);
+        catSpinner.setOnItemSelectedListener(categorySelectionListener);
         recurSpinner = (SelectAgainSpinner) findViewById(R.id.recur_spinner);
         checkbox = (CheckBox) findViewById(R.id.checkBox1);
         checkbox.setOnClickListener(checkListener);
+        categoryNudgeText = (TextView) findViewById(R.id.categoryNudgeText);
 
         cbEndDay = (CheckBox) findViewById(R.id.checkBoxEndDate);
         cbEndDay.setOnClickListener(cbEndDayListener);
@@ -257,6 +263,7 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         listCategories();
+        updateCategoryNudgeVisibility();
         updateDisplay();
 
         eventText.setHint(R.string.enter_text);
@@ -319,8 +326,14 @@ public class EditEventActivity extends AppCompatActivity {
                 categoryID = 0;
             } else {
 
-                if (listCatId.size() > 0)
-                    categoryID = listCatId.get(catSpinner.getSelectedItemPosition());
+                if (listCatId.size() > 0) {
+                    long selectedCategoryId = listCatId.get(catSpinner.getSelectedItemPosition());
+                    if (CategorySelectionPolicy.isPersistableCategoryId(selectedCategoryId)) {
+                        categoryID = selectedCategoryId;
+                    } else {
+                        categoryID = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+                    }
+                }
             }
 
             //showToast("categoryID is " + categoryID);
@@ -710,6 +723,85 @@ public class EditEventActivity extends AppCompatActivity {
         }
     }
 
+    private long getRealCategoryCount() {
+        Cursor countCursor = db.rawQuery("SELECT COUNT(*) FROM category", null);
+        try {
+            if (countCursor.moveToFirst()) {
+                return countCursor.getLong(0);
+            }
+            return 0;
+        } finally {
+            countCursor.close();
+        }
+    }
+
+    private void updateCategoryNudgeVisibility() {
+        if (categoryNudgeText == null) {
+            return;
+        }
+
+        boolean show = "Add".equals(mode)
+                && CategorySelectionPolicy.shouldShowCategoryCreationNudge(getRealCategoryCount());
+        categoryNudgeText.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private int findFirstPersistableSpinnerPosition() {
+        for (int i = 0; i < listCatId.size(); i++) {
+            long id = listCatId.get(i);
+            if (CategorySelectionPolicy.isPersistableCategoryId(id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void launchAddCategoryFromPicker() {
+        Intent intent = new Intent(this, CategoriesActivity.class);
+        intent.putExtra(CategoriesActivity.EXTRA_AUTO_OPEN_ADD_CATEGORY, true);
+        startActivityForResult(intent, REQUEST_ADD_EVENT_CATEGORY);
+    }
+
+    private void restorePersistableSpinnerSelection() {
+        int targetPosition = lastPersistableSpinnerPosition;
+        if (targetPosition < 0 || targetPosition >= listCatId.size()) {
+            targetPosition = findFirstPersistableSpinnerPosition();
+        }
+        if (targetPosition >= 0) {
+            suppressCategorySelectionCallback = true;
+            catSpinner.setSelection(targetPosition);
+        }
+    }
+
+    private AdapterView.OnItemSelectedListener categorySelectionListener =
+            new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (suppressCategorySelectionCallback) {
+                        suppressCategorySelectionCallback = false;
+                        return;
+                    }
+
+                    if (position < 0 || position >= listCatId.size()) {
+                        return;
+                    }
+
+                    long selectedId = listCatId.get(position);
+                    if (CategorySelectionPolicy.isAddNewCategoryActionId(selectedId)) {
+                        launchAddCategoryFromPicker();
+                        restorePersistableSpinnerSelection();
+                        return;
+                    }
+
+                    if (CategorySelectionPolicy.isPersistableCategoryId(selectedId)) {
+                        lastPersistableSpinnerPosition = position;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            };
+
     private void listCategories() {
 
         String option = preferences.getString("category_sort_order", "0");
@@ -734,13 +826,23 @@ public class EditEventActivity extends AppCompatActivity {
                 orderBy);
 
         Cursor cursor = categoryCursor;
+
         if (CategorySelectionPolicy.shouldIncludeSyntheticUncategorized(getUncategorizedEventCount())) {
             MatrixCursor synthetic = new MatrixCursor(new String[]{"_id", "category"});
             synthetic.addRow(new Object[]{
                 CategorySelectionPolicy.UNCATEGORIZED_CAT_ID,
                 CategorySelectionPolicy.getUncategorizedDisplayLabel()
             });
-            cursor = new MergeCursor(new Cursor[]{synthetic, categoryCursor});
+            cursor = new MergeCursor(new Cursor[]{synthetic, cursor});
+        }
+
+        if ("Add".equals(mode)) {
+            MatrixCursor addAction = new MatrixCursor(new String[]{"_id", "category"});
+            addAction.addRow(new Object[]{
+                    CategorySelectionPolicy.ACTION_ADD_NEW_CATEGORY_ID,
+                    getString(R.string.add_new_category_action)
+            });
+            cursor = new MergeCursor(new Cursor[]{addAction, cursor});
         }
 
         String[] from = new String[] { "category" };
@@ -756,6 +858,13 @@ public class EditEventActivity extends AppCompatActivity {
             checkbox.setEnabled(false);
             checkbox.setVisibility(View.GONE);
             catSpinner.setVisibility(View.GONE);
+            if (categoryNudgeText != null) {
+                categoryNudgeText.setVisibility(View.GONE);
+            }
+        } else {
+            checkbox.setVisibility(View.VISIBLE);
+            catSpinner.setVisibility(View.VISIBLE);
+            checkbox.setEnabled(true);
         }
 
         SimpleCursorAdapter sca = new SimpleCursorAdapter(this,
@@ -770,6 +879,7 @@ public class EditEventActivity extends AppCompatActivity {
             sca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
+        suppressCategorySelectionCallback = true;
         catSpinner.setAdapter(sca);
 
         // set spinner
@@ -793,6 +903,11 @@ public class EditEventActivity extends AppCompatActivity {
             cursor.moveToNext();
         }
 
+        int fallbackPersistable = findFirstPersistableSpinnerPosition();
+        if (fallbackPersistable >= 0) {
+            lastPersistableSpinnerPosition = fallbackPersistable;
+        }
+
         // if there are categories, add a new one will pick the first category
         // listed.
         // if add to uncategorized don't bother to pick category even if there
@@ -808,10 +923,14 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         if (gotPosition) {
+            suppressCategorySelectionCallback = true;
             catSpinner.setSelection(setPosition);
             catSpinner.setEnabled(true);
             checkbox.setEnabled(true);
             checkbox.setChecked(true);
+            if (CategorySelectionPolicy.isPersistableCategoryId(listCatId.get(setPosition))) {
+                lastPersistableSpinnerPosition = setPosition;
+            }
         }
 
         startManagingCursor(cursor);
@@ -903,5 +1022,26 @@ public class EditEventActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode != REQUEST_ADD_EVENT_CATEGORY) {
+            return;
+        }
+
+        long createdCategoryId = -1L;
+        if (data != null) {
+            createdCategoryId = data.getLongExtra(CategoriesActivity.EXTRA_CREATED_CATEGORY_ID, -1L);
+        }
+
+        if (createdCategoryId > 0) {
+            categoryID = createdCategoryId;
+        }
+
+        listCategories();
+        updateCategoryNudgeVisibility();
     }
 }

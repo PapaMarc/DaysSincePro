@@ -47,6 +47,9 @@ import android.util.Log;
 
 public class CategoriesActivity extends ListActivity {
 
+    public static final String EXTRA_AUTO_OPEN_ADD_CATEGORY = "extra_auto_open_add_category";
+    public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
+
     SimpleCursorAdapter categoryAdapter;
     protected SQLiteDatabase db;
     private ListView lv;
@@ -82,6 +85,8 @@ public class CategoriesActivity extends ListActivity {
     int checkCount = 0;
 
     private String categories;
+    private boolean autoOpenAddRequested = false;
+    private boolean autoOpenAddConsumed = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,8 @@ public class CategoriesActivity extends ListActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories);
+
+        autoOpenAddRequested = getIntent().getBooleanExtra(EXTRA_AUTO_OPEN_ADD_CATEGORY, false);
 
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
@@ -334,6 +341,9 @@ public class CategoriesActivity extends ListActivity {
         // showToast("joined: " + joined);
 
         Intent intent = new Intent();
+        if (newItemId > 0) {
+            intent.putExtra(EXTRA_CREATED_CATEGORY_ID, newItemId);
+        }
         setResult(RESULT_OK, intent);
 
         finish();
@@ -375,11 +385,22 @@ public class CategoriesActivity extends ListActivity {
     protected void onResume() {
         super.onResume();
         reApplyChecked();
+
+        if (autoOpenAddRequested && !autoOpenAddConsumed) {
+            autoOpenAddConsumed = true;
+            showAddCategoryDialog();
+        }
     }
 
     private OnClickListener doneListener = new OnClickListener() {
         public void onClick(View v) {
-            setResult(RESULT_CANCELED, null);
+            if (newItemId > 0) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(EXTRA_CREATED_CATEGORY_ID, newItemId);
+                setResult(RESULT_OK, resultIntent);
+            } else {
+                setResult(RESULT_CANCELED, null);
+            }
             finish();
         }
     };
@@ -444,63 +465,67 @@ public class CategoriesActivity extends ListActivity {
 
         @Override
         public void onClick(View v) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    CategoriesActivity.this);
-            builder.setTitle(R.string.add_a_category);
-
-            // Set up the input
-            final EditText input = new EditText(CategoriesActivity.this);
-            input.setInputType(InputType.TYPE_CLASS_TEXT
-                    | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            input.setHint(R.string.enter_category);
-
-            builder.setView(input);
-
-            // Set up the buttons
-            builder.setPositiveButton(R.string.OK,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String newCategory = input.getText().toString().trim();
-                            if (CategorySelectionPolicy.isReservedCategoryName(newCategory)) {
-                                showToast(getString(R.string.category_name_reserved));
-                                return;
-                            }
-
-                            ContentValues values = new ContentValues();
-                            values.put("category", newCategory);
-                            values.put("type", 0);
-                            newItemId = db.insert("category", "category",
-                                    values);
-
-                            // maybe should add selected as well
-                            selectedCategories.add(newCategory);
-
-                            data = lv.getCheckedItemIds();
-                            listData();
-
-                            reApplyChecked();
-
-                        }
-                    });
-            builder.setNegativeButton(R.string.Cancel,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-            AlertDialog dialog = builder.create();
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
-            dialog.show();
-            input.requestFocus();
+            showAddCategoryDialog();
         }
 
     };
+
+    private void showAddCategoryDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                CategoriesActivity.this);
+        builder.setTitle(R.string.add_a_category);
+
+        // Set up the input
+        final EditText input = new EditText(CategoriesActivity.this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        input.setHint(R.string.enter_category);
+
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton(R.string.OK,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newCategory = input.getText().toString().trim();
+                        if (CategorySelectionPolicy.isReservedCategoryName(newCategory)) {
+                            showToast(getString(R.string.category_name_reserved));
+                            return;
+                        }
+
+                        ContentValues values = new ContentValues();
+                        values.put("category", newCategory);
+                        values.put("type", 0);
+                        newItemId = db.insert("category", "category",
+                                values);
+
+                        // maybe should add selected as well
+                        selectedCategories.add(newCategory);
+
+                        data = lv.getCheckedItemIds();
+                        listData();
+
+                        reApplyChecked();
+
+                    }
+                });
+        builder.setNegativeButton(R.string.Cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+        dialog.show();
+        input.requestFocus();
+    }
 
     void editItem(int position, final long id) {
         if (id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {

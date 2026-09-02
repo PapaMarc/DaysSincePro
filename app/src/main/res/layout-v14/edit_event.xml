@@ -149,6 +149,14 @@
                 android:layout_height="wrap_content"
                 android:prompt="@string/prompt" />
 
+            <TextView
+                android:id="@+id/categoryNudgeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/add_event_category_nudge"
+                android:visibility="gone" />
+
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dip"

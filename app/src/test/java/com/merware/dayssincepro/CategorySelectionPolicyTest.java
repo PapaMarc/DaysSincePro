@@ -70,4 +70,27 @@ public class CategorySelectionPolicyTest {
         assertFalse(CategorySelectionPolicy.isReservedCategoryName(""));
         assertFalse(CategorySelectionPolicy.isReservedCategoryName("LifeDocs"));
     }
+
+    @Test
+    public void shouldShowCategoryCreationNudge_onlyWhenNoRealCategories() {
+        assertTrue(CategorySelectionPolicy.shouldShowCategoryCreationNudge(0));
+        assertTrue(CategorySelectionPolicy.shouldShowCategoryCreationNudge(-1));
+        assertFalse(CategorySelectionPolicy.shouldShowCategoryCreationNudge(1));
+        assertFalse(CategorySelectionPolicy.shouldShowCategoryCreationNudge(3));
+    }
+
+    @Test
+    public void addNewCategoryActionId_isRecognizedAndNonPersistable() {
+        assertTrue(CategorySelectionPolicy.isAddNewCategoryActionId(
+                CategorySelectionPolicy.ACTION_ADD_NEW_CATEGORY_ID));
+        assertFalse(CategorySelectionPolicy.isPersistableCategoryId(
+                CategorySelectionPolicy.ACTION_ADD_NEW_CATEGORY_ID));
+    }
+
+    @Test
+    public void isPersistableCategoryId_acceptsSentinelAndRealIds() {
+        assertTrue(CategorySelectionPolicy.isPersistableCategoryId(0));
+        assertTrue(CategorySelectionPolicy.isPersistableCategoryId(7));
+        assertFalse(CategorySelectionPolicy.isPersistableCategoryId(-1));
+    }
 }

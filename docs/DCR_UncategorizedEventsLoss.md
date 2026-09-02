@@ -313,7 +313,7 @@ Rationale:
   - Full build gate: bundleRelease passed.
 - Build/version note for Phase 4 completion: versionName NOT advanced from 3.10.60.49 as no code was changed and this was strickly intensive validation (and doc only update).
 
-5. Phase 5: proposed (pending implementation).
+5. Phase 5: complete.
 
 - Chronology note: Phase 5 was identified after Phases 1-4 were already conceived and implemented.
 - Why it was added late: post-implementation review showed an intent gap where surfacing Uncategorized as a frequent first/default Add Event choice could implicitly reinforce continued non-use of intentionally defined categories.
@@ -323,6 +323,18 @@ Rationale:
 - Nudge persistence rule: keep showing the nudge until at least one real (non-sentinel) category exists.
 - Cancel behavior rule: if user cancels category creation, nudge remains and is shown again on later Add Event visits until a real category exists.
 - Existing-user gating rule: users who already have one or more real categories do not see this nudge after update.
+- Completed deliverables:
+  - Add Event category picker now includes synthetic top-row action <Add New Category>.
+  - Selecting the synthetic action opens Categories and auto-opens Add Category input.
+  - Add Event no longer hides category controls in zero/zero first-time state; the guided action remains visible.
+  - Add Event save path guards against persisting synthetic action ids.
+  - Returning from category creation rebinds options and preselects created category when present.
+  - First-time nudge copy is shown only while real category count is zero.
+- Verification completed:
+  - Targeted test: :app:testDebugUnitTest --tests com.merware.dayssincepro.CategorySelectionPolicyTest passed.
+  - Full regression sweep: :app:testDebugUnitTest passed.
+  - Full build gate: bundleRelease passed.
+- Build/version note for Phase 5 completion: versionName advanced from 3.10.60.49 to 3.10.61.49.
 
 ### Proposed Phases
 
