@@ -62,4 +62,12 @@ public class CategorySelectionPolicyTest {
         assertEquals(CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL, decision.getKind());
         assertEquals(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID, decision.getDefaultCategoryId());
     }
+
+    @Test
+    public void isReservedCategoryName_blocksUncategorizedLiteralCaseInsensitive() {
+        assertTrue(CategorySelectionPolicy.isReservedCategoryName("Uncategorized"));
+        assertTrue(CategorySelectionPolicy.isReservedCategoryName(" uncategorized "));
+        assertFalse(CategorySelectionPolicy.isReservedCategoryName(""));
+        assertFalse(CategorySelectionPolicy.isReservedCategoryName("LifeDocs"));
+    }
 }

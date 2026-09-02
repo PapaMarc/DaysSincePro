@@ -282,6 +282,20 @@ Rationale:
 2. Phasing reduces integration risk and makes behavioral diffs easy to validate between steps.
 3. With low current production criticality, we can prioritize correctness and test depth before release without rushing a large all-at-once merge.
 
+## Phase Status Updates
+
+1. Phase 1: complete.
+
+- Completed deliverables: uncategorized policy seam via CategorySelectionPolicy, CSV importer decision routing through centralized policy, and focused helper tests.
+- Verification completed: targeted JVM unit tests and full release bundle build.
+- Build/version note for Phase 1 completion: versionName advanced from 3.9.57.49 to 3.10.58.49.
+
+2. Phase 2: complete.
+
+- Completed deliverables: synthetic uncategorized option (shown only when uncategorized events exist) across CategoriesActivity, EditEventActivity, and EventChooserActivity; normal-flow no-category warning removal; reserved-name blocking for create/edit paths.
+- Verification completed: targeted Phase 2 unit tests and full release bundle build.
+- Build/version note for Phase 2 completion: versionName advanced from 3.10.58.49 to 3.10.59.49.
+
 ### Proposed Phases
 
 1. Phase 1: Policy and test seams

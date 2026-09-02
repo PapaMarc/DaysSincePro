@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -694,6 +696,20 @@ public class EditEventActivity extends AppCompatActivity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
+    private long getUncategorizedEventCount() {
+        Cursor countCursor = db.rawQuery(
+                "SELECT COUNT(*) FROM event WHERE catId = ?",
+                new String[]{String.valueOf(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID)});
+        try {
+            if (countCursor.moveToFirst()) {
+                return countCursor.getLong(0);
+            }
+            return 0;
+        } finally {
+            countCursor.close();
+        }
+    }
+
     private void listCategories() {
 
         String option = preferences.getString("category_sort_order", "0");
@@ -713,9 +729,19 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         // _id is required for SimpleCursorAdapter
-        Cursor cursor = db.query("category",
+        Cursor categoryCursor = db.query("category",
                 new String[] { "_id", "category" }, null, null, null, null,
                 orderBy);
+
+        Cursor cursor = categoryCursor;
+        if (CategorySelectionPolicy.shouldIncludeSyntheticUncategorized(getUncategorizedEventCount())) {
+            MatrixCursor synthetic = new MatrixCursor(new String[]{"_id", "category"});
+            synthetic.addRow(new Object[]{
+                CategorySelectionPolicy.UNCATEGORIZED_CAT_ID,
+                CategorySelectionPolicy.getUncategorizedDisplayLabel()
+            });
+            cursor = new MergeCursor(new Cursor[]{synthetic, categoryCursor});
+        }
 
         String[] from = new String[] { "category" };
         int[] to = new int[] { android.R.id.text1 };

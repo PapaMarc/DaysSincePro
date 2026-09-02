@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -219,6 +221,30 @@ public class CategoriesActivity extends ListActivity {
         return false;
     }
 
+    private long getUncategorizedEventCount() {
+        Cursor countCursor = db.rawQuery(
+                "SELECT COUNT(*) FROM event WHERE catId = ?",
+                new String[]{String.valueOf(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID)});
+        try {
+            if (countCursor.moveToFirst()) {
+                return countCursor.getLong(0);
+            }
+            return 0;
+        } finally {
+            countCursor.close();
+        }
+    }
+
+    private void syncSelectedCategoriesFromChecked() {
+        selectedCategories.clear();
+        for (int i = 0; i < lv.getCount(); i++) {
+            if (lv.isItemChecked(i)) {
+                Cursor c = (Cursor) lv.getItemAtPosition(i);
+                selectedCategories.add(c.getString(1));
+            }
+        }
+    }
+
     private void listData() {
 
         String option = preferences.getString("category_sort_order", "0");
@@ -238,8 +264,19 @@ public class CategoriesActivity extends ListActivity {
         }
 
         // _id is required for SimpleCursorAdapter
-        Cursor cursor = db.query("category", new String[]{"_id", "category",
-                "type"}, null, null, null, null, orderBy);
+        Cursor categoryCursor = db.query("category", new String[]{"_id", "category",
+            "type"}, null, null, null, null, orderBy);
+
+        Cursor cursor = categoryCursor;
+        if (CategorySelectionPolicy.shouldIncludeSyntheticUncategorized(getUncategorizedEventCount())) {
+            MatrixCursor synthetic = new MatrixCursor(new String[]{"_id", "category", "type"});
+            synthetic.addRow(new Object[]{
+                CategorySelectionPolicy.UNCATEGORIZED_CAT_ID,
+                CategorySelectionPolicy.getUncategorizedDisplayLabel(),
+                0
+            });
+            cursor = new MergeCursor(new Cursor[]{synthetic, categoryCursor});
+        }
 
         String[] from = new String[]{"category", "type"};
         int[] to = new int[]{android.R.id.text1};
@@ -261,19 +298,7 @@ public class CategoriesActivity extends ListActivity {
         public void onClick(View v) {
 
             data = lv.getCheckedItemIds();
-
-            if (data.length == 0 && lv.getCount() > 0) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        CategoriesActivity.this);
-                builder.setTitle(R.string.no_category_chosen);
-                builder.setMessage(R.string.uncategorized_only);
-                builder.setPositiveButton(R.string.yes, yesNoDialogClickListenerOK);
-                builder.setNegativeButton(R.string.no, yesNoDialogClickListenerOK);
-                builder.show();
-            } else {
-                exitDialog();
-            }
+            exitDialog();
         }
     };
 
@@ -370,7 +395,7 @@ public class CategoriesActivity extends ListActivity {
     }
 
     private void updateTitle() {
-
+        syncSelectedCategoriesFromChecked();
         checkCount = this.selectedCategories.size();
 
         if (checkCount == 1)
@@ -396,6 +421,7 @@ public class CategoriesActivity extends ListActivity {
 
             } else {
 
+                selectedCategories.clear();
                 for (int i = 0; i < lv.getCount(); i++) {
                     lv.setItemChecked(i, true);
 
@@ -436,7 +462,12 @@ public class CategoriesActivity extends ListActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String newCategory = input.getText().toString();
+                            String newCategory = input.getText().toString().trim();
+                            if (CategorySelectionPolicy.isReservedCategoryName(newCategory)) {
+                                showToast(getString(R.string.category_name_reserved));
+                                return;
+                            }
+
                             ContentValues values = new ContentValues();
                             values.put("category", newCategory);
                             values.put("type", 0);
@@ -472,6 +503,11 @@ public class CategoriesActivity extends ListActivity {
     };
 
     void editItem(int position, final long id) {
+        if (id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
+            showToast(getString(R.string.category_name_reserved));
+            return;
+        }
+
         Cursor c = (Cursor) lv.getItemAtPosition(position);
         final String name = c.getString(1);
 
@@ -488,7 +524,11 @@ public class CategoriesActivity extends ListActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String newName = input.getText().toString();
+                String newName = input.getText().toString().trim();
+                if (CategorySelectionPolicy.isReservedCategoryName(newName)) {
+                    showToast(getString(R.string.category_name_reserved));
+                    return;
+                }
 
                 // seek and remove what was edited if was selected
                 if (selectedCategories.contains(name)) {
@@ -520,8 +560,14 @@ public class CategoriesActivity extends ListActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        menu.add(0, MENU_EDIT, Menu.NONE + 1, R.string.edit);
-        menu.add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        boolean isUncategorizedSynthetic = info != null
+                && info.id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+
+        if (!isUncategorizedSynthetic) {
+            menu.add(0, MENU_EDIT, Menu.NONE + 1, R.string.edit);
+            menu.add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
+        }
         menu.add(2, MENU_EXPORT, Menu.NONE + 3, R.string.export_category);
         menu.add(3, MENU_IMPORT, Menu.NONE + 4, R.string.import_csv);
     }
@@ -540,6 +586,10 @@ public class CategoriesActivity extends ListActivity {
                 break;
 
             case MENU_REMOVE:
+                if (menuInfo.id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
+                    showToast(getString(R.string.category_name_reserved));
+                    break;
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.remove_category);
                 builder.setMessage(R.string.remove_cat_msg);

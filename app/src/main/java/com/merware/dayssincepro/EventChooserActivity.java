@@ -192,12 +192,31 @@ public class EventChooserActivity extends Activity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
+    private long getUncategorizedEventCount() {
+        Cursor countCursor = db.rawQuery(
+                "SELECT COUNT(*) FROM event WHERE catId = ?",
+                new String[]{String.valueOf(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID)});
+        try {
+            if (countCursor.moveToFirst()) {
+                return countCursor.getLong(0);
+            }
+            return 0;
+        } finally {
+            countCursor.close();
+        }
+    }
+
     private void setCatDropDown(String orderBy) {
 
         try {
             listOfCatIds = new ArrayList<Integer>();
             catAdapter.clear();
             catAdapter.notifyDataSetChanged();
+
+            if (CategorySelectionPolicy.shouldIncludeSyntheticUncategorized(getUncategorizedEventCount())) {
+                listOfCatIds.add((int) CategorySelectionPolicy.UNCATEGORIZED_CAT_ID);
+                catAdapter.add(CategorySelectionPolicy.getUncategorizedDisplayLabel());
+            }
 
             String sql = "select _id, category from category order by "
                     + orderBy;

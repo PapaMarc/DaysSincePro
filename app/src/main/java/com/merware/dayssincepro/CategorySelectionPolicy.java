@@ -31,6 +31,19 @@ public final class CategorySelectionPolicy {
                 .equals(UNCATEGORIZED_LABEL.toLowerCase(Locale.US));
     }
 
+    public static boolean isReservedCategoryName(String rawCategoryName) {
+        String normalized = normalizeCategoryToken(rawCategoryName);
+        if (normalized.isEmpty()) {
+            return false;
+        }
+        return normalized.toLowerCase(Locale.US)
+                .equals(UNCATEGORIZED_LABEL.toLowerCase(Locale.US));
+    }
+
+    public static String getUncategorizedDisplayLabel() {
+        return UNCATEGORIZED_LABEL;
+    }
+
     public static ImportCategoryDecision decideImportCategory(String rawCategory,
                                                               long defaultCategoryId,
                                                               boolean mapReservedTokenToSentinel) {
