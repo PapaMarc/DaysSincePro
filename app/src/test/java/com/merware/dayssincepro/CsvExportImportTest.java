@@ -248,6 +248,25 @@ public class CsvExportImportTest {
     }
 
     @Test
+    public void testPhase4V2MultiCategoryHeaderAndRows_parseWithEndDateAndDetails() throws IOException {
+        String csv = "\"category\",\"event\",\"date\",\"recur\",\"end_date\",\"details\"\n" +
+                "\"LifeDocs\",\"Mom born\",\"1935-12-05\",\"365\",\"\",\"\"\n" +
+                "\"DaysSincePro_demo\",\"Carl Sagan bday\",\"1934-11-09\",\"365\",\"\",\"\"\n";
+
+        BufferedReader reader = new BufferedReader(new StringReader(csv));
+        List<List<String>> records = CsvImporter.parseRecords(reader);
+
+        assertEquals(3, records.size());
+        assertTrue(CsvImporter.isHeaderRow(records.get(0)));
+        assertEquals("category", records.get(0).get(0));
+        assertEquals("details", records.get(0).get(5));
+        assertEquals("LifeDocs", records.get(1).get(0));
+        assertEquals("Mom born", records.get(1).get(1));
+        assertEquals("", records.get(1).get(4));
+        assertEquals("", records.get(1).get(5));
+    }
+
+    @Test
     public void testSpecialCharactersAndApostrophes() throws IOException {
         String csv = "\"event\",\"date\",\"recur\"\n" +
                 "\"Papa's Truck (53' Chevy)\",\"2024-05-10\",\"365\"\n" +
