@@ -1,5 +1,6 @@
 package com.merware.dayssincepro;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,9 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class CreateCategoryActivity extends AppCompatActivity {
+public class CreateCategoryActivity extends Activity {
 
     public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
 
