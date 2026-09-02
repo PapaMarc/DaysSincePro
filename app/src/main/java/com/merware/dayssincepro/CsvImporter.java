@@ -693,12 +693,21 @@ public class CsvImporter {
                         rowNumber,
                         errors);
 
-                // Determine target category ID
+                // Determine target category ID via centralized uncategorized/category policy.
                 long targetCatId = defaultCategoryId;
                 if (colCategory >= 0 && colCategory < row.size()) {
-                    String catName = row.get(colCategory).trim();
-                    if (!catName.isEmpty()) {
-                        long resolved = resolveOrCreateCategory(db, catName, categoryCache, categoryCounter);
+                    CategorySelectionPolicy.ImportCategoryDecision decision =
+                            CategorySelectionPolicy.decideImportCategory(
+                                    row.get(colCategory),
+                                    defaultCategoryId,
+                                    false);
+
+                    if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_DEFAULT) {
+                        targetCatId = decision.getDefaultCategoryId();
+                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL) {
+                        targetCatId = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.RESOLVE_BY_NAME) {
+                        long resolved = resolveOrCreateCategory(db, decision.getCategoryName(), categoryCache, categoryCounter);
                         if (resolved != -1) {
                             targetCatId = resolved;
                         }
