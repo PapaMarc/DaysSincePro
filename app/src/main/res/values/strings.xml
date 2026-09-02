@@ -57,7 +57,7 @@
     <string name="daysTillTitle">Future Events</string>
     <string name="no_entries">No Entries</string>
     <string name="no_categories">No Categories</string>
-    <string name="choose"> Choose</string>
+    <string name="choose"> Edit Event Notification Time</string>
     <string name="change"> Change</string>
     <string name="prompt">Pick a Category</string>
     <string name="export">Export database file</string>
