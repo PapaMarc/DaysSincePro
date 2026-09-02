@@ -340,6 +340,23 @@ Rationale:
   - Root-cause follow-up note: standard Spinner can ignore same-item reselection events; this could suppress launch when <Add New Category> was already the selected default. Option 1 resolves this by using SelectAgainSpinner for Add Event category picker.
 - Build/version note for Phase 5 completion: versionName advanced from 3.10.60.49 to 3.10.62.49.
 
+6. Post-Phase edge case discovered in fresh-install flow: pending remediation.
+
+- Repro: fresh install with no data; user creates first event, creates NewCat from Add Event, saves.
+- Observed: event is correctly saved under NewCat, but main-screen title context remains Uncategorized and category chooser does not reflect expected NewCat active context.
+- Interpretation: this is a filter/title bootstrap gap, not a data-integrity or dual-category assignment defect.
+- Root cause summary: add-flow returns catId and inserts correctly, but no controlled first-run write synchronizes CategoryIds/Categories title/filter context after first categorized save.
+- Selected remedy direction: Option A controlled bootstrap.
+- Option A rules:
+  - Run only when filter state is pristine and no explicit user filter selection exists.
+  - If first successful categorized save returns catId > 0, persist CategoryIds/Categories to that category once.
+  - Once user explicitly manages filters in Categories, never auto-switch filters from add-flow.
+- Test additions required:
+  - Fresh-install first categorized add updates title/filter context to created category.
+  - Fresh-install uncategorized first add keeps uncategorized behavior.
+  - Existing explicit filter users are not auto-switched by add-flow.
+  - No regression to side-effect prevention goals from Phase 5.
+
 ### Proposed Phases
 
 1. Phase 1: Policy and test seams

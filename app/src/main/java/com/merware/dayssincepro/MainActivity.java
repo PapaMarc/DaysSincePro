@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -60,10 +61,13 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_IMPORT_CSV_SAF = 13;
     private static final String EXTRA_SELECTED_TAB = "selected_tab";
     private static final String STATE_SELECTED_TAB = "selected_tab";
+    private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
 
     private boolean waitingForSettingsReturn = false;
     private String themeBeforeSettings = "0";
     private int selectedTabBeforeSettings = 0;
+    private boolean addLaunchedFromUncategorizedContext = false;
+    private boolean addLaunchedWithNoEvents = false;
 
 
     @Override
@@ -299,6 +303,12 @@ public class MainActivity extends AppCompatActivity implements
 
     void addItem() {
         Intent intent = new Intent(this, EditEventActivity.class);
+
+        addLaunchedFromUncategorizedContext =
+            CategorySelectionPolicy.isPristineUncategorizedFilterContext(
+                preferences.getString("CategoryIds", ""),
+                preferences.getString("Categories", ""));
+        addLaunchedWithNoEvents = hasNoEventsInDatabase();
 
         categories = preferences.getString("CategoryIds", "");
         categories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
@@ -676,6 +686,76 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
+    private boolean bootstrapFilterContextForFirstCategorizedAdd(long createdCategoryId) {
+        String categoryIdsPref = preferences.getString("CategoryIds", "");
+        String categoriesPref = preferences.getString("Categories", "");
+        boolean hasExplicitFilterSelection = preferences.getBoolean(
+                PREF_HAS_EXPLICIT_FILTER_SELECTION,
+                false);
+
+        if (!CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                createdCategoryId,
+                categoryIdsPref,
+                categoriesPref,
+                hasExplicitFilterSelection,
+                addLaunchedFromUncategorizedContext,
+                addLaunchedWithNoEvents)) {
+            return false;
+        }
+
+        String categoryName = resolveCategoryNameById(createdCategoryId);
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            return false;
+        }
+
+        SharedPreferences.Editor ed = preferences.edit();
+        ed.putString("CategoryIds", CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
+        ed.putString("Categories", categoryName);
+        ed.commit();
+
+        data = new long[]{createdCategoryId};
+        setTitle(categoryName);
+        return true;
+    }
+
+    private boolean hasNoEventsInDatabase() {
+        Cursor c = null;
+        try {
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            c = db.rawQuery("SELECT COUNT(*) FROM event", null);
+            if (c.moveToFirst()) {
+                return c.getLong(0) == 0;
+            }
+            return true;
+        } catch (Exception e) {
+            Log.e("DSP_ADD_BOOTSTRAP", "Failed counting events before add", e);
+            return false;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    private String resolveCategoryNameById(long categoryId) {
+        Cursor c = null;
+        try {
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            c = db.rawQuery("SELECT category FROM category WHERE _id = ?", new String[]{String.valueOf(categoryId)});
+            if (c.moveToFirst()) {
+                return c.getString(0);
+            }
+            return null;
+        } catch (Exception e) {
+            Log.e("DSP_ADD_BOOTSTRAP", "Failed resolving category name for id " + categoryId, e);
+            return null;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -725,11 +805,14 @@ public class MainActivity extends AppCompatActivity implements
                             showToast(getString(R.string.msg_since));
                     }
 
-                    refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
-
                     chosenID = data.getLongExtra("catId", 0);
 
-                    if (!inData(chosenID)) {
+                    boolean bootstrappedFilterContext = bootstrapFilterContextForFirstCategorizedAdd(chosenID);
+
+                    // Ensure list refresh sees any freshly bootstrapped CategoryIds/Categories values.
+                    refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+
+                    if (!bootstrappedFilterContext && !inData(chosenID)) {
                         showToast(getString(R.string.not_chosen));
                     }
 
@@ -742,6 +825,9 @@ public class MainActivity extends AppCompatActivity implements
                         alarmHelp.setAlarm(id, notifyHour, notifyMinute);
                     }
                 }
+
+                addLaunchedFromUncategorizedContext = false;
+                addLaunchedWithNoEvents = false;
                 break;
             case CONFIG_ACTIVITY:
 

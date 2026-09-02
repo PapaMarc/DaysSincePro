@@ -37,6 +37,48 @@ public final class CategorySelectionPolicy {
         return isAddMode && requestedCategoryId == UNCATEGORIZED_CAT_ID;
     }
 
+    public static boolean shouldBootstrapFilterContextAfterAdd(long selectedCategoryId,
+                                                               String categoryIdsPreference,
+                                                               String categoriesPreference,
+                                                               boolean hasExplicitFilterSelection,
+                                                               boolean addLaunchedFromUncategorizedContext,
+                                                               boolean addLaunchedWithNoEvents) {
+        if (selectedCategoryId <= UNCATEGORIZED_CAT_ID) {
+            return false;
+        }
+
+        boolean uncategorizedFilterContext = isPristineUncategorizedFilterContext(
+                categoryIdsPreference,
+                categoriesPreference);
+        if (!uncategorizedFilterContext) {
+            return false;
+        }
+
+        if (!hasExplicitFilterSelection) {
+            return true;
+        }
+
+        return addLaunchedFromUncategorizedContext && addLaunchedWithNoEvents;
+    }
+
+    public static boolean isPristineUncategorizedFilterContext(String categoryIdsPreference,
+                                                                String categoriesPreference) {
+        String ids = normalizeCategoryToken(categoryIdsPreference);
+        String categories = normalizeCategoryToken(categoriesPreference);
+
+        boolean idsPristine = ids.isEmpty()
+                || "[]".equals(ids)
+                || "[0]".equals(ids)
+                || "0".equals(ids);
+
+        boolean categoriesPristine = categories.isEmpty() || isUncategorizedToken(categories);
+        return idsPristine && categoriesPristine;
+    }
+
+    public static String formatSingleSelectedCategoryIds(long categoryId) {
+        return "[" + categoryId + "]";
+    }
+
     public static String normalizeCategoryNameForLookup(String rawCategoryName) {
         return normalizeCategoryToken(rawCategoryName).toLowerCase(Locale.US);
     }

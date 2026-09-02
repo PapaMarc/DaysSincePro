@@ -49,6 +49,7 @@ public class CategoriesActivity extends ListActivity {
 
     public static final String EXTRA_AUTO_OPEN_ADD_CATEGORY = "extra_auto_open_add_category";
     public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
+    private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
 
     SimpleCursorAdapter categoryAdapter;
     protected SQLiteDatabase db;
@@ -336,6 +337,7 @@ public class CategoriesActivity extends ListActivity {
         }
 
         ed.putString(getString(R.string.categories), joined);
+        ed.putBoolean(PREF_HAS_EXPLICIT_FILTER_SELECTION, true);
         ed.commit();
 
         // showToast("joined: " + joined);

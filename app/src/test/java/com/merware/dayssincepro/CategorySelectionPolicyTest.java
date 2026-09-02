@@ -112,4 +112,98 @@ public class CategorySelectionPolicyTest {
         assertTrue(CategorySelectionPolicy.areCategoryNamesEquivalent("PostOption2", " postoption2 "));
         assertFalse(CategorySelectionPolicy.areCategoryNamesEquivalent("PostOption2", "PostOption3"));
     }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_trueForPristineFreshState() {
+        assertTrue(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                5L,
+                "",
+                "",
+                false,
+                true,
+                true));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_trueForUncategorizedPlaceholderState() {
+        assertTrue(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                5L,
+                "[0]",
+                "Uncategorized",
+                false,
+                true,
+                true));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_trueForAlternatePristinePlaceholders() {
+        assertTrue(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                9L,
+                "[]",
+                " uncategorized ",
+                false,
+                true,
+                true));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_falseWhenExplicitSelectionExists() {
+        assertFalse(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                5L,
+                "",
+                "",
+                true,
+                false,
+                false));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_trueWhenExplicitSelectionExistsButAddStartedFromEmptyUncategorized() {
+        assertTrue(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                5L,
+                "[0]",
+                "Uncategorized",
+                true,
+                true,
+                true));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_falseWhenSelectedIsUncategorized() {
+        assertFalse(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                0L,
+                "",
+                "",
+                false,
+                true,
+                true));
+    }
+
+    @Test
+    public void shouldBootstrapFilterContextAfterAdd_falseWhenFilterAlreadySet() {
+        assertFalse(CategorySelectionPolicy.shouldBootstrapFilterContextAfterAdd(
+                5L,
+                "[3]",
+                "SomeCategory",
+                false,
+                true,
+                true));
+    }
+
+    @Test
+    public void isPristineUncategorizedFilterContext_trueForUncategorizedDefaults() {
+        assertTrue(CategorySelectionPolicy.isPristineUncategorizedFilterContext("", ""));
+        assertTrue(CategorySelectionPolicy.isPristineUncategorizedFilterContext("[0]", "Uncategorized"));
+        assertTrue(CategorySelectionPolicy.isPristineUncategorizedFilterContext("[]", " uncategorized "));
+    }
+
+    @Test
+    public void isPristineUncategorizedFilterContext_falseForRealCategorySelection() {
+        assertFalse(CategorySelectionPolicy.isPristineUncategorizedFilterContext("[3]", "Life"));
+    }
+
+    @Test
+    public void formatSingleSelectedCategoryIds_formatsAsBracketedSingleValue() {
+        assertEquals("[7]", CategorySelectionPolicy.formatSingleSelectedCategoryIds(7L));
+    }
 }

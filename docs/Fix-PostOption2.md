@@ -92,12 +92,19 @@ Out of scope:
 
 - Impact: Details section currently interrupts category controls, making category selection flow feel fragmented.
 
+6. First-run filter/title bootstrap mismatch after successful new-category event creation.
+
+- Repro context: fresh install, zero data; user creates first event, creates category NewCat from Add Event, saves successfully.
+- Observed: event is persisted under NewCat, but main title still shows Uncategorized and category chooser opens with no explicit NewCat selection.
+- Impact: creates false signal that saved event category or active filter context is wrong.
+
 ## Root Cause Summary
 
 1. Flow coupling: Add Event category creation depends on a screen whose primary responsibility is global filter management.
 2. Callback fragility: spinner callback suppression state is too broad and can survive transitions where it should be cleared.
 3. UX legacy: checkbox and control ordering predate newer category guidance behavior and now conflict with current product intent.
 4. Test gap: interaction-heavy behavior was not covered by targeted tests; most coverage is policy/helper level.
+5. Bootstrap gap: add-flow correctly returns created catId, but no first-run filter/title bootstrap writes occur after ADD_ACTIVITY result, so title/filter preferences can remain in uncategorized placeholder state.
 
 ## Solution Options And Recommendations
 
@@ -178,6 +185,29 @@ Recommendation:
 
 - Choose 1; this is cleaner and aligns with user mental model.
 
+## Issue 6: First-run bootstrap mismatch (new category saved, title still Uncategorized)
+
+Potential solutions:
+
+1. Option A: controlled first-run bootstrap on ADD_ACTIVITY success.
+
+- If returned catId is a real category id and filter state is pristine/unset, write CategoryIds and Categories once to that created category.
+- Mark a guard preference such as has_explicit_filter_selection to avoid later automatic filter changes.
+
+2. Option B: derive title directly from resolved query/filter state each refresh instead of Category preference text.
+
+- Reduces stale-title risk, but expands change surface and coupling.
+
+3. Option C: keep behavior and only adjust default title copy.
+
+- Lowest implementation effort but does not meet expected post-save context behavior.
+
+Recommendation:
+
+- Select Option A for this fix.
+- Keep bootstrap narrow and deterministic: first-run/pristine-only.
+- Do not auto-switch filters once user has explicitly chosen filters in Categories.
+
 ## Suggested Tests
 
 ## Core interaction tests (highest priority)
@@ -213,6 +243,14 @@ Recommendation:
 17. Details section renders below category controls in revised layout.
 18. Category checkbox is not present in Add/Edit Event UI.
 19. Rotation preserves in-progress category-create input text.
+
+## First-run bootstrap tests
+
+20. Fresh install: create first event with newly created category NewCat, save, and verify title context reflects NewCat.
+21. Fresh install: opening category chooser after first-save shows NewCat selected (or equivalently persisted in CategoryIds/Categories).
+22. Fresh install: first event saved as uncategorized keeps uncategorized context behavior unchanged.
+23. Non-pristine user with explicit filter selection does not get auto-switched by later add-flow category creation.
+24. Regression: add-flow still avoids unintended multi-select/global filter side effects outside the controlled bootstrap case.
 
 ## Test tooling guidance
 
@@ -259,6 +297,8 @@ Phase B: UX normalization and category semantics polish (target 3.10.65.49)
 6. Duplicate creation is blocked by trimmed case-insensitive match, while case-only rename of existing category remains possible.
 7. Category checkbox is removed and category controls remain clear/contiguous with Details below.
 8. Rotation preserves in-progress category-create input text.
+9. First-run/pristine bootstrap case updates title/filter context to the created category after successful first categorized save.
+10. After explicit filter choice exists, add-flow does not auto-overwrite user filter intent.
 
 ## Risks And Mitigations
 
