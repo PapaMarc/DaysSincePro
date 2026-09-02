@@ -2,7 +2,7 @@
 
 **Document ID:** DCR-2026-09-01-B
 **Target Component:** [DatabaseHelper.java](../app/src/main/java/com/merware/dayssincepro/DatabaseHelper.java) (SQLite schema/versioning), [CsvExporter.java](../app/src/main/java/com/merware/dayssincepro/CsvExporter.java), [CsvImporter.java](../app/src/main/java/com/merware/dayssincepro/CsvImporter.java) (CSV I/O), `EditEventActivity` (UI for new fields)
-**Status:** Partially implemented — Phase 3 complete (schema v4 + details UI + migration); Phase 4 CSV work pending
+**Status:** ✅ COMPLETE through Phase 4 (schema v4 + CSV v2 import/export)
 **Author:** DaysSincePro Architecture
 
 ---

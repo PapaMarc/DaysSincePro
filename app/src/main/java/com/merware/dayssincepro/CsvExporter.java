@@ -90,8 +90,8 @@ public class CsvExporter {
     private static final String TAG = "CsvExporter";
     public static final String EXPORT_SUBDIRECTORY = "DaysSincePro";
 
-    public static final String HEADER_SINGLE_CATEGORY = "\"event\",\"date\",\"recur\"";
-    public static final String HEADER_MULTI_CATEGORY = "\"category\",\"event\",\"date\",\"recur\"";
+    public static final String HEADER_SINGLE_CATEGORY = "\"event\",\"date\",\"recur\",\"end_date\",\"details\"";
+    public static final String HEADER_MULTI_CATEGORY = "\"category\",\"event\",\"date\",\"recur\",\"end_date\",\"details\"";
 
     private CsvExporter() {
         // Utility class; prevent instantiation
@@ -165,7 +165,7 @@ public class CsvExporter {
         writer.write("\r\n");
 
         int count = 0;
-        String sql = "SELECT event, date, recur FROM event WHERE catId = ? ORDER BY date ASC, _id ASC";
+        String sql = "SELECT event, date, recur, end_date, details FROM event WHERE catId = ? ORDER BY date ASC, _id ASC";
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(categoryId)});
 
         if (cursor != null) {
@@ -174,9 +174,12 @@ public class CsvExporter {
                     String event = cursor.getString(0);
                     String date = cursor.getString(1);
                     int recur = cursor.getInt(2);
+                    String endDate = cursor.getString(3);
+                    String details = cursor.getString(4);
 
                     String formattedDate = formatIsoDate(date);
-                    String row = formatRow(event, formattedDate, String.valueOf(recur));
+                    String formattedEndDate = formatIsoDate(endDate);
+                    String row = formatRow(event, formattedDate, String.valueOf(recur), formattedEndDate, details);
                     writer.write(row);
                     writer.write("\r\n");
                     count++;
@@ -203,7 +206,7 @@ public class CsvExporter {
         writer.write("\r\n");
 
         int count = 0;
-        String sql = "SELECT COALESCE(c.category, 'Uncategorized'), e.event, e.date, e.recur " +
+        String sql = "SELECT COALESCE(c.category, 'Uncategorized'), e.event, e.date, e.recur, e.end_date, e.details " +
                 "FROM event e " +
                 "LEFT JOIN category c ON e.catId = c._id " +
                 "ORDER BY c.category ASC, e.date ASC, e._id ASC";
@@ -216,9 +219,12 @@ public class CsvExporter {
                     String event = cursor.getString(1);
                     String date = cursor.getString(2);
                     int recur = cursor.getInt(3);
+                    String endDate = cursor.getString(4);
+                    String details = cursor.getString(5);
 
                     String formattedDate = formatIsoDate(date);
-                    String row = formatRow(category, event, formattedDate, String.valueOf(recur));
+                    String formattedEndDate = formatIsoDate(endDate);
+                    String row = formatRow(category, event, formattedDate, String.valueOf(recur), formattedEndDate, details);
                     writer.write(row);
                     writer.write("\r\n");
                     count++;

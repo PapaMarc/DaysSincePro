@@ -99,9 +99,83 @@ import java.util.Set;
 public class CsvImporter {
 
     private static final String TAG = "CsvImporter";
+    private static final int MAX_DETAILS_LENGTH = 256;
 
     private CsvImporter() {
         // Utility class; prevent instantiation
+    }
+
+    static class ExistingEventRecord {
+        final long id;
+        final String endDate;
+        final String details;
+
+        ExistingEventRecord(long id, String endDate, String details) {
+            this.id = id;
+            this.endDate = endDate;
+            this.details = details;
+        }
+    }
+
+    static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    static boolean shouldEnrichExisting(String existingEndDate, String existingDetails,
+                                        String incomingEndDate, String incomingDetails) {
+        return (isBlank(existingEndDate) && !isBlank(incomingEndDate))
+                || (isBlank(existingDetails) && !isBlank(incomingDetails));
+    }
+
+    static String normalizeDetailsForImport(String rawDetails, int rowNumber, List<String> messages) {
+        if (rawDetails == null) {
+            return null;
+        }
+
+        String trimmed = rawDetails.trim();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+
+        if (trimmed.length() > MAX_DETAILS_LENGTH) {
+            if (messages != null) {
+                messages.add("Row " + rowNumber + ": details exceeded " + MAX_DETAILS_LENGTH
+                        + " characters and was truncated.");
+            }
+            return trimmed.substring(0, MAX_DETAILS_LENGTH);
+        }
+
+        return trimmed;
+    }
+
+    private static ExistingEventRecord findExistingEventRecord(SQLiteDatabase db, long catId,
+                                                               String normalizedEventName,
+                                                               String isoDate, int recur) {
+        Cursor cursor = db.rawQuery(
+                "SELECT _id, end_date, details FROM event "
+                        + "WHERE catId = ? AND date = ? AND recur = ? "
+                        + "AND LOWER(TRIM(event)) = ? ORDER BY _id ASC LIMIT 1",
+                new String[]{
+                        String.valueOf(catId),
+                        isoDate,
+                        String.valueOf(recur),
+                        normalizedEventName
+                });
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    return new ExistingEventRecord(
+                            cursor.getLong(0),
+                            cursor.getString(1),
+                            cursor.getString(2));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -331,7 +405,8 @@ public class CsvImporter {
             String t = token.trim().toLowerCase(Locale.US);
             if (t.equals("category") || t.equals("cat") || t.equals("category_name") ||
                 t.equals("event") || t.equals("events") || t.equals("title") || t.equals("name") ||
-                t.equals("date") || t.equals("recur") || t.equals("recurrence")) {
+                t.equals("date") || t.equals("recur") || t.equals("recurrence") ||
+                t.equals("end_date") || t.equals("details")) {
                 return true;
             }
         }
@@ -477,6 +552,8 @@ public class CsvImporter {
         int colEvent = -1;
         int colDate = -1;
         int colRecur = -1;
+        int colEndDate = -1;
+        int colDetails = -1;
 
         int startIndex = 0;
         List<String> firstRow = records.get(0);
@@ -495,6 +572,10 @@ public class CsvImporter {
                 } else if (h.equals("recur") || h.equals("recurrence") || h.equals("repeat") ||
                            h.equals("interval") || h.equals("days")) {
                     colRecur = col;
+                } else if (h.equals("end_date") || h.equals("end date") || h.equals("enddate")) {
+                    colEndDate = col;
+                } else if (h.equals("details") || h.equals("detail") || h.equals("notes")) {
+                    colDetails = col;
                 }
             }
 
@@ -515,11 +596,26 @@ public class CsvImporter {
                 colEvent = 0;
                 colDate = 1;
                 colRecur = 2;
-            } else if (tokenCount >= 4) {
+            } else if (tokenCount == 4) {
                 colCategory = 0;
                 colEvent = 1;
                 colDate = 2;
                 colRecur = 3;
+            } else if (tokenCount == 5) {
+                // v2 single-category shape without header: event,date,recur,end_date,details
+                colEvent = 0;
+                colDate = 1;
+                colRecur = 2;
+                colEndDate = 3;
+                colDetails = 4;
+            } else if (tokenCount >= 6) {
+                // v2 multi-category shape without header: category,event,date,recur,end_date,details
+                colCategory = 0;
+                colEvent = 1;
+                colDate = 2;
+                colRecur = 3;
+                colEndDate = 4;
+                colDetails = 5;
             } else {
                 colEvent = 0;
                 colDate = 1;
@@ -577,6 +673,26 @@ public class CsvImporter {
                     }
                 }
 
+                String rawEndDate = (colEndDate >= 0 && colEndDate < row.size())
+                        ? row.get(colEndDate).trim()
+                        : "";
+                String endDate = null;
+                if (!rawEndDate.isEmpty()) {
+                    endDate = parseAndFormatIsoDate(rawEndDate);
+                    if (endDate == null) {
+                        skippedCount++;
+                        errors.add("Row " + rowNumber + " ('" + eventName
+                                + "'): Invalid end_date format '" + rawEndDate
+                                + "'. Expected yyyy-MM-dd.");
+                        continue;
+                    }
+                }
+
+                String details = normalizeDetailsForImport(
+                        (colDetails >= 0 && colDetails < row.size()) ? row.get(colDetails) : null,
+                        rowNumber,
+                        errors);
+
                 // Determine target category ID
                 long targetCatId = defaultCategoryId;
                 if (colCategory >= 0 && colCategory < row.size()) {
@@ -590,10 +706,34 @@ public class CsvImporter {
                 }
 
                 // Check for duplicates based on (catId, event, isoDate, recur)
-                String eventKey = targetCatId + "|" + eventName.toLowerCase(Locale.US) + "|" + isoDate + "|" + recur;
+                String normalizedEventName = eventName.toLowerCase(Locale.US);
+                String eventKey = targetCatId + "|" + normalizedEventName + "|" + isoDate + "|" + recur;
                 if (existingEventKeys.contains(eventKey)) {
+                    ExistingEventRecord existing = findExistingEventRecord(
+                            db, targetCatId, normalizedEventName, isoDate, recur);
+
+                    if (existing != null && shouldEnrichExisting(existing.endDate, existing.details, endDate, details)) {
+                        ContentValues update = new ContentValues();
+                        if (isBlank(existing.endDate) && !isBlank(endDate)) {
+                            update.put("end_date", endDate);
+                        }
+                        if (isBlank(existing.details) && !isBlank(details)) {
+                            update.put("details", details);
+                        }
+
+                        if (update.size() > 0) {
+                            int updated = db.update("event", update, "_id = ?",
+                                    new String[]{String.valueOf(existing.id)});
+                            if (updated > 0) {
+                                importedCount++;
+                                continue;
+                            }
+                            errors.add("Row " + rowNumber + " ('" + eventName
+                                    + "'): Duplicate enrichment update failed.");
+                        }
+                    }
+
                     skippedCount++;
-                    // Skipped as duplicate
                     continue;
                 }
 
@@ -602,6 +742,8 @@ public class CsvImporter {
                 values.put("event", eventName);
                 values.put("date", isoDate);
                 values.put("recur", recur);
+                values.put("end_date", endDate);
+                values.put("details", details);
 
                 long insertId = db.insert("event", null, values);
                 if (insertId != -1) {

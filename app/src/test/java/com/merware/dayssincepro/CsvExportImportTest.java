@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +44,16 @@ public class CsvExportImportTest {
     }
 
     @Test
+    public void testPhase4HeadersIncludeEndDateAndDetails_only() {
+        assertEquals("\"event\",\"date\",\"recur\",\"end_date\",\"details\"",
+                CsvExporter.HEADER_SINGLE_CATEGORY);
+        assertEquals("\"category\",\"event\",\"date\",\"recur\",\"end_date\",\"details\"",
+                CsvExporter.HEADER_MULTI_CATEGORY);
+        assertFalse(CsvExporter.HEADER_SINGLE_CATEGORY.contains("last_notified_date"));
+        assertFalse(CsvExporter.HEADER_MULTI_CATEGORY.contains("last_notified_date"));
+    }
+
+    @Test
     public void testFormatIsoDate() {
         assertEquals("2024-05-01", CsvExporter.formatIsoDate("2024-05-01"));
         assertEquals("", CsvExporter.formatIsoDate(null));
@@ -74,9 +85,44 @@ public class CsvExportImportTest {
     public void testHeaderRowDetection() {
         assertTrue(CsvImporter.isHeaderRow(Arrays.asList("event", "date", "recur")));
         assertTrue(CsvImporter.isHeaderRow(Arrays.asList("Category", "Event", "Date", "Recur")));
+        assertTrue(CsvImporter.isHeaderRow(Arrays.asList("event", "date", "recur", "end_date", "details")));
         assertTrue(CsvImporter.isHeaderRow(Arrays.asList("category_name", "title", "due_date", "recurrence")));
         assertFalse(CsvImporter.isHeaderRow(Arrays.asList("KirPaint Annual Report Due", "2019-05-01", "365")));
         assertFalse(CsvImporter.isHeaderRow(Arrays.asList("Oil Change", "2024-01-01")));
+    }
+
+    @Test
+    public void testNormalizeDetailsForImport_truncatesAndRecordsWarning() {
+        StringBuilder longText = new StringBuilder();
+        for (int i = 0; i < 280; i++) {
+            longText.append('x');
+        }
+
+        List<String> messages = new ArrayList<>();
+        String normalized = CsvImporter.normalizeDetailsForImport(longText.toString(), 7, messages);
+
+        assertNotNull(normalized);
+        assertEquals(256, normalized.length());
+        assertEquals(1, messages.size());
+        assertTrue(messages.get(0).contains("Row 7"));
+        assertTrue(messages.get(0).contains("truncated"));
+    }
+
+    @Test
+    public void testNormalizeDetailsForImport_blankBecomesNull_noWarning() {
+        List<String> messages = new ArrayList<>();
+        assertNull(CsvImporter.normalizeDetailsForImport("   ", 3, messages));
+        assertEquals(0, messages.size());
+    }
+
+    @Test
+    public void testShouldEnrichExisting_onlyWhenIncomingAddsMissingValues() {
+        assertTrue(CsvImporter.shouldEnrichExisting(null, null, "2026-12-31", null));
+        assertTrue(CsvImporter.shouldEnrichExisting("", "", null, "new details"));
+        assertTrue(CsvImporter.shouldEnrichExisting("", "already set", "2026-12-31", null));
+
+        assertFalse(CsvImporter.shouldEnrichExisting("2026-12-31", "details", "2027-01-01", "other"));
+        assertFalse(CsvImporter.shouldEnrichExisting("2026-12-31", "details", null, null));
     }
 
     @Test
@@ -180,6 +226,25 @@ public class CsvExportImportTest {
         assertEquals("category", records.get(0).get(0));
         assertEquals("Vehicles", records.get(1).get(0));
         assertEquals("Oil Change", records.get(1).get(1));
+    }
+
+    @Test
+    public void testPhase4V2HeaderAndRows_parseWithEndDateAndDetails() throws IOException {
+        String csv = "\"event\",\"date\",\"recur\",\"end_date\",\"details\"\n" +
+                "\"Pliny\",\"0045-01-01\",\"365\",\"\",\"Encyclopedic natural history\"\n" +
+                "\"Reminder\",\"2026-09-01\",\"0\",\"2026-09-02\",\"Has, comma\"\n";
+
+        BufferedReader reader = new BufferedReader(new StringReader(csv));
+        List<List<String>> records = CsvImporter.parseRecords(reader);
+
+        assertEquals(3, records.size());
+        assertTrue(CsvImporter.isHeaderRow(records.get(0)));
+        assertEquals("end_date", records.get(0).get(3));
+        assertEquals("details", records.get(0).get(4));
+        assertEquals("", records.get(1).get(3));
+        assertEquals("Encyclopedic natural history", records.get(1).get(4));
+        assertEquals("2026-09-02", records.get(2).get(3));
+        assertEquals("Has, comma", records.get(2).get(4));
     }
 
     @Test
