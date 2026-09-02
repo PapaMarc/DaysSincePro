@@ -6,44 +6,45 @@
 		<ListPreference android:key="category_sort_order"
 			android:dialogTitle="@string/category_sort_order" android:title="@string/category_sort_order"
 			android:summary="@string/category_sort_order" android:entries="@array/cat_entries"
-			android:entryValues="@array/cat_values" />
+			android:entryValues="@array/cat_values" android:defaultValue="0" />
 
 		<ListPreference android:key="event_sort_order"
 			android:dialogTitle="@string/event_sort_order" android:title="@string/event_sort_order"
 			android:summary="@string/event_sort_order" android:entries="@array/entries"
-			android:entryValues="@array/values" />
+			android:entryValues="@array/values" android:defaultValue="0" />
 			
-		<ListPreference android:key="font_size"
+		<com.merware.dayssincepro.FontSizeListPreference android:key="font_size"
 			android:dialogTitle="@string/font_size" android:title="@string/font_size"
 			android:summary="@string/font_size_for_events" android:entries="@array/sizes"
-			android:entryValues="@array/font_values" />
+			android:entryValues="@array/font_values" android:defaultValue="16" />
 
 		<ListPreference android:key="disp_style"
 			android:dialogTitle="@string/display_style" android:title="@string/display_style"
 			android:summary="Describe events" android:entries="@array/styles"
-			android:entryValues="@array/style_values" />
+			android:entryValues="@array/style_values" android:defaultValue="0" />
 		
 		<ListPreference android:key="date_style"
 			android:dialogTitle="@string/date_style" android:title="@string/date_style"
 			android:summary="@string/us_date_style" android:entries="@array/date_values"
-			android:entryValues="@array/view_values" />
+			android:entryValues="@array/view_values" android:defaultValue="0" />
 
 
 		<ListPreference android:key="tab_style"
 						android:dialogTitle="@string/show_tab" android:title="@string/show_tab"
 						android:summary="@string/dayssince" android:entries="@array/since_until"
-						android:entryValues="@array/since_until_values" />
+						android:entryValues="@array/since_until_values" android:defaultValue="0" />
 
 
 		<ListPreference android:key="theme"
 			android:dialogTitle="@string/theme" android:title="@string/theme"
 			android:summary="@string/light" android:entries="@array/themes"
-			android:entryValues="@array/theme_values" />
+			android:entryValues="@array/theme_values" android:defaultValue="0" />
 		
 		<CheckBoxPreference android:key="noti"
 		    android:title = "@string/notification"
 		    android:summaryOn="@string/send_noti"
-        	android:summaryOff="@string/no_send_noti"/>
+	        android:summaryOff="@string/no_send_noti"
+			android:defaultValue="false"/>
 
 		<ListPreference
             android:dialogTitle="@string/remind_repeat_events"
@@ -51,7 +52,8 @@
             android:entryValues="@array/remind_percent"
             android:key="remind_percent"
             android:summary="@string/remind_repeat_events"
-            android:title="@string/remind_repeat_events"/>
+			android:title="@string/remind_repeat_events"
+			android:defaultValue="75 percent of days passed"/>
 		
 
 	</PreferenceCategory>
