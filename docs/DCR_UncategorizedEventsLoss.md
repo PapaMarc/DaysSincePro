@@ -313,6 +313,17 @@ Rationale:
   - Full build gate: bundleRelease passed.
 - Build/version note for Phase 4 completion: versionName NOT advanced from 3.10.60.49 as no code was changed and this was strickly intensive validation (and doc only update).
 
+5. Phase 5: proposed (pending implementation).
+
+- Chronology note: Phase 5 was identified after Phases 1-4 were already conceived and implemented.
+- Why it was added late: post-implementation review showed an intent gap where surfacing Uncategorized as a frequent first/default Add Event choice could implicitly reinforce continued non-use of intentionally defined categories.
+- Objective: improve Add Event category adoption by making category creation the visible first action when Uncategorized would otherwise be the first/default selection.
+- Scope focus: Add Event screen only.
+- First-time UX note: include a lightweight nudge in Add Event to promote intentional category creation without adding friction.
+- Nudge persistence rule: keep showing the nudge until at least one real (non-sentinel) category exists.
+- Cancel behavior rule: if user cancels category creation, nudge remains and is shown again on later Add Event visits until a real category exists.
+- Existing-user gating rule: users who already have one or more real categories do not see this nudge after update.
+
 ### Proposed Phases
 
 1. Phase 1: Policy and test seams
@@ -339,6 +350,17 @@ Rationale:
 - Run full unit/build verification and regression pass.
 - Confirm docs, migration notes, and release notes are aligned before shipping.
 
+5. Phase 5: Add Event guided category creation UX
+
+- Add a synthetic top-of-list action row in Add Event category picker: <Add New Category>.
+- If selected, route user to category management and open Add Category input immediately.
+- Preserve existing uncategorized semantics, but reduce accidental defaulting into uncategorized when real categories should be used.
+- Keep behavior scoped to Add Event so other category surfaces remain semantically stable.
+- This phase is an intent-correction phase: preserve first-class Uncategorized support while restoring positive behavioral nudging toward intentional category use.
+- Add first-time lightweight guidance near Add Event category controls to surface category value at the moment of action.
+- Nudge copy (primary only): Create a category to keep events organized. Choose Add New Category.
+- First-time zero/zero state requirement: when there are zero real categories and zero uncategorized events, Add Event must still show category controls with <Add New Category> so first-time users are actively guided into category creation.
+
 ## Pre-Start Considerations
 
 1. Canonical CSV representation decision for uncategorized should be locked before coding (recommended: empty category field plus import compatibility for literal Uncategorized).
@@ -356,6 +378,9 @@ The following are explicitly confirmed for implementation:
 3. Uncategorized display/token handling is reserved to avoid collision with ordinary category-name semantics.
 4. Synthetic Uncategorized long-press export uses filename Uncategorized.csv, and import preserves sentinel catId 0 semantics.
 5. Canonical CSV policy is accepted as: export uncategorized with an empty category field, and import both empty and normalized Uncategorized token values as catId 0 for backward compatibility.
+6. Phase 5 includes a one-time lightweight Add Event nudge encouraging intentional category creation.
+7. Nudge is not manually dismissed; it auto-stops only after at least one real category exists.
+8. In the initial zero/zero state (no real categories and no uncategorized events), Add Event still surfaces category controls and <Add New Category> as the primary path.
 
 These decisions supersede open ambiguity in the considerations list and should be treated as execution constraints in all phases.
 
@@ -389,6 +414,76 @@ The following criteria are frozen for phase pass/fail.
 - Round-trip matrix validations pass for DB and CSV paths with mixed categorized/uncategorized fixtures.
 - At least one full build succeeds for the phase gate.
 - DCR and release notes are aligned with shipped behavior.
+
+5. Phase 5 pass criteria (guided category creation)
+
+- Add Event category picker shows <Add New Category> as a synthetic first row when category assignment controls are visible.
+- In zero/zero first-time state, category controls are visible and <Add New Category> is presented as the actionable default path.
+- Selecting <Add New Category> opens Categories flow and auto-opens Add Category input ready for typing.
+- Returning from category creation reloads Add Event category options and selects the newly created category by default.
+- Canceling the category-add flow does not save with a synthetic action id and does not corrupt category selection state.
+- Existing reserved-name guardrails for Uncategorized remain enforced.
+- First-time nudge is shown in Add Event with the approved primary copy only.
+- Nudge is shown on Add Event visits until a real category exists, including after canceled category-creation attempts.
+- Nudge is never shown to users who already have one or more real categories.
+- Targeted Phase 5 tests and one full build gate pass.
+
+## Proposed Phase 5 Design Notes
+
+1. Current state validation
+
+- Add Event currently prepends synthetic Uncategorized when uncategorized events exist.
+- Add Event currently has no direct in-flow action row to create a category from the category picker.
+- Categories Add Category dialog already requests input focus and soft keyboard visibility when opened.
+
+2. Proposed behavior
+
+- Introduce <Add New Category> as a non-persisted synthetic action row in Add Event category picker.
+- If there are zero real categories and zero uncategorized events, do not hide category controls; show <Add New Category> immediately as the first-time default action.
+- Selecting that row launches Categories and auto-opens the Add Category dialog.
+- On return to Add Event:
+  - if a category was created, rebind spinner and auto-select that new category;
+  - if canceled/no new category, restore prior valid selection.
+- Do not expose <Add New Category> as a real category id and never allow it to flow into event persistence.
+
+3. Rationale
+
+- Preserves first-class Uncategorized support while nudging users toward intentional category creation.
+- Reduces accidental perpetuation of uncategorized-only usage caused by top/default ordering.
+- Keeps coercion positive and contextual, instead of removing uncategorized capability.
+- Explicitly corrects the post-Phase-2 observation that visibility improvements for Uncategorized can, without further UX guidance, produce the opposite of the category-adoption intent.
+
+6. First-time-user opportunity
+
+- Phase 5 already addresses the core issue head-on at the highest-leverage moment: Add Event category selection.
+- Confirmed for Phase 5: implement a one-time first-run nudge in Add Event as brief helper guidance near the category control.
+- Approved copy: Create a category to keep events organized. Choose Add New Category.
+- Nudge appears only when no real categories exist; once a real category exists, it no longer appears.
+
+4. Risks and mitigations
+
+- Risk: synthetic action row could be mistaken for a real category id.
+  - Mitigation: explicit sentinel/action id isolation and save-path guards.
+- Risk: return flow complexity from Categories into Add Event may regress selection state.
+  - Mitigation: explicit activity result contract and targeted tests for cancel/create branches.
+- Risk: overreach into non-Add-event surfaces.
+  - Mitigation: scope lock to Add Event only in Phase 5.
+
+5. Recommended tests for Phase 5
+
+- Policy/helper tests:
+  - synthetic action-row identity is never treated as a persistable category id.
+  - Add Event option-order rules put <Add New Category> before Uncategorized when shown.
+- Add Event selection-state tests:
+  - selecting <Add New Category> triggers navigation intent instead of save-path category resolution.
+  - cancel return path restores prior valid category selection.
+  - create return path auto-selects newly created category.
+- Categories auto-open tests:
+  - Add Category dialog auto-opens when requested via intent extra.
+  - input field is focused and ready for typing.
+- Regression tests:
+  - existing Uncategorized visibility condition (only when uncategorized events exist) remains intact.
+  - reserved-name blocking for Uncategorized remains intact.
 
 ## Execution Guardrails
 
