@@ -75,19 +75,18 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         DaysSinceCalculations dsc2 = dsc1;
         String dayText;
         SimpleDate nextDate = sd;
-        SimpleDate lastDate = sd; // most recent occurrence on or before today
         Calendar now = Calendar.getInstance();
+        String usEndDate = c.getString(5);
+
+        EventTimeline.Snapshot timeline = EventTimeline.compute(sd, usEndDate, nEstDays, now);
+        nextDate = timeline.nextOccurrence;
 
         if (nEstDays != 0) {
-            RecurrenceCycle.Occurrences occurrences =
-                    RecurrenceCycle.computeOccurrences(sd, nEstDays, now);
-            lastDate = occurrences.lastOccurrence;
-            nextDate = occurrences.nextOccurrence;
             dsc2 = new DaysSinceCalculations(nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }
 
-        DaysSinceCalculations dsc3 = new DaysSinceCalculations(lastDate);
+        DaysSinceCalculations dsc3 = new DaysSinceCalculations(timeline.sinceLastReferenceDate);
 
         if (kind == TabKind.DaysSince) {
             dsc = dsc1;
@@ -105,15 +104,13 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         boolean useNextDate = false;  // use next recurring date in days until
 
-        if (sd.getDate().before(now.getTime()))
+        if (timeline.hasFutureOccurrence && sd.getDate().before(now.getTime()))
         {
             // good enough use this
             useNextDate = true;
          }
 
         // ----------------- 2nd column ----------------
-        String usEndDate = c.getString(5);
-
         //Log.wtf("look", "event [" + c.getString(2) + "] end day ar " + usEndDate);
 
         if (themeOption == 1) // dark
@@ -121,10 +118,10 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         if (systemDateFormat == null) {
             if (kind == TabKind.DaysSince) {
-                dayText = sd.getDate(DateStyle.US);
+                dayText = timeline.daysSinceReferenceDate.getDate(DateStyle.US);
             }
             else if (kind == TabKind.SinceLast) {
-                dayText = lastDate.getDate(DateStyle.US);
+                dayText = timeline.sinceLastReferenceDate.getDate(DateStyle.US);
             }
             else {
                 // Log.wtf("look", "ok no system date format what is useNextDate " + useNextDate);
@@ -148,10 +145,10 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
             if (kind == TabKind.DaysSince) {
                 // Log.wtf("look", "days since ok what is useNextDate " + useNextDate);
-                dayText = sd.getDate(dateStyle);
+                dayText = timeline.daysSinceReferenceDate.getDate(dateStyle);
             }
             else if (kind == TabKind.SinceLast) {
-                dayText = lastDate.getDate(dateStyle);
+                dayText = timeline.sinceLastReferenceDate.getDate(dateStyle);
             }
             else {
                 // Log.wtf("look", "days until ok what is useNextDate " + useNextDate);
@@ -238,7 +235,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         {
             StringBuffer sb = new StringBuffer();
 
-            DaysSinceCalculations dscForExplain = (kind == TabKind.SinceLast) ? dsc3 : dsc1;
+                DaysSinceCalculations dscForExplain = (kind == TabKind.SinceLast)
+                    ? dsc3
+                    : new DaysSinceCalculations(timeline.daysSinceReferenceDate);
 
             if (dscStartToEnd == null) {
                 sb.append(dscForExplain.getExplain(false, nStyleOption));  // start date (or last recurrence)
@@ -258,11 +257,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
                 switch (kind)
                 {
                     case DaysSince:
-                       // if both in pass, use end date
-                        if (bothInPast)
-                            sb.append(dscEnd.getExplain(false, nStyleOption));
-                        else
-                            sb.append(dsc1.getExplain(false, nStyleOption));
+                        // Days Since is always since inception (start date), regardless of end date.
+                        sb.append(new DaysSinceCalculations(
+                                timeline.daysSinceReferenceDate).getExplain(false, nStyleOption));
 
                         sb.append("\n");
                         break;

@@ -156,7 +156,8 @@ public class PastFutureListFragment extends ListFragment {
             if (kind == TabKind.DaysSince || kind == TabKind.SinceLast)
                 whereClause += "date <= '" + today + "'";
             else {
-                whereClause += "(date > '" + today + "' or recur > 0)";
+                whereClause += "(date > '" + today + "' or (recur > 0 and (end_date is null or end_date > '"
+                        + today + "')))";
             }
 
             categories = preferences.getString("CategoryIds", "");
