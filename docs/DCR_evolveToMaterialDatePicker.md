@@ -2,7 +2,7 @@
 
 **Document ID:** DCR-2026-09-01-A
 **Target Component:** `DaysDiffActivity`, `EditEventActivity`, `EditHistory` (all date-selection UI), `app/build.gradle` (Material Components version), `DaysSinceCalculations` (date math)
-**Status:** Draft / Investigation Complete, Pending Approval
+**Status:** Implemented through Phase 2 (2026-09-01)
 **Author:** DaysSincePro Architecture
 
 ---
@@ -102,7 +102,7 @@ This DCR covers:
 
 1. Bump `com.google.android.material:material` to 1.14.0.
 2. Replace all 5 `DatePickerDialog` call sites with `MaterialDatePicker`, sharing one common minimum-date constant.
-3. Apply the Julian→Gregorian cutover fix in `DaysSinceCalculations.daysBetween()`.
+3. Apply the Julian→Gregorian cutover fix in `DaysSinceCalculations`' ISO parsing path.
 4. Add regression tests for both the cutover fix and (per §7) date-format round-tripping for early years.
 
 **Out of scope** (tracked separately in [DCR_schemaChangesAndProperMigration.md](DCR_schemaChangesAndProperMigration.md)): the `event.details` column addition, CSV schema changes for `end_date`/`details`, and database migration-path hardening. That work is independent but intersects with this DCR at one point: the "no end date" placeholder scheme in CSV/DB — resolved jointly as `""`/`NULL`, not a sentinel date, specifically because of this DCR's extended floor (see §8, item 3).
@@ -177,7 +177,7 @@ Because [DaysSinceCalculations.java](../app/src/main/java/com/merware/dayssincep
 
 **New open item surfaced by the Phase 1 spike (not previously identified):**
 
-- **App theme prerequisite for `MaterialDatePicker` (§7.3):** the app's current theme (`Theme.Holo.Light` at the manifest level; `Theme.AppCompat.*` for the app's own defined themes) does not satisfy `MaterialDatePicker`'s `Theme.MaterialComponents` requirement. Phase 2 must resolve this — recommended approach: a `Theme.MaterialComponents` theme overlay scoped to just the 3 activities hosting date pickers (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`), rather than an app-wide base theme migration. Needs to be explicitly scoped as part of Phase 2's implementation, not assumed away.
+- **App theme prerequisite for `MaterialDatePicker` (§7.3): RESOLVED in Phase 2.** A scoped host-theme approach was implemented for the 3 date-picker activities (`DaysDiffActivity`, `EditEventActivity`, `EditHistory`), satisfying Material requirements without app-wide theme migration.
 
 **Previously-open items — now resolved (Phase 1, 2026-09-01):**
 

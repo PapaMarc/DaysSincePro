@@ -1,7 +1,7 @@
 # Design Change Request (DCR): Phased Implementation Plan — Date Range, Schema, and Notification Overhaul
 
 **Document ID:** DCR-2026-09-01-D
-**Status:** Draft — sequencing proposal, pending final confirmation
+**Status:** Active — Phases 0, 1, 2, and 3 complete (2026-09-01); Phase 4 pending
 **Author:** DaysSincePro Architecture
 **Cross-referenced DCRs (this document sequences all three into one release):**
 
@@ -94,6 +94,8 @@ Depends on: Phase 1's confirmed floor value; independent of Phases 3–4.
 ---
 
 ## 5. Phase 3 — Schema Version 4: `event.details` + `event.last_notified_date`
+
+**Status: ✅ COMPLETE (2026-09-01).**
 
 Depends on: Phase 0's hardened migration engine. Independent of Phases 1–2 (can proceed in parallel with them if desired, though sequencing after Phase 0 is a hard requirement).
 

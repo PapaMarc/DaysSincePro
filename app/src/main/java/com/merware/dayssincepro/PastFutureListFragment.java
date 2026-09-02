@@ -147,7 +147,7 @@ public class PastFutureListFragment extends ListFragment {
 
             Cursor cursor;
 
-            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate from event ";
+            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event ";
 
             String whereClause = "where ";
 
@@ -260,7 +260,7 @@ public class PastFutureListFragment extends ListFragment {
 
             // use upper() for case insensitive
 
-            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate from event ";
+            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event ";
             String whereClause = "where ";
 
             whereClause = whereClause + " event like '%" + str + "%' and ";
@@ -338,6 +338,7 @@ public class PastFutureListFragment extends ListFragment {
         intent.putExtra("recur", c.getString(4)); // hmm
         intent.putExtra("mode", "Edit");
         intent.putExtra("end_date", c.getString(5));
+        intent.putExtra("details", c.getString(7));
 
        // showToast("Call Edit Activity!");
 
@@ -866,6 +867,7 @@ public class PastFutureListFragment extends ListFragment {
                         notifyMinute = data.getIntExtra("notifyMinute", 0);
 
                         String endDate = data.getStringExtra("end_date");
+                        String details = data.getStringExtra("details");
 
                         // update db
                         ContentValues args = new ContentValues();
@@ -874,6 +876,7 @@ public class PastFutureListFragment extends ListFragment {
                         args.put("recur", nRecur);
                         args.put("catId", catId);
                         args.put("end_date", endDate);
+                        args.put("details", details);
 
                         db.update("event", args, "_id = " + id, null);
 

@@ -2,7 +2,7 @@
 
 **Document ID:** DCR-2026-09-01-C
 **Target Component:** [OnAlarmReceive.java](../app/src/main/java/com/merware/dayssincepro/OnAlarmReceive.java) (daily + manual "review" notification trigger), [AlarmHelper.java](../app/src/main/java/com/merware/dayssincepro/AlarmHelper.java) (alarm scheduling), [MyEventAdapter.java](../app/src/main/java/com/merware/dayssincepro/MyEventAdapter.java) (list-view recurrence calculation, used here as the _correct_ reference implementation), possibly [DatabaseHelper.java](../app/src/main/java/com/merware/dayssincepro/DatabaseHelper.java) (schema, if a dismiss/seen mechanism is added)
-**Status:** Draft / Root-cause investigation complete, remediation not yet scoped for implementation
+**Status:** Implemented through Phase 3 (2026-09-01)
 **Author:** DaysSincePro Architecture
 
 ---

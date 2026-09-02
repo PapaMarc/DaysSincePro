@@ -166,6 +166,8 @@
     <string name="choose_day">Edit Date</string>
     <string name="choose_time">Time</string>
     <string name="end_day">End Day</string>
+    <string name="details">Details</string>
+    <string name="enter_details_optional">&lt;Enter Details (Optional)&gt;</string>
     <string name="touch_here">Touch Here</string>
     <string name="no_end_date_specified"> No End Date specified</string>
 

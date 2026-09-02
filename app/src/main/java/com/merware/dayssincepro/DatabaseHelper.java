@@ -33,10 +33,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 3); // third param is version
+        super(context, DATABASE_NAME, null, 4); // third param is version
         // 1 original version
         // 2 add history table
         // 3 add end date column
+        // 4 add details + last_notified_date columns
     }
 
     @Override
@@ -55,7 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String sql2 = "CREATE TABLE IF NOT EXISTS event ("
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "catId INTEGER, "
-                + "event TEXT, " + "date DATE, " + "recur INTEGER, end_date DATE)";
+            + "event TEXT, " + "date DATE, " + "recur INTEGER, "
+            + "end_date DATE, details TEXT, last_notified_date DATE)";
 
         db.execSQL(sql2);
 
@@ -95,6 +97,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // event.end_date column, new for version 3.
     static final String ADD_END_DATE_COLUMN_SQL = "ALTER TABLE event ADD COLUMN end_date DATE";
 
+        // event.details and event.last_notified_date columns, new for version 4.
+        static final String ADD_DETAILS_COLUMN_SQL = "ALTER TABLE event ADD COLUMN details TEXT";
+        static final String ADD_LAST_NOTIFIED_DATE_COLUMN_SQL =
+            "ALTER TABLE event ADD COLUMN last_notified_date DATE";
+
     /**
      * Returns the ordered SQL statements needed to migrate a database from oldVersion to
      * newVersion, by applying each intermediate version step in sequence - rather than
@@ -128,6 +135,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (fromVersion == 2 && toVersion == 3) {
             List<String> step = new ArrayList<>();
             step.add(ADD_END_DATE_COLUMN_SQL);
+            return step;
+        }
+        if (fromVersion == 3 && toVersion == 4) {
+            List<String> step = new ArrayList<>();
+            step.add(ADD_DETAILS_COLUMN_SQL);
+            step.add(ADD_LAST_NOTIFIED_DATE_COLUMN_SQL);
             return step;
         }
         return null;

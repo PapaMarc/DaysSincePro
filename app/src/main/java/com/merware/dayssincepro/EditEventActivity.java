@@ -40,7 +40,10 @@ import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class EditEventActivity extends AppCompatActivity {
 
+    private static final int MAX_DETAILS_LENGTH = 256;
+
     EditText eventText;
+    EditText detailsText;
 
     TextView dateText;
     TextView endDateText;
@@ -103,6 +106,7 @@ public class EditEventActivity extends AppCompatActivity {
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         eventText = (EditText) findViewById(R.id.editEvent);
+        detailsText = (EditText) findViewById(R.id.editDetails);
         Button btnPickDate = (Button) findViewById(R.id.buttonPickDate);
         btnPickDate.setOnClickListener(dateDialogListener);
 
@@ -178,6 +182,10 @@ public class EditEventActivity extends AppCompatActivity {
         } else {
             String event = intent.getStringExtra("event");
             eventText.setText(event);
+            String details = intent.getStringExtra("details");
+            if (details != null) {
+                detailsText.setText(details);
+            }
             String date = intent.getStringExtra("date");
             SimpleDate sd = new SimpleDate(date);
 
@@ -273,8 +281,10 @@ public class EditEventActivity extends AppCompatActivity {
             ContentValues values = new ContentValues();
 
             String sEvent = eventText.getText().toString();
+            String sDetails = normalizeDetails(detailsText.getText().toString());
 
             values.put("event", sEvent);
+            values.put("details", sDetails);
             values.put("recur", nRecur);
 
             categoryID = 0;
@@ -348,6 +358,7 @@ public class EditEventActivity extends AppCompatActivity {
 
             // put field data back.
             intent.putExtra("event", sEvent);
+            intent.putExtra("details", sDetails);
             intent.putExtra("id", eventID);
             intent.putExtra("date", dateText);
             intent.putExtra("nRecur", nRecur);
@@ -648,6 +659,20 @@ public class EditEventActivity extends AppCompatActivity {
             // updateDisplay();
         }
     };
+
+    static String normalizeDetails(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String normalized = raw.trim();
+        if (normalized.length() == 0) {
+            return null;
+        }
+        if (normalized.length() > MAX_DETAILS_LENGTH) {
+            normalized = normalized.substring(0, MAX_DETAILS_LENGTH);
+        }
+        return normalized;
+    }
 
     @Override
     protected Dialog onCreateDialog(int id) {

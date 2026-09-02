@@ -57,6 +57,7 @@ public class AlarmHelper {
 
             AlarmManager alarmManager1 = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent intent1 = new Intent(context, OnAlarmReceive.class);
+            intent1.putExtra("manual_review", true);
 
             PendingIntent pendingIntent1;
 

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -85,10 +86,70 @@ public class OnAlarmReceive extends BroadcastReceiver {
      * overdue relative to when it was first created, rather than its current cycle.
      */
     static DaysSinceCalculations currentCycleCalculations(String usDate, long nEstDays) {
-        SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
-        RecurrenceCycle.Occurrences occurrences =
-                RecurrenceCycle.computeOccurrences(sd, nEstDays, Calendar.getInstance());
+        RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(
+                usDate, nEstDays, Calendar.getInstance());
         return new DaysSinceCalculations(occurrences.lastOccurrence);
+    }
+
+    static RecurrenceCycle.Occurrences currentCycleOccurrences(String usDate, long nEstDays,
+                                                               Calendar now) {
+        SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
+        return RecurrenceCycle.computeOccurrences(sd, nEstDays, now);
+    }
+
+    static boolean alreadyNotifiedInCurrentCycle(String lastNotifiedDate,
+                                                 SimpleDate lastOccurrence,
+                                                 SimpleDate nextOccurrence,
+                                                 long nEstDays,
+                                                 String today) {
+        if (lastNotifiedDate == null || lastNotifiedDate.trim().length() == 0) {
+            return false;
+        }
+
+        if (nEstDays == 0) {
+            return today.equals(lastNotifiedDate);
+        }
+
+        try {
+            SimpleDate notified = new SimpleDate(lastNotifiedDate, SimpleDate.DateStyle.US);
+            return !notified.getDate().before(lastOccurrence.getDate())
+                    && notified.getDate().before(nextOccurrence.getDate());
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private void markEventNotified(SQLiteDatabase db, int id, String today) {
+        ContentValues values = new ContentValues();
+        values.put("last_notified_date", today);
+        db.update("event", values, "_id = " + id, null);
+    }
+
+    private boolean dispatchNotificationForUrgency(int id, String event, long nEstDays,
+                                                   DaysSinceCalculations dsc,
+                                                   Urgency urgency) {
+        switch (urgency) {
+            case GREEN:
+                if (nEstDays == 0) {
+                    createNotification(id, event, 3, "");
+                } else {
+                    String todayExplain = event + " "
+                            + context.getString(R.string.repeats_every) + " "
+                            + nEstDays + " " + context.getString(R.string.days);
+                    createNotification(id, event, 3, todayExplain);
+                }
+                return true;
+            case RED:
+                // style 1 is number of days - for shortest.
+                createNotification(id, event, 1, dsc.getExplain(true, 1));
+                return true;
+            case YELLOW:
+                createNotification(id, event, 2, dsc.getExplain(true, 1));
+                return true;
+            case NONE:
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -102,6 +163,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         eventID = intent.getLongExtra("eventID", 0);
+        boolean isManualReview = intent.getBooleanExtra("manual_review", false);
 
       //  Log.wtf("alarm", "Alarm Receive eventID is " + eventID);
         String percentOption = preferences.getString("remind_percent",
@@ -128,7 +190,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
          //   showToast("ah, alarm received for specific id" + eventID);
 
             // see if needs an notification
-            sql = "select _id, catID, event, date, recur, date(date, '+' || recur || ' day') as nextdate from event where "
+                sql = "select _id, catID, event, date, recur, last_notified_date from event where "
                     + dateCondition + " and _id = '" + eventID + "'";
 
             cursor = db.rawQuery(sql, null);
@@ -162,29 +224,20 @@ public class OnAlarmReceive extends BroadcastReceiver {
             event = cursor.getString(2);
             usDate = cursor.getString(3); // date
             nEstDays = cursor.getLong(4); // recur
-            dsc1 = currentCycleCalculations(usDate, nEstDays);
+            String lastNotifiedDate = cursor.getString(5);
 
-            switch (computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent)) {
-                case GREEN:
-                    if (nEstDays == 0) {
-                        createNotification(id, event, 3, "");
-                    } else {
-                        String todayExplain = event + " "
-                                + context.getString(R.string.repeats_every) + " "
-                                + nEstDays + " " + context.getString(R.string.days);
-                        createNotification(id, event, 3, todayExplain);
-                    }
-                    break;
-                case RED:
-                    // style 1 is number of days - for shortest.
-                    createNotification(id, event, 1, dsc1.getExplain(true, 1));
-                    break;
-                case YELLOW:
-                    createNotification(id, event, 2, dsc1.getExplain(true, 1));
-                    break;
-                case NONE:
-                default:
-                    break;
+            Calendar nowCal = Calendar.getInstance();
+            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
+            dsc1 = new DaysSinceCalculations(occurrences.lastOccurrence);
+
+            if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
+                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays, today)) {
+                return;
+            }
+
+            Urgency urgency = computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent);
+            if (dispatchNotificationForUrgency(id, event, nEstDays, dsc1, urgency)) {
+                markEventNotified(db, id, today);
             }
 
             return;
@@ -195,7 +248,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
         // showToast("Alarm received! for all!");
         int notificationCount = 0;
 
-        sql = "select _id, catID, event, date, recur, date(date, '+' || recur || ' day') as nextdate from event where "
+        sql = "select _id, catID, event, date, recur, last_notified_date from event where "
                 + dateCondition;
 
         cursor = db.rawQuery(sql, null);
@@ -207,7 +260,17 @@ public class OnAlarmReceive extends BroadcastReceiver {
             event = cursor.getString(2);
             usDate = cursor.getString(3); // date
             nEstDays = cursor.getLong(4); // recur
-            dsc1 = currentCycleCalculations(usDate, nEstDays);
+            String lastNotifiedDate = cursor.getString(5);
+
+            Calendar nowCal = Calendar.getInstance();
+            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
+            dsc1 = new DaysSinceCalculations(occurrences.lastOccurrence);
+
+            if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
+                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays, today)) {
+                cursor.moveToNext();
+                continue;
+            }
 
             // cross check with preference.
             boolean letItGo = false;
@@ -236,29 +299,10 @@ public class OnAlarmReceive extends BroadcastReceiver {
                 continue;
             }
 
-            switch (computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent)) {
-                case GREEN:
-                    if (nEstDays == 0) {
-                        createNotification(id, event, 3, "");
-                    } else {
-                        String todayExplain = event + " "
-                                + context.getString(R.string.repeats_every) + " "
-                                + nEstDays + " " + context.getString(R.string.days);
-                        createNotification(id, event, 3, todayExplain);
-                    }
-                    notificationCount++;
-                    break;
-                case RED:
-                    createNotification(id, event, 1, dsc1.getExplain(true, 1));
-                    notificationCount++;
-                    break;
-                case YELLOW:
-                    createNotification(id, event, 2, dsc1.getExplain(true, 1));
-                    notificationCount++;
-                    break;
-                case NONE:
-                default:
-                    break;
+            Urgency urgency = computeUrgency(dsc1.getDaysSinceEvent(), nEstDays, percent);
+            if (dispatchNotificationForUrgency(id, event, nEstDays, dsc1, urgency)) {
+                markEventNotified(db, id, today);
+                notificationCount++;
             }
             cursor.moveToNext();
         }

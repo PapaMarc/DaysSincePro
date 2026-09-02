@@ -75,17 +75,35 @@ public class DatabaseMigrationTest {
     }
 
     @Test
+    public void v3ToV4_addsDetailsAndLastNotifiedDateColumns() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(3, 4);
+        assertEquals(2, statements.size());
+        assertTrue(statements.get(0).contains("details"));
+        assertTrue(statements.get(1).contains("last_notified_date"));
+    }
+
+    @Test
+    public void v1ToV4_appliesAllStepsInOrder() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(1, 4);
+        assertEquals(4, statements.size());
+        assertTrue(statements.get(0).contains("history"));
+        assertTrue(statements.get(1).contains("end_date"));
+        assertTrue(statements.get(2).contains("details"));
+        assertTrue(statements.get(3).contains("last_notified_date"));
+    }
+
+    @Test
     public void sameVersion_returnsEmptyList() {
-        List<String> statements = DatabaseHelper.getMigrationStatements(3, 3);
+        List<String> statements = DatabaseHelper.getMigrationStatements(4, 4);
         assertEquals(0, statements.size());
     }
 
     @Test
     public void unknownFutureVersion_returnsNullInsteadOfDroppingData() {
-        // No step is defined yet from v3 to v4 - must return null (refuse), not silently
+        // No step is defined yet from v4 to v5 - must return null (refuse), not silently
         // fabricate/execute a destructive migration.
-        assertNull(DatabaseHelper.getMigrationStatements(3, 4));
-        assertNull(DatabaseHelper.getMigrationStatements(1, 4));
+        assertNull(DatabaseHelper.getMigrationStatements(4, 5));
+        assertNull(DatabaseHelper.getMigrationStatements(1, 5));
     }
 
     @Test
@@ -149,10 +167,12 @@ public class DatabaseMigrationTest {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV1Schema(conn);
-            applyMigration(conn, 1, 3);
+            applyMigration(conn, 1, 4);
 
-            assertTrue("history table should exist after v1->v3", tableExists(conn, "history"));
-            assertTrue("event.end_date should exist after v1->v3", columnExists(conn, "event", "end_date"));
+            assertTrue("history table should exist after v1->v4", tableExists(conn, "history"));
+            assertTrue("event.end_date should exist after v1->v4", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v1->v4", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v1->v4", columnExists(conn, "event", "last_notified_date"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
         }
@@ -163,12 +183,33 @@ public class DatabaseMigrationTest {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV2Schema(conn);
-            applyMigration(conn, 2, 3);
+            applyMigration(conn, 2, 4);
 
-            assertTrue("event.end_date should exist after v2->v3", columnExists(conn, "event", "end_date"));
+            assertTrue("event.end_date should exist after v2->v4", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v2->v4", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v2->v4", columnExists(conn, "event", "last_notified_date"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
             assertEquals("history rows must survive migration", 1, rowCount(conn, "history"));
+        }
+    }
+
+    @Test
+    public void upgradeFromV3_preservesDataAndAddsV4Columns() throws SQLException, IOException {
+        File dbFile = newTempDbPath();
+        try (Connection conn = open(dbFile)) {
+            createV2Schema(conn);
+            applyMigration(conn, 2, 3);
+
+            try (Statement st = conn.createStatement()) {
+                st.execute("UPDATE event SET end_date = '2020-12-31' WHERE _id = 1");
+            }
+
+            applyMigration(conn, 3, 4);
+
+            assertTrue("event.details should exist after v3->v4", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v3->v4", columnExists(conn, "event", "last_notified_date"));
+            assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
         }
     }
 }

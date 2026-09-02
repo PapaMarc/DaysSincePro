@@ -126,6 +126,23 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category" />
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/details"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="@string/enter_details_optional"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLength="256"
+                android:maxLines="4"
+                android:minLines="2" />
+
             <Spinner
                 android:id="@+id/catSpinner"
                 android:layout_width="match_parent"
