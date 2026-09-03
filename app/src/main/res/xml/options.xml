@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceCategory android:title="@string/user_settings">
-
 		<ListPreference android:key="category_sort_order"
 			android:dialogTitle="@string/category_sort_order" android:title="@string/category_sort_order"
 			android:summary="@string/category_sort_order" android:entries="@array/cat_entries"
@@ -54,8 +52,6 @@
             android:summary="@string/remind_repeat_events"
 			android:title="@string/remind_repeat_events"
 			android:defaultValue="75 percent of days passed"/>
-		
 
-	</PreferenceCategory>
 
 </PreferenceScreen>

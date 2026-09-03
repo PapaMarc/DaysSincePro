@@ -84,4 +84,14 @@
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
+    <style name="SettingsThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
+        <item name="popupMenuStyle">@style/AppPopupMenu</item>
+    </style>
+
+    <style name="SettingsThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
+        <item name="popupMenuStyle">@style/AppPopupMenu</item>
+    </style>
+
 </resources>
