@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import android.util.Log;
@@ -113,8 +114,13 @@ public class CategoriesActivity extends ListActivity {
         lv = getListView();
         lv.setTextFilterEnabled(true);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        registerForContextMenu(lv);
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showCategoryActionMenu(view, position, id);
+                return true;
+            }
+        });
 
         addButton = (ImageButton) findViewById(R.id.addButton);
         if (theme == 1) {
@@ -186,6 +192,66 @@ public class CategoriesActivity extends ListActivity {
             all_clearButton.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void showCategoryActionMenu(View anchor, final int position, final long id) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        boolean isUncategorizedSynthetic = id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+
+        if (!isUncategorizedSynthetic) {
+            popup.getMenu().add(0, MENU_EDIT, Menu.NONE + 1, R.string.edit);
+            popup.getMenu().add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
+        }
+        popup.getMenu().add(2, MENU_EXPORT, Menu.NONE + 3, R.string.export_category);
+        popup.getMenu().add(3, MENU_IMPORT, Menu.NONE + 4, R.string.import_csv);
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return onCategoryMenuAction(item.getItemId(), position, id);
+            }
+        });
+        popup.show();
+    }
+
+    private boolean onCategoryMenuAction(int menuItemId, int position, long id) {
+        switch (menuItemId) {
+            case MENU_EDIT:
+                editItem(position, id);
+                return true;
+
+            case MENU_REMOVE:
+                if (id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
+                    showToast(getString(R.string.category_name_reserved));
+                    return true;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.remove_category);
+                builder.setMessage(R.string.remove_cat_msg);
+                builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
+                builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
+                builder.show();
+
+                removeId = id;
+                selectedPosition = position;
+                return true;
+
+            case MENU_EXPORT:
+                exportId = id;
+                selectedPosition = position;
+                launchExportCategoryCsvPicker();
+                return true;
+
+            case MENU_IMPORT:
+                importId = id;
+                selectedPosition = position;
+                launchImportCategoryCsvPicker();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -648,40 +714,11 @@ public class CategoriesActivity extends ListActivity {
         AdapterView.AdapterContextMenuInfo menuInfo;
         menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        switch (item.getItemId()) {
-
-            case MENU_EDIT:
-                editItem(menuInfo.position, menuInfo.id);
-                break;
-
-            case MENU_REMOVE:
-                if (menuInfo.id == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
-                    showToast(getString(R.string.category_name_reserved));
-                    break;
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.remove_category);
-                builder.setMessage(R.string.remove_cat_msg);
-                builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
-                builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
-                builder.show();
-
-                removeId = menuInfo.id;
-                selectedPosition = menuInfo.position;
-                break;
-            case MENU_EXPORT:
-                exportId = menuInfo.id;
-                selectedPosition = menuInfo.position;
-                launchExportCategoryCsvPicker();
-                break;
-            case MENU_IMPORT:
-                importId = menuInfo.id;
-                selectedPosition = menuInfo.position;
-                launchImportCategoryCsvPicker();
-                break;
+        if (menuInfo == null) {
+            return false;
         }
 
-        return true;
+        return onCategoryMenuAction(item.getItemId(), menuInfo.position, menuInfo.id);
     }
 
     private void launchExportCategoryCsvPicker() {

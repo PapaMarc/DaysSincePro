@@ -28,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -65,22 +66,46 @@ public class HistoryActivity extends ListActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String sTheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(sTheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
-        } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
-        }
-
         super.onCreateContextMenu(menu, v, menuInfo);
 
         menu.add(0, MENU_EDIT, Menu.NONE + 1, R.string.edit);
         menu.add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
+    }
+
+    private void showHistoryActionMenu(View anchor, final int position, final long id) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenu().add(0, MENU_EDIT, Menu.NONE + 1, R.string.edit);
+        popup.getMenu().add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return onHistoryMenuAction(item.getItemId(), position, id);
+            }
+        });
+        popup.show();
+    }
+
+    private boolean onHistoryMenuAction(int menuItemId, int position, long id) {
+        switch (menuItemId) {
+            case MENU_EDIT:
+                editItem(position, id);
+                return true;
+
+            case MENU_REMOVE:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.remove_item);
+                builder.setMessage(R.string.are_you_sure);
+                builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
+                builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
+                builder.show();
+
+                removeId = id;
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     void showToast(String s) {
@@ -263,8 +288,13 @@ public class HistoryActivity extends ListActivity {
         lv.setTextFilterEnabled(true);
 
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-
-        registerForContextMenu(lv);
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showHistoryActionMenu(view, position, id);
+                return true;
+            }
+        });
 
         addButton.setOnClickListener(new OnClickListener() {
 
@@ -303,25 +333,11 @@ public class HistoryActivity extends ListActivity {
         AdapterView.AdapterContextMenuInfo menuInfo;
         menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        switch (item.getItemId()) {
-
-            case MENU_EDIT:
-                editItem(menuInfo.position, menuInfo.id);
-                break;
-
-            case MENU_REMOVE:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.remove_item);
-                builder.setMessage(R.string.are_you_sure);
-                builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
-                builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
-                builder.show();
-
-                removeId = menuInfo.id;
-                break;
+        if (menuInfo == null) {
+            return false;
         }
 
-        return true;
+        return onHistoryMenuAction(item.getItemId(), menuInfo.position, menuInfo.id);
     }
 
     DialogInterface.OnClickListener yesNoDialogClickListener = new DialogInterface.OnClickListener() {
