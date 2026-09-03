@@ -126,7 +126,7 @@ public class PastFutureListFragment extends ListFragment {
 
     public void listData() {
 
-        if (searchText != "") {
+        if (!searchText.isEmpty()) {
             listDataAjax(searchText);
             return;
         }
@@ -246,39 +246,22 @@ public class PastFutureListFragment extends ListFragment {
     public void listDataAjax(String str) {
         String sql = "";
         String orderBy = null;
-        str = str.toUpperCase();
+        if (str == null) {
+            return;
+        }
+        str = str.trim();
         searchText = str;
 
         try {
             orderBy = getOrderBy();
 
-            now = new SimpleDate(new Date());
-
-            String today = now.getDate(SimpleDate.DateStyle.YMD);
-            String dateCondition = "date <= '" + today + "'";
-
             Cursor cursor;
 
-            // use upper() for case insensitive
-
-            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event ";
-            String whereClause = "where ";
-
-            whereClause = whereClause + " event like '%" + str + "%' and ";
-
-            if (kind == TabKind.DaysSince || kind == TabKind.SinceLast)
-                whereClause = whereClause + dateCondition;
-            else {
-                // buggy
-                //whereClause = whereClause + "nextdate > '" + today + "'";
-                whereClause = whereClause + "date > '" + today + "'";
-            }
-
-            sql = sql + whereClause + " order by " + orderBy;
+            sql = buildSearchSql(orderBy);
 
             //   showToast(sql);
 
-            cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
 
             String[] from = new String[]{"event", "date"}; // columns
 
@@ -301,6 +284,11 @@ public class PastFutureListFragment extends ListFragment {
             //   showToast("Sorry, database problems." + e.getMessage());
             showDialog(e.getMessage());
         }
+    }
+
+    static String buildSearchSql(String orderBy) {
+        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event "
+                + "where UPPER(event) like UPPER(?) order by " + orderBy;
     }
 
     // fill data when tab is redrawn.

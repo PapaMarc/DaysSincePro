@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 49
-        versionName "3.10.71.49"
+        versionName "3.10.72.49"
     }
 
     signingConfigs {
@@ -31,6 +31,12 @@ android {
             shrinkResources true        // optional but recommended
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                       'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        sideload {
+            initWith release
+            applicationIdSuffix ".dev"
             signingConfig signingConfigs.release
         }
     }

@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
     private int selectedTabBeforeSettings = 0;
     private boolean addLaunchedFromUncategorizedContext = false;
     private boolean addLaunchedWithNoEvents = false;
+    private static final String VIEW_PAGER_FRAGMENT_TAG_PREFIX = "android:switcher:";
 
 
     @Override
@@ -101,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        // Keep all 3 tabs instantiated so search can update all tab lists consistently.
+        mViewPager.setOffscreenPageLimit(2);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -174,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements
 
         searchView.setSearchableInfo(searchManager.
                 getSearchableInfo(getComponentName()));
-        searchView.setSubmitButtonEnabled(true);
+        // Live filtering is primary; keep keyboard submit callback as fallback only.
+        searchView.setSubmitButtonEnabled(false);
         searchView.setOnQueryTextListener(this);
 
         return true;
@@ -454,6 +458,44 @@ public class MainActivity extends AppCompatActivity implements
             sinceLast.listDataAjax(query);
         if (daysUntil != null)
             daysUntil.listDataAjax(query);
+    }
+
+    private PastFutureListFragment resolvePagerFragment(int position,
+                                                        PastFutureListFragment cached) {
+        if (cached != null) {
+            return cached;
+        }
+
+        String fragmentTag = VIEW_PAGER_FRAGMENT_TAG_PREFIX + R.id.pager + ":" + position;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
+        if (fragment instanceof PastFutureListFragment) {
+            return (PastFutureListFragment) fragment;
+        }
+
+        return null;
+    }
+
+    private void dispatchSearchToResolvedFragments(String query) {
+        daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+        sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+        daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+
+        dispatchSearch(daysSinceFragment, sinceLastFragment, daysUntilFragment, query);
+    }
+
+    private void clearSearchAndRefresh() {
+        daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+        sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+        daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+
+        if (daysSinceFragment != null)
+            daysSinceFragment.unsetSearchText();
+        if (sinceLastFragment != null)
+            sinceLastFragment.unsetSearchText();
+        if (daysUntilFragment != null)
+            daysUntilFragment.unsetSearchText();
+
+        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
     }
 
     /**
@@ -869,31 +911,23 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (query == null || query.length() == 0) {
+            clearSearchAndRefresh();
+            return true;
+        }
 
-        dispatchSearch(daysSinceFragment, sinceLastFragment, daysUntilFragment, query);
-        return false;
+        dispatchSearchToResolvedFragments(query);
+        return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
-        if (newText == null)
-            return false;
-
-        if (newText.length() == 0) {
-            // from Crashes and ANRs
-            if (daysSinceFragment != null)
-                daysSinceFragment.unsetSearchText();
-            if (sinceLastFragment != null)
-                sinceLastFragment.unsetSearchText();
-            if (daysUntilFragment != null)
-                daysUntilFragment.unsetSearchText();
-
-            refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+        if (newText == null || newText.length() == 0) {
+            clearSearchAndRefresh();
             return true;
         }
 
-        dispatchSearch(daysSinceFragment, sinceLastFragment, daysUntilFragment, newText);
+        dispatchSearchToResolvedFragments(newText);
         return true;
     }
 
