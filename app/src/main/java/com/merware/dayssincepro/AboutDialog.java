@@ -34,6 +34,12 @@ public class AboutDialog {
 
         String aboutTitle = "About: DaysSincePro";
         String versionString = String.format("Version: %s", versionInfo);
+        String packageName = context.getPackageName();
+        boolean isSideloadBuild = packageName.endsWith(".dev");
+        String sideloadString = String.format("SideLoad .apk: %s", packageName);
+        String headerText = isSideloadBuild
+                ? versionString + "\n" + sideloadString
+                : versionString;
         String aboutText = "Originally written by " + author + "\n" + date;
 
         String maintained = context.getString(R.string.about_maintained);
@@ -65,7 +71,7 @@ public class AboutDialog {
         // Set up the TextView
         final TextView message = new TextView(context);
         SpannableStringBuilder messageText = new SpannableStringBuilder(
-                versionString + "\n\n" + fullAboutText);
+                headerText + "\n\n" + fullAboutText);
 
         int maintainedStart = messageText.toString().indexOf(maintained);
         int republishedStart = messageText.toString().indexOf(
@@ -114,11 +120,11 @@ public class AboutDialog {
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        // Center the version line only; the rest of the text reads left-to-right normally.
+        // Center the version line for all builds, and the sideload line when present.
         messageText.setSpan(
                 new android.text.style.AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0,
-                versionString.length(),
+                headerText.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Balanced left/right margins
