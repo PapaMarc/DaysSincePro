@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements
 
     ViewPager mViewPager;
 
-    boolean notifyOptionBefore = false;
-
     AlarmHelper alarmHelp;
 
     private static final int REQUEST_EXPORT_DB_SAF = 10;
@@ -63,8 +61,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String STATE_SELECTED_TAB = "selected_tab";
     private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
 
-    private String themeBeforeSettings = "0";
-    private int selectedTabBeforeSettings = 0;
+    private String appliedThemeValue = "0";
+    private boolean appliedNotifyOption = false;
+    private boolean waitingForSettingsReturn = false;
     private boolean addLaunchedFromUncategorizedContext = false;
     private boolean addLaunchedWithNoEvents = false;
     private static final String VIEW_PAGER_FRAGMENT_TAG_PREFIX = "android:switcher:";
@@ -78,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements
 
         String sTheme = preferences.getString("theme", "0");
         int theme = Integer.parseInt(sTheme);
+        appliedThemeValue = sTheme;
+        appliedNotifyOption = preferences.getBoolean("noti", false);
 
         if (theme == 1) { // dark
             setTheme(R.style.AppTheme2);
@@ -338,7 +339,6 @@ public class MainActivity extends AppCompatActivity implements
         startActivityForResult(intent, ADD_ACTIVITY);
     }
 
-    private static final int CONFIG_ACTIVITY = 4;
     private static final int EXPLORE_ACTIVITY = 5;
     private static final int CATEGORY_ACTIVITY = 6;
     private static final int ADD_ACTIVITY = 7;
@@ -348,12 +348,61 @@ public class MainActivity extends AppCompatActivity implements
 
     void settings() {
         Intent intent = new Intent(this, PrefActivity.class);
+        waitingForSettingsReturn = true;
+        startActivity(intent);
+    }
 
-        notifyOptionBefore = preferences.getBoolean("noti", false);
-        themeBeforeSettings = preferences.getString("theme", "0");
-        selectedTabBeforeSettings = mViewPager.getCurrentItem();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        startActivityForResult(intent, CONFIG_ACTIVITY);
+        if (!waitingForSettingsReturn) {
+            return;
+        }
+
+        waitingForSettingsReturn = false;
+
+        if (reconcileThemeAfterSettingsReturn()) {
+            return;
+        }
+
+        reconcileNotificationPreference();
+        refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
+                mViewPager.getCurrentItem());
+    }
+
+    private boolean reconcileThemeAfterSettingsReturn() {
+        String themeNow = preferences.getString("theme", "0");
+        if (themeNow.equals(appliedThemeValue)) {
+            return false;
+        }
+
+        appliedThemeValue = themeNow;
+        restartMainPreservingCurrentTab();
+        return true;
+    }
+
+    private void reconcileNotificationPreference() {
+        boolean notifyOptionJustNow = preferences.getBoolean("noti", false);
+
+        if (notifyOptionJustNow && !appliedNotifyOption) {
+            alarmHelp.setAlarm(0);
+        }
+
+        if (!notifyOptionJustNow) {
+            alarmHelp.cancelAlarm();
+        }
+
+        appliedNotifyOption = notifyOptionJustNow;
+    }
+
+    private void restartMainPreservingCurrentTab() {
+        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRA_SELECTED_TAB, mViewPager.getCurrentItem());
+        startActivity(intent);
     }
 
     @Override
@@ -844,35 +893,6 @@ public class MainActivity extends AppCompatActivity implements
                 addLaunchedFromUncategorizedContext = false;
                 addLaunchedWithNoEvents = false;
                 break;
-            case CONFIG_ACTIVITY:
-
-                boolean notifyOptionJustNow = preferences.getBoolean("noti", false);
-
-                if (notifyOptionJustNow && !notifyOptionBefore) {
-                    alarmHelp.setAlarm(0);
-                    notifyOptionBefore = true;
-                }
-
-                if (!notifyOptionJustNow) {
-                    alarmHelp.cancelAlarm();
-                }
-
-                String themeNow = preferences.getString("theme", "0");
-                if (!themeNow.equals(themeBeforeSettings)) {
-                    finish();
-                    // Recreate the list host only when theme changed and preserve selected tab.
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(EXTRA_SELECTED_TAB, selectedTabBeforeSettings);
-                    startActivity(intent);
-                } else {
-                    refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
-                            mViewPager.getCurrentItem());
-                }
-
-                break;
-
             case CATEGORY_ACTIVITY:
                 // reset title
                 String text = preferences.getString("Categories", "");

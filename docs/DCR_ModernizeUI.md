@@ -159,6 +159,13 @@ Primary outcomes for Mini-A:
 
 2. Prove consistency on both emulator and physical device.
 3. Build on the validated Settings pattern from Phase 0 while still keeping blast radius lower than touching Main.
+4. Integrate theme-mode hardening as a required Mini-A acceptance gate (not deferred follow-up).
+
+Mini-A integrated theme hardening requirement:
+
+1. Use one single source of truth for theme transition handling on Settings return.
+2. Ensure no stale-theme return path for Main and About when leaving Settings via back/up.
+3. Avoid duplicate restart/recreate triggers across Settings-return lifecycle paths.
 
 ### 5.4 Mini-Phase B (Primary App Chrome)
 
@@ -223,6 +230,22 @@ Expected savings when done this way:
 
 Dialogs keep current behavior semantics, but should use a consistent theme wrapper where required to match light/dark and typography conventions.
 
+### 6.4 Theme Lifecycle Contract (Mini-A)
+
+1. Theme preference value (`theme`) in shared preferences is the single source of truth.
+2. Settings applies the selected theme immediately within Settings so users get instant feedback.
+3. Main reconciles theme changes in one place on Settings return and only restarts when the theme value actually changed.
+4. About inherits current Main host theme at launch; no separate theme state is maintained for About.
+5. Categories and Add Event read the same shared preference at activity creation and therefore naturally align once Main/Settings transition handling is correct.
+6. Notification preference side effects should be reconciled in the same Main Settings-return contract to avoid divergent result-code-only paths.
+
+Mini-A short RCA summary:
+
+1. Root cause: Main previously depended on `onActivityResult` with `RESULT_OK` to reconcile Settings changes.
+2. Back/up dismissal from Settings can return without `RESULT_OK`, skipping Main reconciliation.
+3. Result: Settings reflected new theme, but Main (and About launched from it) could remain stale until full relaunch.
+4. Fix direction: move reconciliation to a single Settings-return lifecycle contract and gate restarts on actual theme change.
+
 ---
 
 ## 7. Acceptance Criteria
@@ -238,6 +261,8 @@ Dialogs keep current behavior semantics, but should use a consistent theme wrapp
 - event add/edit flow remains intact
 
 4. Mini-A screens open and close correctly from their existing entry points.
+5. Mini-A theme hardening passes with no stale-theme screen after leaving Settings via back or up.
+6. Main and About parity after Settings theme toggle is required for Mini-A completion.
 
 ### 7.2 Visual and Navigation
 
@@ -281,6 +306,14 @@ No phase is complete until all four combinations pass for all in-scope screens.
 1. Theme toggled Light/Dark before launch.
 2. During Phase 0, theme changed in Settings and return flow verified.
 3. Rotation/config-change smoke checks for affected screens where relevant.
+
+### 8.5 Mini-A Theme Parity Matrix (Settings Return + About from Main)
+
+1. Light -> Dark: open Settings, toggle theme, exit via back/up, verify Main is Dark, launch About from Main, verify About is Dark.
+2. Dark -> Light: open Settings, toggle theme, exit via back/up, verify Main is Light, launch About from Main, verify About is Light.
+3. Repeat both flows on emulator.
+4. Repeat both flows on physical device.
+5. Mini-A is blocked from completion if any stale-theme screen remains after Settings exit.
 
 ### 8.3 Device Matrix
 
