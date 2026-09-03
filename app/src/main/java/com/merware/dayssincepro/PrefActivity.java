@@ -48,15 +48,9 @@ public class PrefActivity extends AppCompatActivity {
     }
 
     private void applySettingsTheme() {
-        String stheme = preferences.getString("theme", "0");
+        String stheme = ThemeMode.getThemeValue(this);
         appliedThemeValue = stheme;
-        int theme = Integer.parseInt(stheme);
-
-        if (theme == 1) {
-            setTheme(R.style.SettingsThemeDark);
-        } else {
-            setTheme(R.style.SettingsThemeLight);
-        }
+        setTheme(ThemeMode.settingsThemeResId(stheme));
     }
 
     void onThemePreferenceChanged(String newThemeValue) {
@@ -136,7 +130,7 @@ public class PrefActivity extends AppCompatActivity {
 
             if ("theme".equals(key) && getActivity() instanceof PrefActivity) {
                 ((PrefActivity) getActivity()).onThemePreferenceChanged(
-                        sharedPreferences.getString("theme", "0"));
+                        sharedPreferences.getString("theme", ThemeMode.THEME_LIGHT));
             }
         }
 

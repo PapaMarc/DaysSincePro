@@ -1,6 +1,5 @@
 package com.merware.dayssincepro;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -13,6 +12,8 @@ import android.text.style.URLSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class AboutDialog {
     public static AlertDialog create(Context context, String author,

@@ -95,15 +95,9 @@ public class EditEventActivity extends AppCompatActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String sTheme = preferences.getString("theme", "0");
-        theme = Integer.parseInt(sTheme);
-
-
-        if (theme == 1) { // dark
-            setTheme(R.style.DatePickerHostThemeDark);
-        } else {// 0 light
-            setTheme(R.style.DatePickerHostThemeLight);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        theme = ThemeMode.isDark(themeValue) ? 1 : 0;
+        setTheme(ThemeMode.datePickerHostThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event);

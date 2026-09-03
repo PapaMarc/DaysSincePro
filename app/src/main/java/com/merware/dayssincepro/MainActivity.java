@@ -75,16 +75,11 @@ public class MainActivity extends AppCompatActivity implements
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         alarmHelp = new AlarmHelper(this);
 
-        String sTheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(sTheme);
+        String sTheme = ThemeMode.getThemeValue(this);
         appliedThemeValue = sTheme;
         appliedNotifyOption = preferences.getBoolean("noti", false);
 
-        if (theme == 1) { // dark
-            setTheme(R.style.AppTheme2);
-        } else {// 0 light
-            setTheme(R.style.AppTheme);
-        }
+        setTheme(ThemeMode.mainThemeResId(sTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -372,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean reconcileThemeAfterSettingsReturn() {
-        String themeNow = preferences.getString("theme", "0");
+        String themeNow = ThemeMode.getThemeValue(this);
         if (themeNow.equals(appliedThemeValue)) {
             return false;
         }

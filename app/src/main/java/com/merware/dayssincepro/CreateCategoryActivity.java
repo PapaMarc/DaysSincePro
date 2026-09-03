@@ -24,13 +24,8 @@ public class CreateCategoryActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        int theme = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this)
-                .getString("theme", "0"));
-        if (theme == 1) {
-            setTheme(R.style.AppDialogTheme2);
-        } else {
-            setTheme(R.style.AppDialogTheme);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        setTheme(ThemeMode.dialogThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_category);

@@ -95,14 +95,9 @@ public class CategoriesActivity extends ListActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String sTheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(sTheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
-        } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        boolean darkTheme = ThemeMode.isDark(themeValue);
+        setTheme(ThemeMode.dialogThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories);
@@ -123,7 +118,7 @@ public class CategoriesActivity extends ListActivity {
         });
 
         addButton = (ImageButton) findViewById(R.id.addButton);
-        if (theme == 1) {
+        if (darkTheme) {
             addButton.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         } else {
             addButton.setColorFilter(0xFF333333, PorterDuff.Mode.SRC_IN);
