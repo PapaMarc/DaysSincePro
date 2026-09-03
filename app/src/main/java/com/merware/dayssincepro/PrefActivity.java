@@ -16,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 public class PrefActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
+    private String appliedThemeValue = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class PrefActivity extends AppCompatActivity {
 
     private void applySettingsTheme() {
         String stheme = preferences.getString("theme", "0");
+        appliedThemeValue = stheme;
         int theme = Integer.parseInt(stheme);
 
         if (theme == 1) {
@@ -55,6 +57,19 @@ public class PrefActivity extends AppCompatActivity {
         } else {
             setTheme(R.style.SettingsThemeLight);
         }
+    }
+
+    void onThemePreferenceChanged(String newThemeValue) {
+        if (newThemeValue == null || newThemeValue.equals(appliedThemeValue)) {
+            return;
+        }
+
+        appliedThemeValue = newThemeValue;
+        getWindow().getDecorView().post(() -> {
+            if (!isFinishing() && !isDestroyed()) {
+                recreate();
+            }
+        });
     }
 
     @Override
@@ -117,6 +132,11 @@ public class PrefActivity extends AppCompatActivity {
                         && !NotificationPermissionHelper.areNotificationsEnabled(getActivity())) {
                     NotificationPermissionHelper.promptEnableNotifications(getActivity());
                 }
+            }
+
+            if ("theme".equals(key) && getActivity() instanceof PrefActivity) {
+                ((PrefActivity) getActivity()).onThemePreferenceChanged(
+                        sharedPreferences.getString("theme", "0"));
             }
         }
 

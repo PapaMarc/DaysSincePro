@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String STATE_SELECTED_TAB = "selected_tab";
     private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
 
-    private boolean waitingForSettingsReturn = false;
     private String themeBeforeSettings = "0";
     private int selectedTabBeforeSettings = 0;
     private boolean addLaunchedFromUncategorizedContext = false;
@@ -353,34 +352,8 @@ public class MainActivity extends AppCompatActivity implements
         notifyOptionBefore = preferences.getBoolean("noti", false);
         themeBeforeSettings = preferences.getString("theme", "0");
         selectedTabBeforeSettings = mViewPager.getCurrentItem();
-        waitingForSettingsReturn = true;
 
         startActivityForResult(intent, CONFIG_ACTIVITY);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!waitingForSettingsReturn) {
-            return;
-        }
-
-        waitingForSettingsReturn = false;
-
-        String themeNow = preferences.getString("theme", "0");
-        if (!themeNow.equals(themeBeforeSettings)) {
-            finish();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(EXTRA_SELECTED_TAB, selectedTabBeforeSettings);
-            startActivity(intent);
-            return;
-        }
-
-        refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
-                mViewPager.getCurrentItem());
     }
 
     @Override
@@ -884,12 +857,19 @@ public class MainActivity extends AppCompatActivity implements
                     alarmHelp.cancelAlarm();
                 }
 
-                finish();
-                // reset to apply theme
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                String themeNow = preferences.getString("theme", "0");
+                if (!themeNow.equals(themeBeforeSettings)) {
+                    finish();
+                    // Recreate the list host only when theme changed and preserve selected tab.
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(EXTRA_SELECTED_TAB, selectedTabBeforeSettings);
+                    startActivity(intent);
+                } else {
+                    refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
+                            mViewPager.getCurrentItem());
+                }
 
                 break;
 
