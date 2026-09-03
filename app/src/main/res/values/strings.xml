@@ -118,7 +118,7 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="show">Show</string>
+    <string name="show">Display</string>
     <string name="restore_from_database">Restore From Database</string>
     <string name="replace_data">This will replace existing data.</string>
     <string name="not_chosen">Event added in category not chosen to be displayed.</string>
