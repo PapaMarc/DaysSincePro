@@ -108,6 +108,8 @@ Exception for Main screen:
 
 ### 5.1 Phase 0 (Settings-Only Pre-Phase)
 
+completed 9/3/26
+
 Scope:
 
 1. Settings screen only
@@ -120,6 +122,8 @@ Primary outcomes for Phase 0:
 4. Standardize Settings labeling to a single visible screen title (`Settings`) with no duplicate `User Settings` header.
 
 ### 5.2 Phase 0.5 (Search Reliability Gate)
+
+completed 9/3/26
 
 Scope:
 
@@ -135,6 +139,8 @@ Dependency and ownership model:
 3. Search hardening must be implementation-reusable by Mini-B (no throwaway temporary path).
 
 ### 5.3 Mini-Phase A (High-Use Pilot)
+
+completed 9/3/26
 
 Scope:
 
