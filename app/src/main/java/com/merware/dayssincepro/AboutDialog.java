@@ -103,7 +103,9 @@ public class AboutDialog {
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        int merWareStart = messageText.toString().indexOf(merWare);
+        int merWareStart = marcSeinfeldStart >= 0
+                ? messageText.toString().indexOf(merWare, marcSeinfeldStart + marcSeinfeld.length())
+                : messageText.toString().indexOf(merWare);
         if (merWareStart >= 0) {
             messageText.setSpan(
                     new URLSpan("https://merware.net/index.html#portfolio"),
