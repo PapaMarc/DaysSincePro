@@ -4,11 +4,9 @@ package com.merware.dayssincepro;
 
 // based on grocery app 10/13/2013
 
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -67,14 +65,11 @@ public class CategoriesActivity extends AppCompatActivity {
     static final private int MENU_EDIT = Menu.FIRST;
     static final private int MENU_REMOVE = Menu.FIRST + 1;
     static final private int MENU_EXPORT = Menu.FIRST + 2;
-    static final private int MENU_IMPORT = Menu.FIRST + 3;
 
     private static final int REQUEST_EXPORT_CATEGORY_CSV_SAF = 20;
-    private static final int REQUEST_IMPORT_CATEGORY_CSV_SAF = 21;
 
     long removeId;
     long exportId;
-    long importId;
 
     private long[] data = null;
 
@@ -209,7 +204,6 @@ public class CategoriesActivity extends AppCompatActivity {
             popup.getMenu().add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
         }
         popup.getMenu().add(2, MENU_EXPORT, Menu.NONE + 3, R.string.export_category);
-        popup.getMenu().add(3, MENU_IMPORT, Menu.NONE + 4, R.string.import_csv);
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -247,12 +241,6 @@ public class CategoriesActivity extends AppCompatActivity {
                 exportId = id;
                 selectedPosition = position;
                 launchExportCategoryCsvPicker();
-                return true;
-
-            case MENU_IMPORT:
-                importId = id;
-                selectedPosition = position;
-                launchImportCategoryCsvPicker();
                 return true;
 
             default:
@@ -702,7 +690,6 @@ public class CategoriesActivity extends AppCompatActivity {
             menu.add(1, MENU_REMOVE, Menu.NONE + 2, R.string.remove);
         }
         menu.add(2, MENU_EXPORT, Menu.NONE + 3, R.string.export_category);
-        menu.add(3, MENU_IMPORT, Menu.NONE + 4, R.string.import_csv);
     }
 
     @Override
@@ -730,22 +717,6 @@ public class CategoriesActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_TITLE, filename);
         CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_CATEGORY_CSV_SAF);
-    }
-
-    private void launchImportCategoryCsvPicker() {
-        cursor = (Cursor) lv.getItemAtPosition(selectedPosition);
-        selectedCategory = cursor.getString(1); // 0 is _id
-
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
-                "text/csv",
-                "text/comma-separated-values",
-                "text/plain"
-        });
-        CsvExporter.setDownloadsInitialUri(intent);
-        startActivityForResult(intent, REQUEST_IMPORT_CATEGORY_CSV_SAF);
     }
 
     DialogInterface.OnClickListener yesNoDialogClickListenerOK = new DialogInterface.OnClickListener() {
@@ -813,30 +784,6 @@ public class CategoriesActivity extends AppCompatActivity {
         }
     }
 
-    private void handleImportCategoryCsvSaf(Uri uri) {
-        if (uri == null) return;
-        try {
-            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
-            CsvImportResult result = CsvImporter.importMultipleCsvUris(this, db,
-                    Collections.singletonList(uri), importId);
-
-            if (result.isSuccess()) {
-                showToast(result.getSummaryMessage());
-                if (result.getCategoriesCreated() > 0 || result.getImportedCount() > 0) {
-                    listData();
-                    reApplyChecked();
-                }
-            } else {
-                String firstErr = result.getErrors().isEmpty() ? "No events imported." : result.getErrors().get(0);
-                showToast("Import error: " + firstErr);
-                Log.e("DSP_IMPORT", "Import failed: " + firstErr);
-            }
-        } catch (Exception e) {
-            Log.e("DSP_IMPORT", "Import error", e);
-            showToast("Import failed: " + e.getMessage());
-        }
-    }
-
     public static final void addFileToMediaStore(final String path, Context context) {
         CsvExporter.addFileToMediaStore(context, path);
     }
@@ -862,9 +809,6 @@ public class CategoriesActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_EXPORT_CATEGORY_CSV_SAF:
                 handleExportCategoryCsvSaf(data.getData());
-                break;
-            case REQUEST_IMPORT_CATEGORY_CSV_SAF:
-                handleImportCategoryCsvSaf(data.getData());
                 break;
         }
     }

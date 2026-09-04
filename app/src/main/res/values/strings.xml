@@ -114,7 +114,6 @@
 
 
     <string name ="import_word">Import</string>
-    <string name ="import_csv">Import events from CSV</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
