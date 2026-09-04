@@ -371,24 +371,34 @@ To ensure stability and prevent future regressions, the following test coverage 
 ### Corner case: full export renamed to daysSince1.csv created an empty daysSince1 category on import
 
 1. Scenario:
-  - User exports full database CSV (contains category column), renames file to `daysSince1.csv`, then imports.
+
+- User exports full database CSV (contains category column), renames file to `daysSince1.csv`, then imports.
+
 2. Prior completion behavior:
-  - Import path inferred `daysSince1` from filename and pre-created that category before reading row-level header semantics.
-  - Because row-level category values were present, imported rows were routed to their own explicit categories.
-  - Result: a new empty `daysSince1` category existed with no events.
+
+- Import path inferred `daysSince1` from filename and pre-created that category before reading row-level header semantics.
+- Because row-level category values were present, imported rows were routed to their own explicit categories.
+- Result: a new empty `daysSince1` category existed with no events.
+
 3. Remedy implemented:
-  - Import now parses records first and checks header semantics.
-  - Filename category inference is only applied when category header is absent.
-  - If a category header exists, filename inference is skipped entirely for that file.
+
+- Import now parses records first and checks header semantics.
+- Filename category inference is only applied when category header is absent.
+- If a category header exists, filename inference is skipped entirely for that file.
+
 4. Impact forward:
-  - Renaming full export files no longer creates empty ghost categories.
-  - Filename inference still works for category-less CSV shapes where it is actually needed.
+
+- Renaming full export files no longer creates empty ghost categories.
+- Filename inference still works for category-less CSV shapes where it is actually needed.
 
 ### Validation updates for this corner case
 
 1. Added tests covering:
-  - Header-aware inference suppression when category column exists.
-  - Inference retention when category column is absent.
-  - Explicit `daysSince1.csv` regression guard.
+
+- Header-aware inference suppression when category column exists.
+- Inference retention when category column is absent.
+- Explicit `daysSince1.csv` regression guard.
+
 2. Updated implementation notes:
-  - Multi-file import path now reuses parsed records to avoid double-reading and applies inference policy deterministically per file.
+
+- Multi-file import path now reuses parsed records to avoid double-reading and applies inference policy deterministically per file.
