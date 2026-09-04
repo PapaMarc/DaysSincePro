@@ -13,8 +13,6 @@ import java.util.Collections;
 import android.app.Activity;
 import android.net.Uri;
 import android.content.Context;
-import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,7 +44,10 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import android.util.Log;
 
-public class CategoriesActivity extends ListActivity {
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class CategoriesActivity extends AppCompatActivity {
 
     public static final String EXTRA_AUTO_OPEN_ADD_CATEGORY = "extra_auto_open_add_category";
     public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
@@ -97,18 +98,27 @@ public class CategoriesActivity extends ListActivity {
 
         String themeValue = ThemeMode.getThemeValue(this);
         boolean darkTheme = ThemeMode.isDark(themeValue);
-        setTheme(ThemeMode.dialogThemeResId(themeValue));
+        setTheme(ThemeMode.miniAScreenThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_a_toolbar, R.string.show_categories);
 
         autoOpenAddRequested = getIntent().getBooleanExtra(EXTRA_AUTO_OPEN_ADD_CATEGORY, false);
 
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
-        lv = getListView();
+        lv = (ListView) findViewById(android.R.id.list);
+        lv.setEmptyView(findViewById(android.R.id.empty));
         lv.setTextFilterEnabled(true);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onListRowClicked(position);
+            }
+        });
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -116,6 +126,7 @@ public class CategoriesActivity extends ListActivity {
                 return true;
             }
         });
+        registerForContextMenu(lv);
 
         addButton = (ImageButton) findViewById(R.id.addButton);
         if (darkTheme) {
@@ -249,9 +260,7 @@ public class CategoriesActivity extends ListActivity {
         }
     }
 
-    @Override
-    protected void onListItemClick(ListView listview, View view, int position,
-                                   long id) {
+    private void onListRowClicked(int position) {
 
         // isItemChecked() return opposite of what it should do.
         Boolean isChecked = !lv.isItemChecked(position);
@@ -355,7 +364,7 @@ public class CategoriesActivity extends ListActivity {
                 from, to);
 
         startManagingCursor(cursor);
-        setListAdapter(categoryAdapter);
+        lv.setAdapter(categoryAdapter);
 
     }
 
@@ -481,12 +490,6 @@ public class CategoriesActivity extends ListActivity {
     private void updateTitle() {
         syncSelectedCategoriesFromChecked();
         checkCount = this.selectedCategories.size();
-
-        if (checkCount == 1)
-            this.setTitle(getString(R.string.show) + " " + checkCount + " " + getString(R.string.category));
-        else
-            this.setTitle(getString(R.string.show) + " " + checkCount + " " + getString(R.string.categories));
-
     }
 
     private OnClickListener all_clearListener = new OnClickListener() {

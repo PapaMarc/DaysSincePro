@@ -3,7 +3,6 @@ package com.merware.dayssincepro;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
@@ -34,6 +33,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -97,10 +97,12 @@ public class EditEventActivity extends AppCompatActivity {
 
         String themeValue = ThemeMode.getThemeValue(this);
         theme = ThemeMode.isDark(themeValue) ? 1 : 0;
-        setTheme(ThemeMode.datePickerHostThemeResId(themeValue));
+        setTheme(ThemeMode.miniAEventThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_a_toolbar, 0);
 
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
@@ -271,6 +273,13 @@ public class EditEventActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        setResult(RESULT_CANCELED, null);
+        finish();
+        return true;
     }
 
 

@@ -94,4 +94,30 @@
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
     </style>
 
+    <style name="MiniAThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
+        <item name="popupMenuStyle">@style/AppPopupMenu</item>
+    </style>
+
+    <style name="MiniAThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
+        <item name="popupMenuStyle">@style/AppPopupMenu</item>
+    </style>
+
+    <style name="MiniAEventThemeLight" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
+        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+
+    <style name="MiniAEventThemeDark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
+        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+
 </resources>

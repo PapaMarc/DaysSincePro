@@ -26,6 +26,12 @@ public class ThemeModeTest {
         assertEquals(R.style.AppDialogTheme2, ThemeMode.dialogThemeResId(ThemeMode.THEME_DARK));
         assertEquals(R.style.AppDialogTheme, ThemeMode.dialogThemeResId(ThemeMode.THEME_LIGHT));
 
+        assertEquals(R.style.MiniAThemeDark, ThemeMode.miniAScreenThemeResId(ThemeMode.THEME_DARK));
+        assertEquals(R.style.MiniAThemeLight, ThemeMode.miniAScreenThemeResId(ThemeMode.THEME_LIGHT));
+
+        assertEquals(R.style.MiniAEventThemeDark, ThemeMode.miniAEventThemeResId(ThemeMode.THEME_DARK));
+        assertEquals(R.style.MiniAEventThemeLight, ThemeMode.miniAEventThemeResId(ThemeMode.THEME_LIGHT));
+
         assertEquals(R.style.DatePickerHostThemeDark, ThemeMode.datePickerHostThemeResId(ThemeMode.THEME_DARK));
         assertEquals(R.style.DatePickerHostThemeLight, ThemeMode.datePickerHostThemeResId(ThemeMode.THEME_LIGHT));
     }

@@ -8,10 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.appbar.MaterialToolbar;
 
 public class PrefActivity extends AppCompatActivity {
 
@@ -26,18 +23,7 @@ public class PrefActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pref);
         EdgeToEdgeUtil.applyContentInsets(this);
-
-        MaterialToolbar toolbar = (MaterialToolbar) findViewById(R.id.settings_toolbar);
-        toolbar.setTitle(R.string.settings_title);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
-        }
-
-        toolbar.setNavigationOnClickListener(v -> finish());
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.settings_toolbar, R.string.settings_title);
 
         if (savedInstanceState == null) {
             getFragmentManager()

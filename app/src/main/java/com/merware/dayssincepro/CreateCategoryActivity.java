@@ -1,6 +1,5 @@
 package com.merware.dayssincepro;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class CreateCategoryActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class CreateCategoryActivity extends AppCompatActivity {
 
     public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
 
@@ -25,11 +26,12 @@ public class CreateCategoryActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String themeValue = ThemeMode.getThemeValue(this);
-        setTheme(ThemeMode.dialogThemeResId(themeValue));
+        setTheme(ThemeMode.miniAScreenThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_category);
-        setTitle(R.string.add_a_category);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_a_toolbar, R.string.add_a_category);
 
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
@@ -69,6 +71,12 @@ public class CreateCategoryActivity extends Activity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     private void submitCategory() {

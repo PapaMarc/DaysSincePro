@@ -37,6 +37,14 @@ final class ThemeMode {
         return isDark(themeValue) ? R.style.AppDialogTheme2 : R.style.AppDialogTheme;
     }
 
+    static int miniAScreenThemeResId(String themeValue) {
+        return isDark(themeValue) ? R.style.MiniAThemeDark : R.style.MiniAThemeLight;
+    }
+
+    static int miniAEventThemeResId(String themeValue) {
+        return isDark(themeValue) ? R.style.MiniAEventThemeDark : R.style.MiniAEventThemeLight;
+    }
+
     static int datePickerHostThemeResId(String themeValue) {
         return isDark(themeValue) ? R.style.DatePickerHostThemeDark : R.style.DatePickerHostThemeLight;
     }
