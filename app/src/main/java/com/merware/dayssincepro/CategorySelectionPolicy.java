@@ -85,6 +85,35 @@ public final class CategorySelectionPolicy {
         return "[" + categoryId + "]";
     }
 
+    public static long[] removeCategoryIdFromSelection(long[] selectedIds, long removedCategoryId) {
+        if (selectedIds == null || selectedIds.length == 0) {
+            return new long[0];
+        }
+
+        int keepCount = 0;
+        for (long id : selectedIds) {
+            if (id != removedCategoryId) {
+                keepCount++;
+            }
+        }
+
+        long[] filtered = new long[keepCount];
+        int idx = 0;
+        for (long id : selectedIds) {
+            if (id != removedCategoryId) {
+                filtered[idx++] = id;
+            }
+        }
+        return filtered;
+    }
+
+    public static long[] ensureFallbackUncategorizedSelection(long[] selectedIds) {
+        if (selectedIds == null || selectedIds.length == 0) {
+            return new long[]{UNCATEGORIZED_CAT_ID};
+        }
+        return selectedIds;
+    }
+
     public static String normalizeCategoryNameForLookup(String rawCategoryName) {
         return normalizeCategoryToken(rawCategoryName).toLowerCase(Locale.US);
     }

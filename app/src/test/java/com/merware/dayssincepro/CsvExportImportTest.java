@@ -316,6 +316,34 @@ public class CsvExportImportTest {
     }
 
     @Test
+    public void testShouldInferCategoryFromFilename_falseWhenHeaderContainsCategoryColumn() throws IOException {
+        String csv = "\"category\",\"event\",\"date\",\"recur\"\n"
+                + "\"Finance\",\"Taxes\",\"2026-03-01\",\"365\"\n";
+
+        List<List<String>> records = CsvImporter.parseRecords(new BufferedReader(new StringReader(csv)));
+        assertFalse(CsvImporter.shouldInferCategoryFromFilename(records));
+    }
+
+    @Test
+    public void testShouldInferCategoryFromFilename_trueWhenNoCategoryHeaderColumn() throws IOException {
+        String csv = "\"event\",\"date\",\"recur\"\n"
+                + "\"Oil Change\",\"2026-03-01\",\"90\"\n";
+
+        List<List<String>> records = CsvImporter.parseRecords(new BufferedReader(new StringReader(csv)));
+        assertTrue(CsvImporter.shouldInferCategoryFromFilename(records));
+    }
+
+    @Test
+    public void testShouldInferCategoryFromFilename_daysSince1CornerCaseUsesHeaderNotFilename() throws IOException {
+        String csv = "\"category\",\"event\",\"date\",\"recur\",\"end_date\",\"details\"\n"
+                + "\"LifeDocs\",\"Passport Renewal\",\"2026-03-01\",\"0\",\"\",\"\"\n";
+
+        List<List<String>> records = CsvImporter.parseRecords(new BufferedReader(new StringReader(csv)));
+        assertFalse(CsvImporter.shouldInferCategoryFromFilename(records));
+        assertEquals("daysSince1", CsvImporter.inferCategoryFromFilename("daysSince1.csv"));
+    }
+
+    @Test
     public void testImportDecision_reservedUncategorizedTokenMapsToSentinel_whenEnabled() {
         CategorySelectionPolicy.ImportCategoryDecision decision =
                 CategorySelectionPolicy.decideImportCategory("Uncategorized", 12L, true);

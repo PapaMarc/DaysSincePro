@@ -543,3 +543,34 @@ The following criteria are frozen for phase pass/fail.
 
 - Changes remain phased.
 - Final release requires a single end-to-end round-trip validation sweep across DB export/import, CSV export/import, and long-press Uncategorized.csv scenarios.
+
+## Post Completion Updates (2026-09-04)
+
+### Corner case: deleting a selected category could return user to a deleted ghost context
+
+1. Scenario:
+  - User is effectively filtered to one category.
+  - User deletes that category in Categories screen and leaves without a fresh explicit selection write.
+2. Prior completion behavior:
+  - Category row and data were correctly deleted from DB tables.
+  - Persisted filter preferences could still hold the deleted category id/text until explicit OK save flow ran.
+  - Main screen could briefly show stale title/filter context that referenced a deleted category (ghost state).
+3. Remedy implemented:
+  - On category delete, selection model now removes deleted id immediately.
+  - Selection state is normalized with uncategorized fallback when no real selection remains.
+  - Filter preferences are persisted immediately after delete and activity returns RESULT_OK so Main refresh path runs.
+4. Impact forward:
+  - Deleted categories no longer remain as stale active filter context.
+  - Post-delete navigation reflects real persisted state on first return.
+
+### Related CSV corner case linkage
+
+1. Scenario linkage:
+  - Empty filename-derived categories (for example `daysSince1`) increased the chance of deleting a meaningless category and observing stale-selection behavior.
+2. Prior behavior linkage:
+  - Filename inference could create an empty category even when CSV rows had explicit categories.
+3. Remedy linkage:
+  - Header-aware filename inference suppression removes this source of meaningless categories.
+4. Combined outcome:
+  - Fewer accidental empty categories created.
+  - Better delete-state reconciliation when category removal does occur.

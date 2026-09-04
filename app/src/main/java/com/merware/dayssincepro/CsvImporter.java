@@ -418,6 +418,30 @@ public class CsvImporter {
         return false;
     }
 
+    static boolean hasCategoryHeaderColumn(List<String> row) {
+        if (row == null || row.isEmpty()) {
+            return false;
+        }
+        for (String token : row) {
+            String t = token.trim().toLowerCase(Locale.US);
+            if (t.equals("category") || t.equals("cat") || t.equals("category_name")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean shouldInferCategoryFromFilename(List<List<String>> records) {
+        if (records == null || records.isEmpty()) {
+            return true;
+        }
+        List<String> firstRow = records.get(0);
+        if (isHeaderRow(firstRow) && hasCategoryHeaderColumn(firstRow)) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Validates and parses a date string into canonical ISO-8601 (yyyy-MM-dd) format.
      * Supports strict yyyy-MM-dd and handles common fallbacks (yyyy/MM/dd, MM/dd/yyyy).
@@ -547,6 +571,19 @@ public class CsvImporter {
         } catch (IOException e) {
             Log.e(TAG, "Error reading CSV records", e);
             return CsvImportResult.failure("Failed to read CSV: " + e.getMessage());
+        }
+
+        return importParsedRecords(db, records, defaultCategoryId,
+                categoryCache, existingEventKeys, manageTransaction);
+    }
+
+    static CsvImportResult importParsedRecords(SQLiteDatabase db, List<List<String>> records,
+                                               long defaultCategoryId,
+                                               Map<String, Long> categoryCache,
+                                               Set<String> existingEventKeys,
+                                               boolean manageTransaction) {
+        if (db == null) {
+            return CsvImportResult.failure("Database is null");
         }
 
         if (records.isEmpty()) {
@@ -849,35 +886,39 @@ public class CsvImporter {
             for (Uri uri : uris) {
                 if (uri == null) continue;
 
-                // Determine category from filename stem if applicable
                 String displayName = getDisplayNameFromUri(context, uri);
-                String inferredCategory = inferCategoryFromFilename(displayName);
                 long fileDefaultCatId = defaultCategoryId;
-
-                if (inferredCategory != null && !inferredCategory.isEmpty()) {
-                    CategorySelectionPolicy.ImportCategoryDecision decision =
-                            CategorySelectionPolicy.decideImportCategory(
-                                    inferredCategory,
-                                    defaultCategoryId,
-                                    true);
-
-                    if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL) {
-                        fileDefaultCatId = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
-                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.RESOLVE_BY_NAME) {
-                        int[] counter = new int[]{0};
-                        long resolved = resolveOrCreateCategory(db, decision.getCategoryName(), sharedCategoryCache, counter);
-                        if (resolved != -1) {
-                            fileDefaultCatId = resolved;
-                        }
-                        initialCategoriesCreated += counter[0];
-                    } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_DEFAULT) {
-                        fileDefaultCatId = decision.getDefaultCategoryId();
-                    }
-                }
 
                 try (InputStream is = context.getContentResolver().openInputStream(uri)) {
                     if (is != null) {
-                        CsvImportResult res = importCsv(db, is, fileDefaultCatId,
+                        List<List<String>> records = parseRecords(new BufferedReader(
+                                new InputStreamReader(is, StandardCharsets.UTF_8)));
+
+                        if (shouldInferCategoryFromFilename(records)) {
+                            String inferredCategory = inferCategoryFromFilename(displayName);
+                            if (inferredCategory != null && !inferredCategory.isEmpty()) {
+                                CategorySelectionPolicy.ImportCategoryDecision decision =
+                                        CategorySelectionPolicy.decideImportCategory(
+                                                inferredCategory,
+                                                defaultCategoryId,
+                                                true);
+
+                                if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_UNCATEGORIZED_SENTINEL) {
+                                    fileDefaultCatId = CategorySelectionPolicy.UNCATEGORIZED_CAT_ID;
+                                } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.RESOLVE_BY_NAME) {
+                                    int[] counter = new int[]{0};
+                                    long resolved = resolveOrCreateCategory(db, decision.getCategoryName(), sharedCategoryCache, counter);
+                                    if (resolved != -1) {
+                                        fileDefaultCatId = resolved;
+                                    }
+                                    initialCategoriesCreated += counter[0];
+                                } else if (decision.getKind() == CategorySelectionPolicy.ImportCategoryDecision.Kind.USE_DEFAULT) {
+                                    fileDefaultCatId = decision.getDefaultCategoryId();
+                                }
+                            }
+                        }
+
+                        CsvImportResult res = importParsedRecords(db, records, fileDefaultCatId,
                                 sharedCategoryCache, sharedEventKeys, false);
                         totalDataRows += res.getTotalRows();
                         totalImported += res.getImportedCount();

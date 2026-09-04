@@ -221,4 +221,33 @@ public class CategorySelectionPolicyTest {
     public void shouldSwitchFilterToNewlyCreatedCategoryAfterAdd_falseForUncategorizedSentinel() {
         assertFalse(CategorySelectionPolicy.shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(0L, true));
     }
+
+    @Test
+    public void removeCategoryIdFromSelection_removesDeletedCategoryIdOnly() {
+        long[] filtered = CategorySelectionPolicy.removeCategoryIdFromSelection(
+                new long[]{0L, 3L, 7L}, 3L);
+
+        assertEquals(2, filtered.length);
+        assertEquals(0L, filtered[0]);
+        assertEquals(7L, filtered[1]);
+    }
+
+    @Test
+    public void removeCategoryIdFromSelection_handlesMissingIdAndEmptyInputs() {
+        long[] unchanged = CategorySelectionPolicy.removeCategoryIdFromSelection(
+                new long[]{0L, 2L}, 99L);
+        assertEquals(2, unchanged.length);
+        assertEquals(0L, unchanged[0]);
+        assertEquals(2L, unchanged[1]);
+
+        long[] empty = CategorySelectionPolicy.removeCategoryIdFromSelection(new long[0], 2L);
+        assertEquals(0, empty.length);
+    }
+
+    @Test
+    public void ensureFallbackUncategorizedSelection_returnsSentinelWhenEmpty() {
+        long[] fallback = CategorySelectionPolicy.ensureFallbackUncategorizedSelection(new long[0]);
+        assertEquals(1, fallback.length);
+        assertEquals(CategorySelectionPolicy.UNCATEGORIZED_CAT_ID, fallback[0]);
+    }
 }

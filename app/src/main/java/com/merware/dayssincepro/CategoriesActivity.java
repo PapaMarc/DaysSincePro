@@ -370,33 +370,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
     private void exitDialog() {
 
-        // save categories id data to preference
-
-        String dataArr = Arrays.toString(data);
-
-        if (data.length == 0) {
-            // showToast("none checked");
-            dataArr = "[0]";
-        }
-
-        // showToast(dataArr);
-
-        Editor ed = preferences.edit();
-        ed.putString("CategoryIds", dataArr);
-
-        // showToast("all checked: " + dataArr);
-
-        // get all categories text and save that also to preference
-
-        String joined = TextUtils.join(", ", selectedCategories);
-
-        if (data.length == 0) {
-            joined = getString(R.string.uncategorized);
-        }
-
-        ed.putString(getString(R.string.categories), joined);
-        ed.putBoolean(PREF_HAS_EXPLICIT_FILTER_SELECTION, true);
-        ed.commit();
+        persistSelectionToPreferences(data);
 
         // showToast("joined: " + joined);
 
@@ -407,6 +381,23 @@ public class CategoriesActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
 
         finish();
+    }
+
+    private void persistSelectionToPreferences(long[] selectedIds) {
+        long[] stableSelection = CategorySelectionPolicy.ensureFallbackUncategorizedSelection(selectedIds);
+        String dataArr = Arrays.toString(stableSelection);
+
+        String joined = TextUtils.join(", ", selectedCategories);
+        if (stableSelection.length == 1
+                && stableSelection[0] == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
+            joined = getString(R.string.uncategorized);
+        }
+
+        Editor ed = preferences.edit();
+        ed.putString("CategoryIds", dataArr);
+        ed.putString(getString(R.string.categories), joined);
+        ed.putBoolean(PREF_HAS_EXPLICIT_FILTER_SELECTION, true);
+        ed.commit();
     }
 
     @Override
@@ -750,9 +741,15 @@ public class CategoriesActivity extends AppCompatActivity {
                     // showToast("delete this: " + selectedCategory);
                     selectedCategories.remove(selectedCategory);
 
-                    data = lv.getCheckedItemIds();
+                        data = CategorySelectionPolicy.removeCategoryIdFromSelection(
+                            lv.getCheckedItemIds(),
+                            removeId);
                     listData();
                     reApplyChecked();
+
+                        syncSelectedCategoriesFromChecked();
+                        persistSelectionToPreferences(data);
+                        setResult(RESULT_OK, null);
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
