@@ -43,6 +43,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     private static final int MAX_DETAILS_LENGTH = 256;
     private static final int REQUEST_ADD_EVENT_CATEGORY = 201;
+    public static final String EXTRA_CATEGORY_CREATED_INLINE_DURING_ADD_FLOW =
+            "extra_category_created_inline_during_add_flow";
 
     EditText eventText;
     EditText detailsText;
@@ -89,6 +91,7 @@ public class EditEventActivity extends AppCompatActivity {
     private boolean isBindingCategorySpinner = false;
     private boolean isRestoringCategorySpinner = false;
     private int lastPersistableSpinnerPosition = -1;
+    private long inlineCreatedCategoryIdDuringAddFlow = -1L;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -379,6 +382,10 @@ public class EditEventActivity extends AppCompatActivity {
             intent.putExtra("catId", categoryID);
             intent.putExtra("notifyHour", notifyHour);
             intent.putExtra("notifyMinute", notifyMinute);
+                boolean usedInlineCreatedCategory = "Add".equals(mode)
+                    && inlineCreatedCategoryIdDuringAddFlow > 0
+                    && inlineCreatedCategoryIdDuringAddFlow == categoryID;
+                intent.putExtra(EXTRA_CATEGORY_CREATED_INLINE_DURING_ADD_FLOW, usedInlineCreatedCategory);
 
             intent.putExtra("end_date", endDateText);
 
@@ -1031,6 +1038,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         if (createdCategoryId > 0) {
             categoryID = createdCategoryId;
+            inlineCreatedCategoryIdDuringAddFlow = createdCategoryId;
         }
 
         listCategories();

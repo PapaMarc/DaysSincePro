@@ -206,4 +206,19 @@ public class CategorySelectionPolicyTest {
     public void formatSingleSelectedCategoryIds_formatsAsBracketedSingleValue() {
         assertEquals("[7]", CategorySelectionPolicy.formatSingleSelectedCategoryIds(7L));
     }
+
+    @Test
+    public void shouldSwitchFilterToNewlyCreatedCategoryAfterAdd_trueWhenInlineCreationAndRealCategory() {
+        assertTrue(CategorySelectionPolicy.shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(5L, true));
+    }
+
+    @Test
+    public void shouldSwitchFilterToNewlyCreatedCategoryAfterAdd_falseWhenInlineCreationFlagMissing() {
+        assertFalse(CategorySelectionPolicy.shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(5L, false));
+    }
+
+    @Test
+    public void shouldSwitchFilterToNewlyCreatedCategoryAfterAdd_falseForUncategorizedSentinel() {
+        assertFalse(CategorySelectionPolicy.shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(0L, true));
+    }
 }

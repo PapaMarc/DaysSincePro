@@ -777,6 +777,22 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    private boolean switchFilterContextToCreatedCategoryAfterInlineAdd(long createdCategoryId) {
+        String categoryName = resolveCategoryNameById(createdCategoryId);
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            return false;
+        }
+
+        SharedPreferences.Editor ed = preferences.edit();
+        ed.putString("CategoryIds", CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
+        ed.putString("Categories", categoryName);
+        ed.commit();
+
+        data = new long[]{createdCategoryId};
+        setTitle(categoryName);
+        return true;
+    }
+
     private boolean hasNoEventsInDatabase() {
         Cursor c = null;
         try {
@@ -866,12 +882,25 @@ public class MainActivity extends AppCompatActivity implements
 
                     chosenID = data.getLongExtra("catId", 0);
 
+                        boolean categoryCreatedInlineDuringAddFlow = data.getBooleanExtra(
+                            EditEventActivity.EXTRA_CATEGORY_CREATED_INLINE_DURING_ADD_FLOW,
+                            false);
+                        boolean switchedToInlineCreatedCategory = false;
+                        if (CategorySelectionPolicy.shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(
+                            chosenID,
+                            categoryCreatedInlineDuringAddFlow)) {
+                        switchedToInlineCreatedCategory =
+                            switchFilterContextToCreatedCategoryAfterInlineAdd(chosenID);
+                        }
+
                     boolean bootstrappedFilterContext = bootstrapFilterContextForFirstCategorizedAdd(chosenID);
 
                     // Ensure list refresh sees any freshly bootstrapped CategoryIds/Categories values.
                     refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
 
-                    if (!bootstrappedFilterContext && !inData(chosenID)) {
+                        if (!switchedToInlineCreatedCategory
+                            && !bootstrappedFilterContext
+                            && !inData(chosenID)) {
                         showToast(getString(R.string.not_chosen));
                     }
 

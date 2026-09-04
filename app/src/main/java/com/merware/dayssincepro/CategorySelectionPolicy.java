@@ -61,6 +61,12 @@ public final class CategorySelectionPolicy {
         return addLaunchedFromUncategorizedContext && addLaunchedWithNoEvents;
     }
 
+    public static boolean shouldSwitchFilterToNewlyCreatedCategoryAfterAdd(
+            long selectedCategoryId,
+            boolean categoryWasCreatedInlineDuringAddFlow) {
+        return categoryWasCreatedInlineDuringAddFlow && selectedCategoryId > UNCATEGORIZED_CAT_ID;
+    }
+
     public static boolean isPristineUncategorizedFilterContext(String categoryIdsPreference,
                                                                 String categoriesPreference) {
         String ids = normalizeCategoryToken(categoryIdsPreference);
