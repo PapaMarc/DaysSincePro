@@ -37,20 +37,13 @@ public class EditHistory extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String sTheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(sTheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.DatePickerHostThemeDark);
-        } else {// 0 light
-            setTheme(R.style.DatePickerHostThemeLight);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        setTheme(ThemeMode.miniAEventThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_history);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_b_toolbar, 0);
 
         Intent intent = getIntent();
 

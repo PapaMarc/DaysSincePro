@@ -1,6 +1,5 @@
 package com.merware.dayssincepro;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +16,9 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class ConfigWidgetActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ConfigWidgetActivity extends AppCompatActivity {
 
     // resources do not exist with widgets
     String APP_NAME =  "Days Since Pro 3"; // Resources.getSystem().getString(R.string.app_name);
@@ -38,18 +39,15 @@ public class ConfigWidgetActivity extends Activity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String stheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(stheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
-        } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        boolean darkTheme = ThemeMode.isDark(themeValue);
+        setTheme(ThemeMode.miniAScreenThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.configwidget);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_b_toolbar, 0);
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
         Intent intent = getIntent();
@@ -107,7 +105,7 @@ public class ConfigWidgetActivity extends Activity {
 
         }
 
-        if (theme == 1) { // dark
+        if (darkTheme) { // dark
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {
@@ -123,7 +121,7 @@ public class ConfigWidgetActivity extends Activity {
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
                 this, R.array.colors, android.R.layout.simple_spinner_item);
 
-        if (theme == 1) { // dark
+        if (darkTheme) { // dark
             adapter2.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {
@@ -142,7 +140,7 @@ public class ConfigWidgetActivity extends Activity {
         ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
                 this, R.array.styles, android.R.layout.simple_spinner_item);
 
-        if (theme == 1) { // dark
+        if (darkTheme) { // dark
             adapter3.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {

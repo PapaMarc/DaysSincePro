@@ -3,10 +3,7 @@ package com.merware.dayssincepro;
 import java.util.Calendar;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,8 +16,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 public class DaysDiffActivity extends AppCompatActivity {
 
-    SharedPreferences preferences;
-
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -30,25 +25,18 @@ public class DaysDiffActivity extends AppCompatActivity {
     TextView explainText;
 
     String click_choose;
-    int theme = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String themeValue = ThemeMode.getThemeValue(this);
+        setTheme(ThemeMode.miniAEventThemeResId(themeValue));
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String stheme = preferences.getString("theme", "0");
-        theme = Integer.parseInt(stheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.DatePickerHostThemeDark);
-        } else {// 0 light
-            setTheme(R.style.DatePickerHostThemeLight);
-        }
         super.onCreate(savedInstanceState);
         click_choose = getString(R.string.click_choose);
 
         setContentView(R.layout.days_diff);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_b_toolbar, R.string.days_diff);
 
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);

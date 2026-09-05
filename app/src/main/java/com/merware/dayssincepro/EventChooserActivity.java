@@ -1,6 +1,5 @@
 package com.merware.dayssincepro;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,12 +15,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 
 /**
  * Created by Alex on 5/14/2015.
  */
-public class EventChooserActivity extends Activity {
+public class EventChooserActivity extends AppCompatActivity {
 
     SharedPreferences preferences;
     protected SQLiteDatabase db;
@@ -49,17 +50,15 @@ public class EventChooserActivity extends Activity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String stheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(stheme);
+        String themeValue = ThemeMode.getThemeValue(this);
+        boolean darkTheme = ThemeMode.isDark(themeValue);
+        setTheme(ThemeMode.miniAScreenThemeResId(themeValue));
 
-        if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
-        } else {// 0 light
-            setTheme(R.style.AppDialogTheme);
-        }
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.event_chooser);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_b_toolbar, R.string.select_event);
 
         db = DatabaseHelper.getInstance(this).getWritableDatabase();
 
@@ -69,7 +68,7 @@ public class EventChooserActivity extends Activity {
         sortAdapter = ArrayAdapter.createFromResource(this,
                 R.array.cat_days_between, android.R.layout.simple_spinner_item);
 
-        if (theme == 1) { // dark - use a custom view so that the options are visible
+        if (darkTheme) { // dark - use a custom view so that the options are visible
             sortAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {
@@ -81,7 +80,7 @@ public class EventChooserActivity extends Activity {
                 android.R.layout.simple_spinner_item);
 
 
-        if (theme == 1) { // dark - use a custom view so that the options are visible
+        if (darkTheme) { // dark - use a custom view so that the options are visible
             eventAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {
@@ -100,7 +99,7 @@ public class EventChooserActivity extends Activity {
         catAdapter = new ArrayAdapter<CharSequence>(this,
                 android.R.layout.simple_spinner_item);
 
-        if (theme == 1) { // dark - use a custom view so that the options are visible
+        if (darkTheme) { // dark - use a custom view so that the options are visible
             catAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         }
         else {

@@ -2,7 +2,6 @@ package com.merware.dayssincepro;
 
 import java.util.Calendar;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +13,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import android.view.ContextMenu;
@@ -33,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
-public class HistoryActivity extends ListActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     protected SQLiteDatabase db;
     private ListView lv;
@@ -124,7 +124,7 @@ public class HistoryActivity extends ListActivity {
         RowAdapter cursorAdapter = new RowAdapter(this, R.layout.row, cursor,
                 from, to);
 
-        setListAdapter(cursorAdapter);
+        lv.setAdapter(cursorAdapter);
 
         // only working method to set to bottom
         // this does not work:    lv.setStackFromBottom(true);
@@ -246,19 +246,13 @@ public class HistoryActivity extends ListActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String sTheme = preferences.getString("theme", "0");
-        int theme = Integer.parseInt(sTheme);
-
-        if (theme == 1) { // dark
-            setTheme(R.style.AppDialogTheme2);
-
-        } else {// 0 light
-
-            setTheme(R.style.AppDialogTheme);
-        }
+        String themeValue = ThemeMode.getThemeValue(this);
+        setTheme(ThemeMode.miniAScreenThemeResId(themeValue));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
+        EdgeToEdgeUtil.applyContentInsets(this);
+        TopBarHelper.setupCenteredBackToolbar(this, R.id.mini_b_toolbar, 0);
 
         addButton = (Button) findViewById(R.id.addButton);
         cancelButton = (Button) findViewById(R.id.cancelButton);
@@ -284,7 +278,7 @@ public class HistoryActivity extends ListActivity {
         setTitle(getString(R.string.history) + " : " + event);
 
         // allow click
-        lv = getListView();
+        lv = (ListView) findViewById(android.R.id.list);
         lv.setTextFilterEnabled(true);
 
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
