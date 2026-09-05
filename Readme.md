@@ -10,7 +10,7 @@ A sincere thanks to Alex Mak.<br>
 
 This branch is a fork of Alex’s original repository and includes all source code along with my ongoing modifications to support publishing and maintaining the app on the Google Play Store.<br><br>
 
-One other word of thanks; Big UP to to Mustafa and [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+One other word of thanks; Big UP to Mustafa and [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
 !<br>
 These days, as a dev publishing an app to Google Play Store, you're gated with completion of a 14 day [**Closed Test**](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en) with a min of 12 users testing your app over that time. No one bailing out, or skipping a day, etc or your time clock resets... not easy to find those folks, coordinate common start, keep everyone on track, engaged, and rewarded... irrespective of fixing ongoing feedback, etc; a massive uphill slog of a logistical nightmare at best, and in practice an arduous, near insurmountable burden for the individual, personal developer.<br>
 Enter [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
