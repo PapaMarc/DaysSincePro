@@ -16,7 +16,7 @@ These days, as a dev publishing an app to Google Play Store, you're gated with c
 Enter [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
 : https://play.google.com/store/apps/details?id=com.codignia.apphive <br>
 [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
-handles all the details of crowdsourcing a great group of devs with a common goal and timeline, and coordinates daily testing of each by the others, day in and day out, until the group assists others in their Hive to pass the gate, in reciprocol fashion. Simply outstanding! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev. I can't imagine what an uphill climb it would be without The [**The App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+handles all the details of crowdsourcing a great group of devs with a common goal and timeline, and coordinates daily testing of each by the others, day in and day out, until the group assists others in their Hive to pass the gate, in reciprocol fashion. Simply outstanding! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev. I can't imagine what an uphill climb it would be without [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
 ; and you won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate until you try it!
 
 Regards-- Marc
