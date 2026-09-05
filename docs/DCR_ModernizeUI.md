@@ -173,25 +173,37 @@ Mini-A integrated theme hardening requirement:
 2. Ensure no stale-theme return path for Main and About when leaving Settings via back/up.
 3. Avoid duplicate restart/recreate triggers across Settings-return lifecycle paths.
 
-### 5.4 Mini-Phase B (Primary App Chrome)
+### 5.4 Mini-Phase B (Non-Main Everything Else)
 
 Scope:
 
-1. Main screen modernization and top app chrome alignment
-2. Adopt the already-stabilized search behavior contract from Phase 0.5 without re-implementing search logic
-
-Why separated:
-
-- Main is highest blast radius (tabs/search/overflow/navigation fan-out)
-- isolating Main allows cleaner rollback and defect triage
-
-### 5.5 Mini-Phase C (Everything Else)
-
-Scope:
-
-1. Remaining legacy and lower-frequency screens not covered in A/B
+1. Remaining legacy and lower-frequency non-Main screens not covered in Mini-A
 2. Additional dialog standardization where beneficial
-3. Legacy style/theme cleanup after prior phases are stable
+3. Fix known rendering and chrome consistency issues in those non-Main surfaces
+
+Mini-B cumulative architecture requirements:
+
+1. Reuse shared top-bar/navigation/theme primitives from prior phases by default.
+2. Extend shared primitives only when a real gap is identified.
+3. Avoid screen-local one-offs unless a deliberate exception is documented with reason, scope, owner, and planned convergence milestone.
+
+Why this ordering:
+
+- resolves current non-Main rendering issues earlier while deferring Main blast radius
+- preserves cumulative architecture momentum from Phases 0/0.5/A
+
+### 5.5 Mini-Phase C (Main + Post-Main Convergence)
+
+Scope:
+
+1. Mini-C(a): Main screen modernization and top app chrome alignment
+2. Mini-C(a): adopt the already-stabilized search behavior contract from Phase 0.5 without re-implementing search logic
+3. Mini-C(b): post-Main cleanup and convergence, including legacy style/theme cleanup that should occur only after Main is stable
+
+Why separated internally:
+
+- Main remains highest blast radius (tabs/search/overflow/navigation fan-out)
+- post-Main cleanup is safer after Main behavior and chrome are validated
 
 ---
 
@@ -344,6 +356,7 @@ No phase is complete until all four combinations pass for all in-scope screens.
 4. Validate on emulator and physical device for both themes before phase sign-off.
 5. Add a convergence checkpoint at the end of each phase: verify no newly introduced duplicate modernization paths remain.
 6. Keep search hardening isolated from Main visual refactor to reduce confounded regressions.
+7. During Mini-B, enforce cumulative reuse and prevent non-Main one-off modernization forks that would increase Mini-C convergence risk.
 
 ---
 
@@ -357,8 +370,9 @@ No phase is complete until all four combinations pass for all in-scope screens.
 4. Stabilize and verify Phase 0.5 acceptance matrix and gate.
 5. Implement Mini-A in a focused PR.
 6. Stabilize and verify acceptance matrix for Mini-A.
-7. Implement Mini-B in dedicated PR.
-8. Implement Mini-C cleanup after B is stable.
+7. Implement Mini-B (non-Main everything else) in dedicated PR(s) with strict cumulative-reuse checks.
+8. Implement Mini-C(a) Main modernization in dedicated PR.
+9. Implement Mini-C(b) post-Main cleanup/convergence after Mini-C(a) is stable.
 
 ### 10.2 Rollback
 
@@ -368,9 +382,17 @@ If critical regressions appear:
 2. Keep prior phase intact.
 3. Re-scope and retry with smaller per-screen increments.
 
+Mini-B specific note:
+
+1. If a non-Main modernization change in Mini-B requires a shared primitive extension, rollback or isolate only the extension and affected screens; do not discard already-validated shared primitives consumed by prior phases.
+
 Phase-specific note:
 
 1. If Mini-B introduces search regressions after Phase 0.5 sign-off, treat as Mini-B integration defects unless Phase 0.5 acceptance criteria are found incomplete.
+
+Mini-C specific note:
+
+1. If Mini-C(a) Main modernization introduces regressions unrelated to shared primitives, isolate rollback to Main changes first, then re-evaluate whether any Mini-C(b) cleanup should be deferred.
 
 ---
 
@@ -392,3 +414,4 @@ This DCR is considered complete when:
 3. Each phase demonstrably reuses the shared modernization framework rather than introducing duplicate equivalents.
 4. Legacy theming/shims made obsolete by the migration are removed or documented for deferred cleanup with explicit milestone/date.
 5. Follow-up docs capture any deliberate exceptions.
+6. Mini-B demonstrates cumulative reuse of shared primitives with no unresolved one-off forks left without an explicit convergence milestone.
