@@ -12,12 +12,13 @@ This branch is a fork of Alex’s original repository and includes all source co
 
 One other word of thanks; Big UP to Mustafa and [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
 !<br>
-These days, as a dev publishing an app to Google Play Store, you're gated with completion of a 14 day [**Closed Test**](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en) with a min of 12 users testing your app over that time. No one bailing out, or skipping a day, etc or your time clock resets... not easy to find those folks, coordinate common start, keep everyone on track, engaged, and rewarded... irrespective of fixing ongoing feedback, etc; a massive uphill slog of a logistical nightmare at best, and in practice an arduous, near insurmountable burden for the individual, personal developer.<br>
+These days, as a dev publishing an app to Google Play Store, you're gated with completion of a 14 day [**Closed Test**](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en) with a min of 12 users testing your app over that time. No one bailing out, or skipping a day, etc or your time clock resets... not easy to find those folks, coordinate common start, keep everyone on track, engaged, and rewarded... irrespective of fixing ongoing feedback, etc; a massive into-the-wind slog of a logistical nightmare at best, and in practice an arduous, near insurmountable burden for the individual, personal developer.<br>
 Enter [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
 : https://play.google.com/store/apps/details?id=com.codignia.apphive <br>
-[**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
-handles all the details of crowdsourcing a great group of devs with a common goal and timeline, and coordinates daily testing of each by the others, day in and day out, until the group assists others in their Hive to pass the gate, in reciprocol fashion. Simply outstanding! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev. I can't imagine what an uphill climb it would be without [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
-; and you won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate until you try it!
+
+Like a hive of bees, [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive) orchestrates a crowd sourced community of developers whose directed daily collaboration fuels both individual progress and collective success. Each member tests and supports the others’ work in a continuous cycle of reciprocity—advancing not only their own projects but the shared goal of the Hive as a whole. Simply briliant! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev.<br>
+You won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate.<br>
+In short, [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive) is essentially [**70's era Alka-Selzer for Google's current day Closed Test trevails-- "Try it, you'll like it!"**](https://www.youtube.com/watch?v=9qdfMYFl0Ic)
 
 Regards-- Marc
 <br><br><br>
