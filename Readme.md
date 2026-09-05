@@ -17,7 +17,7 @@ Enter [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.
 : https://play.google.com/store/apps/details?id=com.codignia.apphive <br>
 
 Like a hive of bees, [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive) orchestrates a crowd sourced community of developers whose directed daily collaboration fuels both individual progress and collective success. Each member tests and supports the others’ work in a continuous cycle of reciprocity—advancing not only their own projects but the shared goal of the Hive as a whole. Simply briliant! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev.<br>
-You won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate.<br>
+You won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate. And in all fairness to Google in creating the gate (though not so much for their leaving you in the lurch regarding logstics of orchestrating it), there is true value in it and your Hive mates will find some great bugs for you too (so do your best to do the same for them). <br>
 In short, [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive) is essentially [**70's era Alka-Selzer for Google's current day Closed Test trevails-- "Try it, you'll like it!"**](https://www.youtube.com/watch?v=9qdfMYFl0Ic)
 
 Regards-- Marc
