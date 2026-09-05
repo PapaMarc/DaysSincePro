@@ -192,6 +192,49 @@ Why this ordering:
 - resolves current non-Main rendering issues earlier while deferring Main blast radius
 - preserves cumulative architecture momentum from Phases 0/0.5/A
 
+Mini-B explicit enum and launch mapping (all remaining non-Main surfaces):
+
+1. `DaysDiffActivity`
+
+- from Main launch path: Main overflow menu -> Days Between
+- source path: `MainActivity.onOptionsItemSelected(menu_daysdiff)`
+- Mini-B role: non-Main visual/architecture standardization to shared top-bar/theme approach
+
+2. `EventChooserActivity`
+
+- from Main launch path: Main overflow menu -> Days Between -> Event button A or Event button B
+- source path: `DaysDiffActivity.eventACallback/eventBCallback`
+- Mini-B role: legacy host modernization and convergence with shared primitives
+
+3. `HistoryActivity`
+
+- from Main launch path: Main event long-press context menu -> History
+- source path: `PastFutureListFragment.onContextItemSelected(MENU_HISTORY)`
+- Mini-B role: migrate legacy `ListActivity` path and align top-bar/navigation/theme behavior
+
+4. `EditHistory`
+
+- from Main launch path: Main event long-press context menu -> History -> add/edit occurrence flow
+- source path: `HistoryActivity.addHappenedItem/editHappenedItem`
+- Mini-B role: align with shared top-bar/navigation/theme primitives (remove remaining off-pattern chrome)
+
+5. `ConfigWidgetActivity`
+
+- from Main launch path: no direct in-app Main path; launch originates from Android home-screen widget add/config flow
+- source path: widget provider configuration intent path (`DaysSinceAppWidgetProvider`)
+- Mini-B role: include widget configuration UX in non-Main standardization now (not deferred)
+
+Mini-B boundary note:
+
+1. Main-screen app chrome/search/tabs modernization remains out of scope for Mini-B and is handled only in Mini-C(a).
+2. Mini-B may update shared primitives when needed, but must not perform Main-specific visual rewrites.
+
+Recommended Mini-B execution slicing:
+
+1. Mini-B1: screen host/chrome modernization for the five enumerated surfaces.
+2. Mini-B2: non-Main dialog/popup/theme convergence across those same surfaces.
+3. Keep each slice behavior-preserving and independently rollback-safe.
+
 ### 5.5 Mini-Phase C (Main + Post-Main Convergence)
 
 Scope:
@@ -313,19 +356,19 @@ No phase is complete until all four combinations pass for all in-scope screens.
 3. Exit via system back gesture/button.
 4. Confirm return destination is correct.
 
-### 8.4 Search Gate Matrix (Phase 0.5)
+### 8.2 Search Gate Matrix (Phase 0.5)
 
 1. Execute search live-typing checks defined in [DCR_HardenSearch.md](DCR_HardenSearch.md).
 2. Validate `clear` and back-arrow behaviors restore expected pre-search view state.
 3. Validate parity across emulator/device and light/dark before opening Mini-B.
 
-### 8.2 State Matrix
+### 8.3 State Matrix
 
 1. Theme toggled Light/Dark before launch.
 2. During Phase 0, theme changed in Settings and return flow verified.
 3. Rotation/config-change smoke checks for affected screens where relevant.
 
-### 8.5 Mini-A Theme Parity Matrix (Settings Return + About from Main)
+### 8.4 Mini-A Theme Parity Matrix (Settings Return + About from Main)
 
 1. Light -> Dark: open Settings, toggle theme, exit via back/up, verify Main is Dark, launch About from Main, verify About is Dark.
 2. Dark -> Light: open Settings, toggle theme, exit via back/up, verify Main is Light, launch About from Main, verify About is Light.
@@ -333,10 +376,48 @@ No phase is complete until all four combinations pass for all in-scope screens.
 4. Repeat both flows on physical device.
 5. Mini-A is blocked from completion if any stale-theme screen remains after Settings exit.
 
-### 8.3 Device Matrix
+### 8.5 Device Matrix
 
 1. Current emulator image(s)
 2. At least one physical Android device used by maintainer
+
+### 8.6 Mini-B Surface Acceptance Checklist (Non-Main Everything Else)
+
+Each Mini-B surface must pass §7.2 and §7.3 in addition to behavior-preservation checks.
+
+1. `DaysDiffActivity`
+
+- launch path from Main: overflow menu -> Days Between
+- verify centered title/back behavior aligns to shared pattern
+- verify both Date and Event picker entry points still work and return expected values
+
+2. `EventChooserActivity`
+
+- launch path from Main: overflow menu -> Days Between -> Event button A/B
+- verify selection controls render correctly in Light/Dark and return chosen event/date payload
+- verify back/up and system back return to Days Between without stale state
+
+3. `HistoryActivity`
+
+- launch path from Main: long-press event -> History
+- verify list render, long-press/context actions, and navigation parity (back arrow/system back)
+- verify event/history CRUD behavior remains unchanged
+
+4. `EditHistory`
+
+- launch path from Main: long-press event -> History -> add/edit occurrence
+- verify title semantics remain contextual (`Add`/`Edit`) while using shared top-bar behavior
+- verify date selection, on-time checkbox, notes persistence, and return-result behavior
+
+5. `ConfigWidgetActivity`
+
+- launch path from Main: none direct; Android launcher widget add/config flow
+- verify widget config controls render correctly in Light/Dark
+- verify saved widget options persist and widget updates broadcast correctly
+
+Mini-B sign-off gate:
+
+1. Mini-B is incomplete until all five surfaces pass emulator + physical device checks in both Light and Dark modes.
 
 ---
 
@@ -396,12 +477,26 @@ Mini-C specific note:
 
 ---
 
-## 11. Open Decisions to Confirm Before Phase 0/Mini-A Implementation
+## 11. Resolved Decisions and Mini-B Execution Confirmations
 
-1. Center-title implementation mechanism: strict visual center vs toolbar-title center approximation.
-2. Whether About dialog should keep current custom title style or align to new top-bar typography tokens where applicable.
-3. Whether Add Event top bar keeps existing title variants (`Add Event` / `Edit Event`) with same centering rules.
-4. Whether category subflows should share one activity host or remain separate and only visually standardized.
+### 11.1 Resolved Design Decisions (Captured)
+
+1. Centered-title behavior is the default for modernized screens, with Main explicitly exempted for action-density balance per §4.1.
+2. About dialog remains intentionally somewhat custom while following host-theme parity expectations established by prior phases.
+3. Add Event retains contextual title variants (`Add Event` / `Edit Event`) while using shared top-bar mechanics.
+4. Category subflows intentionally remain separate hosts and are standardized visually/behaviorally as one conceptual capability.
+
+### 11.2 Mini-B Execution Confirmations (Current)
+
+1. PR slicing is confirmed as Mini-B1 then Mini-B2 (not a single combined phase PR).
+2. `ConfigWidgetActivity` is explicitly included in Mini-B scope (not deferred).
+3. `EditHistory` is explicitly included in Mini-B scope.
+4. `DaysDiffActivity` is explicitly included in Mini-B scope.
+5. Mini-B non-Main enum + Main-origin launch mapping in §5.4 is the authoritative scope boundary for execution.
+6. Verification ownership is split as follows:
+
+- implementation verification by agent: code review + JVM unit tests + compile/build checks
+- runtime UX verification by maintainer: emulator + physical device checks per §8 matrix
 
 ---
 
