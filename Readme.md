@@ -6,9 +6,18 @@ Or as Yogi Berra would say, "It's Deja Vu all over again. When you come to the f
 Back in 2019 i stumbled upon and became enamored with the utility of Alex Mak's Days Since Pro. For 12-18mo, as i do, i peppered him with feedback on the app, and more often than not he was responsive and engaged in a dialog with me about various bug fixes i suggested and potential DCR's (design change requests) i highlighted. At some point, as life does... he drifted off from actively maintaining the app. And i continued to use it... though a particular feature implementation issue around the 'Days Until' functionality would on a recurring basis return to my foreground processing, and i'd think about reaching out to Alex again to see if he'd arrived at a solution and would consider taking time to make an update. At some point in the 1st half of 2026 i reached out to Alex again, and lo and behold he noted he'd published the source up on GitHub, and i could have at it if i wished... so i promptly implemented the fix i'd been dreaming about and a test harness to validate it, but for another 4mo or so never got around to actually setting up the build environment and the undertaking around republishing the app on Google Play Store (which at this point in time requires a 14day closed trial w/a dozen users, which takes some doing).
 
 Finally, in late August 2026 i've gotten around to doing this— so here we are. What else can i say-- it's simply been Days Since.<br>
-A sincere thanks to Alex Mak.
+A sincere thanks to Alex Mak.<br>
 
-This branch is a fork of Alex’s original repository and includes all source code along with my ongoing modifications to support publishing and maintaining the app on the Google Play Store.
+This branch is a fork of Alex’s original repository and includes all source code along with my ongoing modifications to support publishing and maintaining the app on the Google Play Store.<br><br>
+
+One other word of thanks; Big UP to to Mustafa and [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+!<br>
+These days, as a dev publishing an app to Google Play Store, you're gated with completion of a 14 day [**Closed Test**](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en) with a min of 12 users testing your app over that time. No one bailing out, or skipping a day, etc or your time clock resets... not easy to find those folks, coordinate common start, keep everyone on track, engaged, and rewarded... irrespective of fixing ongoing feedback, etc; a massive uphill slog of a logistical nightmare at best, and in practice an arduous, near insurmountable burden for the individual, personal developer.<br>
+Enter [**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+: https://play.google.com/store/apps/details?id=com.codignia.apphive <br>
+[**App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+handles all the details of crowdsourcing a great group of devs with a common goal and timeline, and coordinates daily testing of each by the others, day in and day out, until the group assists others in their Hive to pass the gate, in reciprocol fashion. Simply outstanding! A wonder Google hasn't acquired them yet. And what a burden it takes off you as an individual dev. I can't imagine what an uphill climb it would be without The [**The App Hive**](https://play.google.com/store/apps/details?id=com.codignia.apphive)
+; and you won't believe just how straightforward it makes flying through the Google Console/Play Store Closed Test gate until you try it!
 
 Regards-- Marc
 <br><br><br>
