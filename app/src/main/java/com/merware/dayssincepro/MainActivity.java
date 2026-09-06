@@ -18,13 +18,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,13 +43,16 @@ import java.util.List;
 
 import android.util.Log;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 public class MainActivity extends AppCompatActivity implements
-        ActionBar.TabListener,  SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener {
 
     SharedPreferences preferences;
     SectionsPagerAdapter mSectionsPagerAdapter;
 
-    ViewPager mViewPager;
+    ViewPager2 mViewPager;
 
     AlarmHelper alarmHelp;
 
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean waitingForSettingsReturn = false;
     private boolean addLaunchedFromUncategorizedContext = false;
     private boolean addLaunchedWithNoEvents = false;
-    private static final String VIEW_PAGER_FRAGMENT_TAG_PREFIX = "android:switcher:";
+    private static final String VIEW_PAGER2_FRAGMENT_TAG_PREFIX = "f";
 
 
     @Override
@@ -85,38 +88,21 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         EdgeToEdgeUtil.applyContentInsets(this);
 
-        // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(this);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(
-                getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPager2) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         // Keep all 3 tabs instantiated so search can update all tab lists consistently.
         mViewPager.setOffscreenPageLimit(2);
 
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager
-                .setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        TabLayout tabLayout = findViewById(R.id.main_tabs);
+        new TabLayoutMediator(tabLayout, mViewPager,
+                new TabLayoutMediator.TabConfigurationStrategy() {
                     @Override
-                    public void onPageSelected(int position) {
-                        actionBar.setSelectedNavigationItem(position);
+                    public void onConfigureTab(TabLayout.Tab tab, int position) {
+                        tab.setText(mSectionsPagerAdapter.getPageTitle(position));
                     }
-                });
-
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            actionBar.addTab(actionBar.newTab()
-                    .setText(mSectionsPagerAdapter.getPageTitle(i))
-                    .setTabListener(this));
-        }
+                }).attach();
 
         boolean notifyOptionJustNow = preferences.getBoolean("noti", false);
 
@@ -400,24 +386,6 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab,
-                              FragmentTransaction fragmentTransaction) {
-
-        mViewPager.setCurrentItem(tab.getPosition());
-
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
-    }
-
     // don't restart when phone change orientation.
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -483,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements
             return cached;
         }
 
-        String fragmentTag = VIEW_PAGER_FRAGMENT_TAG_PREFIX + R.id.pager + ":" + position;
+        String fragmentTag = VIEW_PAGER2_FRAGMENT_TAG_PREFIX + position;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
         if (fragment instanceof PastFutureListFragment) {
             return (PastFutureListFragment) fragment;
@@ -515,19 +483,14 @@ public class MainActivity extends AppCompatActivity implements
         refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStateAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+        public SectionsPagerAdapter(AppCompatActivity activity) {
+            super(activity);
         }
 
         @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
+        public Fragment createFragment(int position) {
 
             Fragment fragment = null;
 
@@ -552,11 +515,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return 3;
         }
 
-        @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
