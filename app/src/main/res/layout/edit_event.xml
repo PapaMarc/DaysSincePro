@@ -58,6 +58,7 @@
 
                 <Button
                     android:id="@+id/buttonPickDate"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -102,6 +103,7 @@
 
                 <Button
                     android:id="@+id/buttonPickEndDate"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -122,6 +124,7 @@
 
                 <Button
                     android:id="@+id/buttonPickRecur"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -165,20 +168,30 @@
                 android:maxLines="4"
                 android:minLines="2" />
 
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="?android:attr/dividerHorizontal" />
+
             <LinearLayout
                 android:id="@+id/linearLayout3"
+                style="@style/MiniBButtonRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <Button
                     android:id="@+id/eventOK"
+                    style="@style/MiniBActionButton"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
-                    android:text="@string/OK" />
+                    android:text="@string/mini_b_ok" />
 
                 <Button
                     android:id="@+id/eventCancel"
+                    style="@style/MiniBActionButton"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

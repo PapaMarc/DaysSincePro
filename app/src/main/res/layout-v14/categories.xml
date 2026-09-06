@@ -31,7 +31,7 @@
 
     <Button
         android:id="@+id/all_clearButton"
-        style="?android:attr/buttonBarButtonStyle"
+        style="@style/MiniBActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -71,31 +71,28 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        style="?android:attr/buttonBarStyle"
+        style="@style/MiniBButtonRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:measureWithLargestChild="true"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
+        android:layout_centerHorizontal="true" >
 
         <Button
             android:id="@+id/doneButton"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:text="@string/Cancel" />
 
         <Button
             android:id="@+id/buttonOK"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/OK" />
+            android:text="@string/mini_b_ok" />
     </LinearLayout>
 
     </RelativeLayout>

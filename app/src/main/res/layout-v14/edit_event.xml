@@ -58,7 +58,7 @@
 
                 <Button
                     android:id="@+id/buttonPickDate"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -101,7 +101,7 @@
 
                 <Button
                     android:id="@+id/buttonPickEndDate"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -121,7 +121,7 @@
 
                 <Button
                     android:id="@+id/buttonPickRecur"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -172,7 +172,7 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
-                style="?android:attr/buttonBarStyle"
+                style="@style/MiniBButtonRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
@@ -180,19 +180,20 @@
 
                 <Button
                     android:id="@+id/eventCancel"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/MiniBActionButton"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     android:text="@string/Cancel" />
 
                 <Button
                     android:id="@+id/eventOK"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/MiniBActionButton"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/OK" />
+                    android:text="@string/mini_b_ok" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

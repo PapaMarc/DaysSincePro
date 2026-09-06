@@ -28,11 +28,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            style="@style/MiniBButtonRow"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/createCategoryCancel"
+                style="@style/MiniBActionButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -40,10 +42,12 @@
 
             <Button
                 android:id="@+id/createCategoryOk"
+                style="@style/MiniBActionButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="@string/OK" />
+                android:text="@string/mini_b_ok" />
         </LinearLayout>
     </LinearLayout>
 
