@@ -13,5 +13,7 @@
     <color name="picker_on_primary_container_light">#1B2900</color>
     <color name="picker_primary_container_dark">#3A4D00</color>
     <color name="picker_on_primary_container_dark">#E1F0C4</color>
+    <color name="mini_b_button_fill_light">#D6D6D6</color>
+    <color name="mini_b_button_fill_dark">#3B3B3B</color>
 
 </resources>
