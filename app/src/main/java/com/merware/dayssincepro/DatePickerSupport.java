@@ -1,5 +1,7 @@
 package com.merware.dayssincepro;
 
+import android.content.Context;
+
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -40,6 +42,22 @@ final class DatePickerSupport {
      */
     static String isoDateString(int year, int month, int day) {
         return String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
+    }
+
+    static MaterialDatePicker<Long> newPicker(Context context, long initialSelectionUtcMillis) {
+        String themeValue = ThemeMode.getThemeValue(context);
+        int pickerThemeResId = ThemeMode.datePickerDialogThemeResId(themeValue);
+
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setStart(MIN_DATE_UTC_MILLIS)
+                .setOpenAt(initialSelectionUtcMillis)
+                .build();
+
+        return MaterialDatePicker.Builder.datePicker()
+                .setTheme(pickerThemeResId)
+                .setCalendarConstraints(constraints)
+                .setSelection(initialSelectionUtcMillis)
+                .build();
     }
 
     static MaterialDatePicker<Long> newPicker(long initialSelectionUtcMillis) {

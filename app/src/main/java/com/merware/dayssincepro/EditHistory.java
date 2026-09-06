@@ -108,7 +108,7 @@ public class EditHistory extends AppCompatActivity {
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(initial);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(EditHistory.this, initial);
             picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);

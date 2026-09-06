@@ -73,6 +73,8 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
+        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
+        <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
@@ -81,7 +83,52 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
+        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
+        <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+
+    <style name="DatePickerCalendarThemeOverlay" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="buttonBarPositiveButtonStyle">@style/DatePickerActionButtonLight</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DatePickerActionButtonLight</item>
+    </style>
+
+    <style name="DatePickerDialogThemeLight" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="buttonBarPositiveButtonStyle">@style/DatePickerActionButtonLight</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DatePickerActionButtonLight</item>
+    </style>
+
+    <style name="DatePickerDialogThemeDark" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="buttonBarPositiveButtonStyle">@style/DatePickerActionButtonDark</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DatePickerActionButtonDark</item>
+    </style>
+
+    <style name="DatePickerActionButtonLight" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="backgroundTint">@color/mini_b_button_fill_light</item>
+        <item name="cornerRadius">3dp</item>
+        <item name="android:minWidth">72dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <style name="DatePickerActionButtonDark" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="backgroundTint">@color/mini_b_button_fill_dark</item>
+        <item name="cornerRadius">3dp</item>
+        <item name="android:minWidth">72dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
     </style>
 
     <style name="SettingsThemeLight" parent="Theme.AppCompat.Light.NoActionBar">

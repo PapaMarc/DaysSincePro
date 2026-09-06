@@ -48,4 +48,10 @@ final class ThemeMode {
     static int datePickerHostThemeResId(String themeValue) {
         return isDark(themeValue) ? R.style.DatePickerHostThemeDark : R.style.DatePickerHostThemeLight;
     }
+
+    static int datePickerDialogThemeResId(String themeValue) {
+        return isDark(themeValue)
+                ? R.style.DatePickerDialogThemeDark
+                : R.style.DatePickerDialogThemeLight;
+    }
 }
