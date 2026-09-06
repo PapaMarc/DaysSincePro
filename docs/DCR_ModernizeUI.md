@@ -275,7 +275,7 @@ Mini-Retro ordered surface inventory:
 - notify time picker
 - recurrence custom-days dialog
 
-8. Mini-A: About dialog (`AboutDialog`) launched from Main overflow
+8. About dialog (`AboutDialog`) remains a documented content/title exception and is deferred to Mini-C for control-convergence cleanup with Main-era dialog architecture.
 
 Entry gate:
 
@@ -285,18 +285,24 @@ Outcome:
 
 1. Mini-C starts from a unified polished baseline across pre-Main surfaces, reducing Main-phase visual debt and reducing post-Main cleanup churn.
 
-### 5.6 Mini-Phase C (Main + Post-Main Convergence)
+### 5.6 Mini-Phase C (Main + About/Main-Era Dialog + Post-Main Convergence)
+
+Description:
+
+1. Mini-C covers Main modernization plus deferred About dialog control convergence (shared Main-era dialog architecture), followed by post-Main cleanup once Main is stable.
 
 Scope:
 
 1. Mini-C(a): Main screen modernization and top app chrome alignment
 2. Mini-C(a): adopt the already-stabilized search behavior contract from Phase 0.5 without re-implementing search logic
 3. Mini-C(b): post-Main cleanup and convergence, including legacy style/theme cleanup that should occur only after Main is stable
+4. Mini-C(b): complete deferred About dialog control convergence with Main-era dialog architecture, including action-button style parity and verification in both Light and Dark modes
 
 Why separated internally:
 
 - Main remains highest blast radius (tabs/search/overflow/navigation fan-out)
 - post-Main cleanup is safer after Main behavior and chrome are validated
+- About dialog control convergence is intentionally bundled with Main-era dialog cleanup to avoid premature one-off styling paths
 
 ---
 
@@ -484,18 +490,23 @@ Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B
 - list row spacing and dialog content density parity
 - no clipped controls, overlap, or one-off paddings
 
-3. Mini-A checklist (Categories/Edit Event/About + subdialogs):
+3. Mini-A checklist (Categories/Edit Event/Create Category + subdialogs):
 
 - button template parity (shared Mini-B button language unless intentionally exempt)
 - casing consistency (`OK`/`Cancel` conventions as approved)
 - spacing rhythm consistency from content section to divider to action row
 - picker/dialog visual consistency in both themes
 
-4. Functional guardrail:
+4. About exception handling in Mini-Retro:
+
+- retain About custom content/title treatment
+- defer About action-button architectural convergence to Mini-C with Main
+
+5. Functional guardrail:
 
 - if a polish adjustment exposes behavior coupling, do not widen scope inline; log and disposition separately
 
-5. Scope exclusion:
+6. Scope exclusion:
 
 - explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope
 
