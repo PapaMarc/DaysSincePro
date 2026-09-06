@@ -511,7 +511,53 @@ Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B
 
 - explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope
 
-### 8.8 Mini-C(b) and Mini-C(c) Verification Split
+### 8.8 Mini-C(a) Pass/Fail Block
+
+Pass rule:
+
+- Mini-C(a) is PASS only when every checkbox below is complete.
+
+Scope lock:
+
+- [ ] Main tab host architecture is modernized.
+- [ ] Three-tab information architecture remains unchanged: Days Since, Since Last, Days Until.
+- [ ] About control convergence is excluded from Mini-C(a).
+- [ ] No label-casing policy change is introduced unless required to preserve current visible behavior.
+- [ ] No data-model or query-logic rewrite is introduced.
+
+Functional parity:
+
+- [ ] Default tab behavior at app open matches current production behavior.
+- [ ] Swipe and tab-tap both switch pages correctly.
+- [ ] Search targets the currently visible tab/page.
+- [ ] Return from Add/Edit/Delete refreshes the correct page content.
+- [ ] Rotation/config-change preserves selected tab and visible page.
+
+Visual and interaction minimums:
+
+- [ ] Tab text and ordering match current string-resource semantics.
+- [ ] No clipped tab labels on common phone widths.
+- [ ] No regression in top bar spacing, edge-to-edge padding, or system-bar overlap.
+
+Regression guardrails:
+
+- [ ] No crashes during rapid tab switching.
+- [ ] No fragment duplication or stale page instances after rotation.
+- [ ] Back navigation behavior from Main remains unchanged.
+
+Build and test gate:
+
+- [ ] `assembleSideload` succeeds.
+- [ ] `compileDebugJavaWithJavac` succeeds.
+- [ ] Existing unit tests show no net-new failures attributable to Mini-C(a).
+
+Definition of done:
+
+- [ ] All checklist items pass.
+- [ ] Main list/search/refresh/navigation behavior is equivalent to pre-change Main.
+- [ ] Any intentional deltas are documented under Mini-C(a) before Mini-C(b) starts.
+
+### 8.9 Mini-C(b) and Mini-C(c) Verification Split
 
 1. Mini-C(b) verification goal: visual target state.
 
