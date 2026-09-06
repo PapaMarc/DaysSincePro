@@ -348,8 +348,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         reconcileNotificationPreference();
-        refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment,
-                mViewPager.getCurrentItem());
+        daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+        sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+        daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
     }
 
     private boolean reconcileThemeAfterSettingsReturn() {

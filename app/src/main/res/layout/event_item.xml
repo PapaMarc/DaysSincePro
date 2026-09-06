@@ -10,7 +10,7 @@
         android:id="@+id/eventView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".55"
+        android:layout_weight=".54"
         android:paddingLeft="8dip"
         android:textColor="@color/holo_blue_light"
         android:textSize="15sp" >
@@ -20,7 +20,7 @@
         android:id="@+id/dateView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".20"
+        android:layout_weight=".21"
         android:textSize="15sp" >
     </TextView>
 
