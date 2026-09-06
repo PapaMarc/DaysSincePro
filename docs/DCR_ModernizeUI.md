@@ -192,7 +192,7 @@ Why this ordering:
 - resolves current non-Main rendering issues earlier while deferring Main blast radius
 - preserves cumulative architecture momentum from Phases 0/0.5/A
 
-Mini-B explicit enum and launch mapping (all remaining non-Main surfaces):
+Mini-B explicit enum and launch mapping (active remaining non-Main in-app surfaces):
 
 1. `DaysDiffActivity`
 
@@ -218,11 +218,10 @@ Mini-B explicit enum and launch mapping (all remaining non-Main surfaces):
 - source path: `HistoryActivity.addHappenedItem/editHappenedItem`
 - Mini-B role: align with shared top-bar/navigation/theme primitives (remove remaining off-pattern chrome)
 
-5. `ConfigWidgetActivity`
+Widget containment note:
 
-- from Main launch path: no direct in-app Main path; launch originates from Android home-screen widget add/config flow
-- source path: widget provider configuration intent path (`DaysSinceAppWidgetProvider`)
-- Mini-B role: include widget configuration UX in non-Main standardization now (not deferred)
+1. `ConfigWidgetActivity` and widget provider flow are removed from active Mini-B scope because widget UX/install path is hard-disabled.
+2. Widget status, rationale, and decision track are governed by [DCR_WidgetRoadmap.md](DCR_WidgetRoadmap.md).
 
 Mini-B boundary note:
 
@@ -231,11 +230,27 @@ Mini-B boundary note:
 
 Recommended Mini-B execution slicing:
 
-1. Mini-B1: screen host/chrome modernization for the five enumerated surfaces.
-2. Mini-B2: non-Main dialog/popup/theme convergence across those same surfaces.
+1. Mini-B1: screen host/chrome modernization for the four enumerated active surfaces.
+2. Mini-B2: non-Main dialog/popup/theme convergence across those same active surfaces.
 3. Keep each slice behavior-preserving and independently rollback-safe.
 
-### 5.5 Mini-Phase C (Main + Post-Main Convergence)
+### 5.5 Mini-Retro (Phase 0 + Mini-A Fit/Finish Convergence)
+
+Scope:
+
+1. Revisit Phase 0 Settings surface and its subdialogs for Mini-B-level fit/finish parity (button templating, casing, spacing, density/polish consistency).
+2. Revisit Mini-A surfaces and subdialogs for the same fit/finish parity standard.
+3. Exclude Phase 0.5 search hardening from Mini-Retro scope because it is Main-coupled and carried into Mini-C(a).
+
+Entry gate:
+
+1. Mini-Retro does not begin until Mini-B physical-device Light/Dark sign-off is complete.
+
+Outcome:
+
+1. Mini-C starts from a unified polished baseline across pre-Main surfaces, reducing Main-phase visual debt and reducing post-Main cleanup churn.
+
+### 5.6 Mini-Phase C (Main + Post-Main Convergence)
 
 Scope:
 
@@ -409,15 +424,25 @@ Each Mini-B surface must pass §7.2 and §7.3 in addition to behavior-preservati
 - verify title semantics remain contextual (`Add`/`Edit`) while using shared top-bar behavior
 - verify date selection, on-time checkbox, notes persistence, and return-result behavior
 
-5. `ConfigWidgetActivity`
+Widget exclusion note:
 
-- launch path from Main: none direct; Android launcher widget add/config flow
-- verify widget config controls render correctly in Light/Dark
-- verify saved widget options persist and widget updates broadcast correctly
+1. Widget config/provider verification is excluded from Mini-B acceptance because widget paths are hard-disabled.
+2. Widget validation and any re-enable criteria are tracked in [DCR_WidgetRoadmap.md](DCR_WidgetRoadmap.md).
 
 Mini-B sign-off gate:
 
-1. Mini-B is incomplete until all five surfaces pass emulator + physical device checks in both Light and Dark modes.
+1. Mini-B is incomplete until all four active in-app surfaces pass emulator + physical device checks in both Light and Dark modes.
+
+### 8.7 Mini-Retro Fit/Finish Checklist (Phase 0 + Mini-A)
+
+Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B-level polish consistency.
+
+1. Phase 0 scope: Settings host and Settings subdialogs.
+2. Mini-A scope: Categories/Add Event/About related surfaces and their subdialogs.
+3. Confirm button style templating parity (fill/outline behavior, casing).
+4. Confirm spacing/density parity (row spacing, section spacing, control alignment).
+5. Confirm no behavior regressions while applying polish-only adjustments.
+6. Explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope.
 
 ---
 
@@ -431,7 +456,7 @@ Mini-B sign-off gate:
 
 ### 9.2 Mitigations
 
-1. Phase separation (0 then 0.5 then A then B then C).
+1. Phase separation (0 then 0.5 then A then B then Mini-Retro then C).
 2. Preserve behavior-first constraints in each migration PR.
 3. Keep PRs scoped to one phase and run full compile/test/build checks.
 4. Validate on emulator and physical device for both themes before phase sign-off.
@@ -452,8 +477,16 @@ Mini-B sign-off gate:
 5. Implement Mini-A in a focused PR.
 6. Stabilize and verify acceptance matrix for Mini-A.
 7. Implement Mini-B (non-Main everything else) in dedicated PR(s) with strict cumulative-reuse checks.
-8. Implement Mini-C(a) Main modernization in dedicated PR.
-9. Implement Mini-C(b) post-Main cleanup/convergence after Mini-C(a) is stable.
+8. Run Mini-B retrospective gate before opening Mini-C:
+
+- confirm Mini-B acceptance matrix completion (including physical device Light/Dark)
+- confirm unresolved Mini-B visual/behavior deltas list is empty or explicitly deferred with owner/date
+- capture lessons learned and required shared-primitive adjustments for Main
+
+9. Implement Mini-Retro (Phase 0 + Mini-A fit/finish convergence) with polish-only diffs and full matrix verification.
+10. Run Mini-Retro closeout note documenting any remaining deferred polish items (if any) with owner/date.
+11. Implement Mini-C(a) Main modernization in dedicated PR.
+12. Implement Mini-C(b) post-Main cleanup/convergence after Mini-C(a) is stable.
 
 ### 10.2 Rollback
 
@@ -477,7 +510,7 @@ Mini-C specific note:
 
 ---
 
-## 11. Resolved Decisions and Mini-B Execution Confirmations
+## 11. Resolved Decisions and Execution Confirmations
 
 ### 11.1 Resolved Design Decisions (Captured)
 
@@ -489,14 +522,31 @@ Mini-C specific note:
 ### 11.2 Mini-B Execution Confirmations (Current)
 
 1. PR slicing is confirmed as Mini-B1 then Mini-B2 (not a single combined phase PR).
-2. `ConfigWidgetActivity` is explicitly included in Mini-B scope (not deferred).
-3. `EditHistory` is explicitly included in Mini-B scope.
-4. `DaysDiffActivity` is explicitly included in Mini-B scope.
-5. Mini-B non-Main enum + Main-origin launch mapping in §5.4 is the authoritative scope boundary for execution.
-6. Verification ownership is split as follows:
+2. `ConfigWidgetActivity`/widget path is explicitly out of active Mini-B scope due hard-disable containment.
+3. Widget decision/re-enable/removal path is tracked in [DCR_WidgetRoadmap.md](DCR_WidgetRoadmap.md).
+4. `EditHistory` is explicitly included in active Mini-B scope.
+5. `DaysDiffActivity` is explicitly included in active Mini-B scope.
+6. Mini-B non-Main enum + Main-origin launch mapping in §5.4 is the authoritative active scope boundary for execution.
+7. Verification ownership is split as follows:
 
 - implementation verification by agent: code review + JVM unit tests + compile/build checks
 - runtime UX verification by maintainer: emulator + physical device checks per §8 matrix
+
+### 11.3 Mini-B to Mini-C Transition Gate (Retrospective)
+
+Mini-C does not start until Mini-B retrospective is captured in this DCR (or linked sibling note) with:
+
+1. Final pass/fail result for all active Mini-B surfaces across §7.3 matrix.
+2. Any residual UI inconsistencies (if any), each with explicit owner and disposition (fix in Mini-B follow-up vs defer to Mini-C(b)).
+3. Shared primitive deltas discovered during Mini-B that must be reused by Main in Mini-C(a).
+4. Explicit go/no-go decision for Mini-C(a).
+
+### 11.4 Mini-Retro Scope Confirmation (Current)
+
+1. Mini-Retro explicitly targets Phase 0 (Settings + subdialogs) and Mini-A (surfaces + subdialogs).
+2. Mini-Retro is polish-only and applies Mini-B-established button templating/casing/spacing consistency.
+3. Phase 0.5 search scope is intentionally excluded from Mini-Retro and remains Main-coupled Mini-C(a) work.
+4. Mini-Retro starts only after Mini-B physical-device Light/Dark sign-off.
 
 ---
 
@@ -504,7 +554,7 @@ Mini-C specific note:
 
 This DCR is considered complete when:
 
-1. Phases 0, 0.5, A, B, and C are implemented and verified.
+1. Phases 0, 0.5, A, B, Mini-Retro, and C are implemented and verified.
 2. Light/Dark acceptance matrix passes on emulator and physical device.
 3. Each phase demonstrably reuses the shared modernization framework rather than introducing duplicate equivalents.
 4. Legacy theming/shims made obsolete by the migration are removed or documented for deferred cleanup with explicit milestone/date.
