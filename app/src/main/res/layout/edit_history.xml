@@ -61,6 +61,7 @@
         android:id="@+id/editText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@null"
         android:ems="10"
         android:gravity="top"
         android:hint="@string/notes"
@@ -68,12 +69,17 @@
         android:lines="3" >
     </EditText>
 
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerHorizontal" />
+
     <LinearLayout
         android:id="@+id/linearLayout3"
         style="@style/MiniBButtonRow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" >
+        android:layout_height="wrap_content" >
 
         <!-- Android 14 reverse OK, Cancel -->
 
