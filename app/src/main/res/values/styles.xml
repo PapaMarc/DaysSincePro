@@ -131,14 +131,37 @@
         <item name="android:paddingBottom">6dp</item>
     </style>
 
+    <style name="SettingsDialogActionButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/mini_b_button_fill</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:minWidth">72dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+    </style>
+
     <style name="SettingsThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
+        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
+        <item name="colorAccent">@color/holo_green_dark</item>
+        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
     </style>
 
     <style name="SettingsThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
+        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
+        <item name="colorAccent">@color/holo_green_dark</item>
+        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
     </style>
 
     <style name="MiniAThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
