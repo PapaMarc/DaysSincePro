@@ -285,24 +285,25 @@ Outcome:
 
 1. Mini-C starts from a unified polished baseline across pre-Main surfaces, reducing Main-phase visual debt and reducing post-Main cleanup churn.
 
-### 5.6 Mini-Phase C (Main + About/Main-Era Dialog + Post-Main Convergence)
+### 5.6 Mini-Phase C (Main + Main-Era Dialog + Legacy Cleanup Convergence)
 
 Description:
 
-1. Mini-C covers Main modernization plus deferred About dialog control convergence (shared Main-era dialog architecture), followed by post-Main cleanup once Main is stable.
+1. Mini-C is intentionally split into three internal slices so visible-convergence work and cleanup-only work can be validated independently: C(a) Main modernization, C(b) visual/dialog convergence, C(c) cleanup/removal with no intentional visual deltas.
 
 Scope:
 
 1. Mini-C(a): Main screen modernization and top app chrome alignment
 2. Mini-C(a): adopt the already-stabilized search behavior contract from Phase 0.5 without re-implementing search logic
-3. Mini-C(b): post-Main cleanup and convergence, including legacy style/theme cleanup that should occur only after Main is stable
-4. Mini-C(b): complete deferred About dialog control convergence with Main-era dialog architecture, including action-button style parity and verification in both Light and Dark modes
+3. Mini-C(b): complete Main-adjacent visual convergence and deferred About dialog control convergence (shared Main-era dialog architecture), including action-button style parity and Light/Dark verification
+4. Mini-C(c): cleanup/removal slice after Mini-C(b), including legacy style/theme paths and obsolete shims that are no longer needed once Main and dialog convergence are stable
+5. Mini-C(c): no intentional visual redesign; objective is codebase simplification with regression verification against Mini-C(b) visual baseline
 
 Why separated internally:
 
 - Main remains highest blast radius (tabs/search/overflow/navigation fan-out)
-- post-Main cleanup is safer after Main behavior and chrome are validated
-- About dialog control convergence is intentionally bundled with Main-era dialog cleanup to avoid premature one-off styling paths
+- visual convergence is safer immediately after Main stabilization and before cleanup-only deletions/refactors
+- cleanup/removal is safer as a distinct final slice so regressions can be measured against a known-good Mini-C(b) baseline
 
 ---
 
@@ -510,6 +511,20 @@ Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B
 
 - explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope
 
+### 8.8 Mini-C(b) and Mini-C(c) Verification Split
+
+1. Mini-C(b) verification goal: visual target state.
+
+- validate Main and deferred About dialog control convergence in emulator Light/Dark
+- validate same on physical-device sideload Light/Dark
+- capture screenshots/notes as Mini-C(b) baseline for regression comparison
+
+2. Mini-C(c) verification goal: no-regression cleanup confirmation.
+
+- rerun Mini-C(b) baseline checks after cleanup/removal changes
+- confirm no intentional visual deltas versus Mini-C(b) baseline
+- confirm no functional regressions in Main navigation/search/tabs/overflow paths
+
 ---
 
 ## 9. Risks and Mitigations
@@ -522,7 +537,7 @@ Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B
 
 ### 9.2 Mitigations
 
-1. Phase separation (0 then 0.5 then A then B then Mini-Retro then C).
+1. Phase separation (0 then 0.5 then A then B then Mini-Retro then C(a) then C(b) then C(c)).
 2. Preserve behavior-first constraints in each migration PR.
 3. Keep PRs scoped to one phase and run full compile/test/build checks.
 4. Validate on emulator and physical device for both themes before phase sign-off.
@@ -552,7 +567,10 @@ Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B
 9. Implement Mini-Retro (Phase 0 + Mini-A fit/finish convergence) with polish-only diffs and full matrix verification.
 10. Run Mini-Retro closeout note documenting any remaining deferred polish items (if any) with owner/date.
 11. Implement Mini-C(a) Main modernization in dedicated PR.
-12. Implement Mini-C(b) post-Main cleanup/convergence after Mini-C(a) is stable.
+12. Implement Mini-C(b) visual/dialog convergence (including deferred About control convergence) after Mini-C(a) is stable.
+13. Verify Mini-C(b) across emulator + physical device in Light/Dark and capture baseline.
+14. Implement Mini-C(c) cleanup/removal in dedicated PR with no intentional visual deltas.
+15. Verify Mini-C(c) regression matrix against Mini-C(b) baseline.
 
 ### 10.2 Rollback
 
@@ -572,7 +590,9 @@ Phase-specific note:
 
 Mini-C specific note:
 
-1. If Mini-C(a) Main modernization introduces regressions unrelated to shared primitives, isolate rollback to Main changes first, then re-evaluate whether any Mini-C(b) cleanup should be deferred.
+1. If Mini-C(a) Main modernization introduces regressions unrelated to shared primitives, isolate rollback to Main changes first, then re-evaluate whether Mini-C(b)/Mini-C(c) should be deferred.
+2. If Mini-C(b) visual convergence introduces regressions, rollback Mini-C(b) without mixing cleanup-only diffs.
+3. If Mini-C(c) cleanup introduces regressions, rollback Mini-C(c) first and preserve Mini-C(b) visual baseline.
 
 ---
 
@@ -614,13 +634,20 @@ Mini-C does not start until Mini-B retrospective is captured in this DCR (or lin
 3. Phase 0.5 search scope is intentionally excluded from Mini-Retro and remains Main-coupled Mini-C(a) work.
 4. Mini-Retro starts only after Mini-B physical-device Light/Dark sign-off.
 
+### 11.5 Mini-C Internal Slicing Confirmation (Current)
+
+1. Mini-C(a): Main modernization + Phase 0.5 search contract adoption.
+2. Mini-C(b): visual/dialog convergence, including deferred About control convergence.
+3. Mini-C(c): cleanup/removal/refactor slice with no intentional visual deltas.
+4. Mini-C(c) must be validated as a regression pass against Mini-C(b) baseline, not as a fresh redesign pass.
+
 ---
 
 ## 12. Definition of Done for This DCR
 
 This DCR is considered complete when:
 
-1. Phases 0, 0.5, A, B, Mini-Retro, and C are implemented and verified.
+1. Phases 0, 0.5, A, B, Mini-Retro, Mini-C(a), Mini-C(b), and Mini-C(c) are implemented and verified.
 2. Light/Dark acceptance matrix passes on emulator and physical device.
 3. Each phase demonstrably reuses the shared modernization framework rather than introducing duplicate equivalents.
 4. Legacy theming/shims made obsolete by the migration are removed or documented for deferred cleanup with explicit milestone/date.
