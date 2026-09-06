@@ -43,11 +43,11 @@
 
         <Button
             android:id="@+id/buttonPickDate"
-            style="@style/MiniBOutlinedActionButton"
+            style="@style/MiniBActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="@string/choose" />
+            android:text="@string/select_date" />
     </RelativeLayout>
 
     <CheckBox
@@ -70,10 +70,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
+        style="@style/MiniBButtonRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingTop="6dp" >
+        android:layout_marginTop="8dp" >
 
         <!-- Android 14 reverse OK, Cancel -->
 
@@ -83,7 +83,8 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/OK" />
+            android:layout_marginRight="8dp"
+            android:text="@string/mini_b_ok" />
 
         <Button
             android:id="@+id/eventCancel"

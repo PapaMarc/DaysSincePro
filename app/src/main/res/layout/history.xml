@@ -48,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/interval"
+        android:paddingBottom="6dp"
         android:layout_marginLeft="10dp"
         android:text="@string/times_this_month"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -66,13 +67,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
+        style="@style/MiniBButtonRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="6dp" >
+        android:layout_centerHorizontal="true" >
 
         <Button
             android:id="@+id/addButton"
@@ -80,6 +79,7 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginRight="8dp"
             android:text="@string/add" />
 
         <Button

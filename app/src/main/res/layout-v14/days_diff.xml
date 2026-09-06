@@ -29,14 +29,14 @@
 
         <Button
             android:id="@+id/buttonPickDateA"
-            style="@style/MiniBOutlinedActionButton"
+            style="@style/MiniBActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date" />
 
         <Button
             android:id="@+id/buttonEventA"
-            style="@style/MiniBOutlinedActionButton"
+            style="@style/MiniBActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -64,7 +64,7 @@
 
         <Button
             android:id="@+id/buttonPickDateB"
-            style="@style/MiniBOutlinedActionButton"
+            style="@style/MiniBActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date" />
@@ -72,7 +72,7 @@
 
         <Button
             android:id="@+id/buttonEventB"
-            style="@style/MiniBOutlinedActionButton"
+            style="@style/MiniBActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -119,7 +119,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/OK" />
+        android:layout_marginTop="8dp"
+        android:text="@string/mini_b_ok" />
 
     </LinearLayout>
 

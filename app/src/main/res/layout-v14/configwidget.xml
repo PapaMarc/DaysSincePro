@@ -78,7 +78,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/OK" >
+        android:text="@string/mini_b_ok" >
     </Button>
 
 </LinearLayout>
