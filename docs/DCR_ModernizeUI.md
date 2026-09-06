@@ -241,6 +241,41 @@ Scope:
 1. Revisit Phase 0 Settings surface and its subdialogs for Mini-B-level fit/finish parity (button templating, casing, spacing, density/polish consistency).
 2. Revisit Mini-A surfaces and subdialogs for the same fit/finish parity standard.
 3. Exclude Phase 0.5 search hardening from Mini-Retro scope because it is Main-coupled and carried into Mini-C(a).
+4. Keep Mini-Retro strictly polish-only: no intentional functional behavior changes.
+
+Mini-Retro ordered surface inventory:
+
+1. Phase 0: `PrefActivity` (Settings host)
+2. Phase 0 subdialogs from Settings list preferences in `options.xml`:
+
+- category sort order dialog
+- event sort order dialog
+- font size single-choice dialog (`FontSizeListPreference`)
+- display style dialog
+- date style dialog
+- tab style dialog
+- theme dialog
+- remind percent dialog
+- notification permission prompt flow when applicable
+
+3. Mini-A: `CategoriesActivity` launched from Main folder action (`MainActivity.action_open`)
+4. Mini-A: `CreateCategoryActivity` launched from Add Event synthetic Add New Category spinner action
+5. Mini-A subdialogs in category flows:
+
+- add category dialog
+- edit category dialog
+- delete confirmation dialog
+- unsaved/exit confirmation dialog
+
+6. Mini-A: `EditEventActivity` (`Add Event` and `Edit Event` contexts)
+7. Mini-A subdialogs in event editing flows:
+
+- start date picker
+- end date picker
+- notify time picker
+- recurrence custom-days dialog
+
+8. Mini-A: About dialog (`AboutDialog`) launched from Main overflow
 
 Entry gate:
 
@@ -437,12 +472,32 @@ Mini-B sign-off gate:
 
 Each in-scope Mini-Retro surface/subdialog must pass §7.2 and §7.3 with Mini-B-level polish consistency.
 
-1. Phase 0 scope: Settings host and Settings subdialogs.
-2. Mini-A scope: Categories/Add Event/About related surfaces and their subdialogs.
-3. Confirm button style templating parity (fill/outline behavior, casing).
-4. Confirm spacing/density parity (row spacing, section spacing, control alignment).
-5. Confirm no behavior regressions while applying polish-only adjustments.
-6. Explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope.
+1. Execute verification in this order so review is deterministic and complete:
+
+- pass A: emulator Light + Dark for all Mini-Retro items
+- pass B: physical-device sideload Light + Dark for all Mini-Retro items
+
+2. Phase 0 checklist (Settings + subdialogs):
+
+- top bar, title casing, and navigation parity
+- dialog button fill/outline parity and button casing
+- list row spacing and dialog content density parity
+- no clipped controls, overlap, or one-off paddings
+
+3. Mini-A checklist (Categories/Edit Event/About + subdialogs):
+
+- button template parity (shared Mini-B button language unless intentionally exempt)
+- casing consistency (`OK`/`Cancel` conventions as approved)
+- spacing rhythm consistency from content section to divider to action row
+- picker/dialog visual consistency in both themes
+
+4. Functional guardrail:
+
+- if a polish adjustment exposes behavior coupling, do not widen scope inline; log and disposition separately
+
+5. Scope exclusion:
+
+- explicitly skip Phase 0.5 search UI changes in Mini-Retro; search/Main presentation remains Mini-C(a) scope
 
 ---
 
