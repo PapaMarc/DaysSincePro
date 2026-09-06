@@ -72,6 +72,7 @@
     <string name="no_entries1">No Categories</string>
     <string name="show_categories">Display Categories</string>
     <string name="add_a_category">Add A Category</string>
+    <string name="add_category_tooltip">Add Category</string>
     <string name="edit_category">Edit Category</string>
     <string name="export_category">Export as CSV</string>
     <string name="uncategorized"> Uncategorized</string>

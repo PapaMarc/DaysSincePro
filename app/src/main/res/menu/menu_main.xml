@@ -8,7 +8,7 @@
         android:orderInCategory="10"
         android:icon="@drawable/ic_action_add"
         app:showAsAction="always"
-        android:title="@string/add"/>
+        android:title="@string/add_event"/>
 
     <item
         android:id="@+id/action_open"

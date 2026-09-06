@@ -31,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -44,6 +45,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
 
 public class CategoriesActivity extends AppCompatActivity {
 
@@ -129,6 +131,7 @@ public class CategoriesActivity extends AppCompatActivity {
         } else {
             addButton.setColorFilter(0xFF333333, PorterDuff.Mode.SRC_IN);
         }
+        TooltipCompat.setTooltipText(addButton, getString(R.string.add_category_tooltip));
         addButton.setOnClickListener(addListener);
 
         doneButton = (Button) findViewById(R.id.doneButton);
@@ -530,7 +533,7 @@ public class CategoriesActivity extends AppCompatActivity {
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton(R.string.OK,
+        builder.setPositiveButton(R.string.mini_b_ok,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -579,6 +582,8 @@ public class CategoriesActivity extends AppCompatActivity {
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
         dialog.show();
+        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_POSITIVE);
+        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_NEGATIVE);
         input.requestFocus();
     }
 
@@ -600,7 +605,7 @@ public class CategoriesActivity extends AppCompatActivity {
         input.setText(name);
 
         // Set up the buttons
-        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.mini_b_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -643,7 +648,38 @@ public class CategoriesActivity extends AppCompatActivity {
                     }
                 });
 
-        builder.show();
+        AlertDialog dialog = builder.show();
+        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_POSITIVE);
+        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_NEGATIVE);
+    }
+
+    private void applyMiniRetroDialogButtonStyle(AlertDialog dialog, int whichButton) {
+        Button button = dialog.getButton(whichButton);
+        if (button == null) {
+            return;
+        }
+
+        float density = getResources().getDisplayMetrics().density;
+        button.setAllCaps(false);
+        button.setTextColor(getColor(R.color.holo_green_dark));
+        button.setBackgroundResource(R.drawable.mini_b_button_fill);
+        button.setMinHeight((int) (40 * density));
+        button.setMinWidth((int) (72 * density));
+        int horizontalPaddingPx = (int) (12 * density);
+        int verticalPaddingPx = (int) (6 * density);
+        button.setPadding(horizontalPaddingPx, verticalPaddingPx,
+                horizontalPaddingPx, verticalPaddingPx);
+
+        ViewGroup.LayoutParams params = button.getLayoutParams();
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
+            int separationPx = (int) (8 * density);
+            if (whichButton == AlertDialog.BUTTON_POSITIVE) {
+                marginParams.setMarginStart(separationPx);
+                marginParams.leftMargin = separationPx;
+            }
+            button.setLayoutParams(marginParams);
+        }
     }
 
     private boolean categoryExistsByName(String categoryName, long excludeCategoryId) {
