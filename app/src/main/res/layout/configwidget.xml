@@ -14,8 +14,10 @@
 
     <TextView
         android:id="@+id/textView1"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:padding="8dip"
         android:text="@string/select_event" >
     </TextView>
@@ -24,11 +26,13 @@
         android:id="@+id/spinnerW"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:prompt="@string/event" >
     </Spinner>
 
     <TextView
         android:id="@+id/textView2"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dip"
@@ -39,6 +43,7 @@
         android:id="@+id/spinnerC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:prompt="@string/color" >
     </Spinner>
 
@@ -46,10 +51,13 @@
         android:id="@+id/checkBoxOpaque"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="6dp"
         android:text="@string/opaque" />
 
     <TextView
         android:id="@+id/textView3"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dip"
@@ -60,11 +68,13 @@
         android:id="@+id/spinnerS"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
         android:prompt="@string/display_style" >
     </Spinner>
 
     <Button
         android:id="@+id/button1"
+        style="@style/MiniBActionButton"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

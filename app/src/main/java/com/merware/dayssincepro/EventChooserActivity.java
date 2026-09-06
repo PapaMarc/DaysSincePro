@@ -69,7 +69,7 @@ public class EventChooserActivity extends AppCompatActivity {
                 R.array.cat_days_between, android.R.layout.simple_spinner_item);
 
         if (darkTheme) { // dark - use a custom view so that the options are visible
-            sortAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            sortAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -81,7 +81,7 @@ public class EventChooserActivity extends AppCompatActivity {
 
 
         if (darkTheme) { // dark - use a custom view so that the options are visible
-            eventAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            eventAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -100,7 +100,7 @@ public class EventChooserActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item);
 
         if (darkTheme) { // dark - use a custom view so that the options are visible
-            catAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            catAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

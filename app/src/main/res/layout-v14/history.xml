@@ -57,7 +57,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout1"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
+        android:paddingBottom="6dp"
         android:text="@string/interval"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -78,22 +80,22 @@
         style="?android:attr/buttonBarStyle"
         android:paddingLeft="2dip"
         android:paddingRight="2dip"
-        android:paddingTop="0dip" >
+        android:paddingTop="6dp" >
 
         <Button
             android:id="@+id/addButton"
+            style="@style/MiniBActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"
             android:text="@string/add" />
 
         <Button
             android:id="@+id/cancelButton"
+            style="@style/MiniBActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/done" />
     </LinearLayout>
 

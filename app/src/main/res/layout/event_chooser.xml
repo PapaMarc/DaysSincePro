@@ -17,22 +17,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="12dp" >
 
     <TextView
         android:id="@+id/textView0"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:text="@string/sort_order" />
 
     <Spinner
         android:id="@+id/spinnerS"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:prompt="@string/sort_order"
         />
     <TextView
         android:id="@+id/textView1"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/choose_category" />
@@ -40,10 +44,12 @@
     <Spinner
         android:id="@+id/spinnerC"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp" />
 
     <TextView
         android:id="@+id/textView2"
+        style="@style/MiniBSectionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_event" />
@@ -51,7 +57,8 @@
     <Spinner
         android:id="@+id/spinnerE"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/daysDiffText"
@@ -67,10 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
         android:text="" />
 
     <Button
         android:id="@+id/okButton"
+        style="@style/MiniBActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -106,7 +106,7 @@ public class ConfigWidgetActivity extends AppCompatActivity {
         }
 
         if (darkTheme) { // dark
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -122,7 +122,7 @@ public class ConfigWidgetActivity extends AppCompatActivity {
                 this, R.array.colors, android.R.layout.simple_spinner_item);
 
         if (darkTheme) { // dark
-            adapter2.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            adapter2.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -141,7 +141,7 @@ public class ConfigWidgetActivity extends AppCompatActivity {
                 this, R.array.styles, android.R.layout.simple_spinner_item);
 
         if (darkTheme) { // dark
-            adapter3.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            adapter3.setDropDownViewResource(R.layout.spinner_dropdown_item_compact);
         }
         else {
             adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -17,38 +17,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="12dp" >
 
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp" >
 
 
 
         <Button
             android:id="@+id/buttonPickDateA"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBOutlinedActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textColor="#09c"
-            android:textStyle="bold" />
+            android:text="@string/date" />
 
         <Button
             android:id="@+id/buttonEventA"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBOutlinedActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="@string/event"
-            android:textColor="#09c"
-            android:textStyle="bold" />
+            android:text="@string/event" />
 
 
         <TextView
             android:id="@+id/dateText"
             android:layout_below="@id/buttonEventA"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/click_choose" />
@@ -58,36 +56,34 @@
     <RelativeLayout
         android:id="@+id/layout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp" >
 
 
 
 
         <Button
             android:id="@+id/buttonPickDateB"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBOutlinedActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textColor="#09c"
-            android:textStyle="bold" />
+            android:text="@string/date" />
 
 
         <Button
             android:id="@+id/buttonEventB"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/MiniBOutlinedActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="@string/event"
-            android:textColor="#09c"
-            android:textStyle="bold" />
+            android:text="@string/event" />
 
         <TextView
             android:id="@+id/dateText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/buttonEventB"
+            android:layout_marginTop="8dp"
             android:text="@string/click_choose" />
 
 
@@ -98,6 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="16dp"
         android:text=""
         android:textSize="20sp" />
 
@@ -106,6 +103,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="14dp"
         android:text="" />
      <View
         android:id="@+id/divider1"
@@ -116,12 +115,10 @@
 
     <Button
         android:id="@+id/okButton"
-        style="?android:attr/buttonBarButtonStyle"
+        style="@style/MiniBActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="#09c"
-        android:textStyle="bold"
         android:text="@string/OK" />
 
     </LinearLayout>
