@@ -56,6 +56,8 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name="ConfigWidgetActivity"
+            android:enabled="false"
+            android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Days Since Pro 3 Widget"></activity>
 
@@ -79,8 +81,9 @@
 
         <receiver
             android:name=".DaysSinceAppWidgetProvider"
+            android:enabled="false"
             android:label="@string/app_name"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
