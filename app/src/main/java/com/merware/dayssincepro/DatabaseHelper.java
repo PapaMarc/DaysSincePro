@@ -11,6 +11,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "alex_db";
+    public static final int DATABASE_VERSION = 4;
 
     // Single shared instance so the whole app uses one connection to alex_db,
     // instead of every Activity/Fragment opening its own.
@@ -33,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 4); // third param is version
+        super(context, DATABASE_NAME, null, DATABASE_VERSION); // third param is version
         // 1 original version
         // 2 add history table
         // 3 add end date column

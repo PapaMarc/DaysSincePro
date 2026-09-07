@@ -37,9 +37,10 @@ public class AboutDialog {
         String versionString = String.format("Version: %s", versionInfo);
         String packageName = context.getPackageName();
         boolean isSideloadBuild = packageName.endsWith(".dev");
+        String schemaString = String.format("Schema: v%d", DatabaseHelper.DATABASE_VERSION);
         String sideloadString = String.format("SideLoad .apk: %s", packageName);
         String headerText = isSideloadBuild
-                ? versionString + "\n" + sideloadString
+                ? versionString + "\n" + schemaString + "\n" + sideloadString
                 : versionString;
         String aboutText = "Originally written by " + author + "\n" + date;
 
