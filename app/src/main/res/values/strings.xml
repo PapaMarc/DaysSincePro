@@ -214,4 +214,6 @@
     <string name="csv_history_warning_export_db">Export .db Instead</string>
     <string name="history_anchor_header">Event (Anchor) date: %1$s</string>
     <string name="history_anchor_header_missing">Anchor date unavailable</string>
+    <string name="history_empty_placeholder">No additional history has been added.</string>
+    <string name="history_additions_only_header">Incremental History Additions (only)</string>
 </resources>

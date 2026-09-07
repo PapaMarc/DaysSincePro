@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ public class HistoryActivity extends AppCompatActivity {
     private TextView timesThisYear;
     private TextView timesThisMonth;
     private TextView anchorDateHeader;
+    private TextView historyAdditionsHeader;
 
     private TextView tvInterval;
 
@@ -61,6 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     static final private int MENU_EDIT = Menu.FIRST;
     static final private int MENU_REMOVE = Menu.FIRST + 1;
+    private static final long PLACEHOLDER_HISTORY_ID = -1L;
 
     SharedPreferences preferences;
 
@@ -88,6 +91,10 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private boolean onHistoryMenuAction(int menuItemId, int position, long id) {
+        if (id == PLACEHOLDER_HISTORY_ID) {
+            return true;
+        }
+
         switch (menuItemId) {
             case MENU_EDIT:
                 editItem(position, id);
@@ -116,8 +123,22 @@ public class HistoryActivity extends AppCompatActivity {
     private void listData() {
 
         // _id is required for SimpleCursorAdapter
-        cursor = db.query("history", new String[] { "_id", "date", "onTime",
+        Cursor historyCursor = db.query("history", new String[] { "_id", "date", "onTime",
                 "note" }, "eventId = " + eventId, null, null, null, "date");
+
+        if (historyCursor.getCount() == 0) {
+            MatrixCursor placeholderCursor = new MatrixCursor(new String[]{"_id", "date", "onTime", "note"});
+            placeholderCursor.addRow(new Object[]{
+                    PLACEHOLDER_HISTORY_ID,
+                    getString(R.string.history_empty_placeholder),
+                    0,
+                    ""
+            });
+            cursor = placeholderCursor;
+            historyCursor.close();
+        } else {
+            cursor = historyCursor;
+        }
 
         String[] from = new String[] { "date" };
         int[] to = new int[] { R.id.happened };
@@ -262,6 +283,7 @@ public class HistoryActivity extends AppCompatActivity {
         timesThisMonth = (TextView) findViewById(R.id.timesThisMonth);
         tvInterval = (TextView) findViewById(R.id.interval);
         anchorDateHeader = (TextView) findViewById(R.id.anchorDateHeader);
+        historyAdditionsHeader = (TextView) findViewById(R.id.historyAdditionsHeader);
 
         Intent intent = getIntent();
         eventId = intent.getLongExtra("eventId", 0);
@@ -279,6 +301,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         setTitle(getString(R.string.history) + " : " + event);
         setAnchorHeaderText();
+        historyAdditionsHeader.setText(getString(R.string.history_additions_only_header));
 
         // allow click
         lv = (ListView) findViewById(android.R.id.list);
@@ -288,6 +311,9 @@ public class HistoryActivity extends AppCompatActivity {
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (id == PLACEHOLDER_HISTORY_ID) {
+                    return true;
+                }
                 showHistoryActionMenu(view, position, id);
                 return true;
             }
@@ -314,6 +340,10 @@ public class HistoryActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
+                if (id == PLACEHOLDER_HISTORY_ID) {
+                    return;
+                }
 
                 editItem(position, id);
             }
@@ -456,6 +486,9 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     void editItem(int position, final long historyId) {
+        if (historyId == PLACEHOLDER_HISTORY_ID) {
+            return;
+        }
 
         Cursor c = (Cursor) lv.getItemAtPosition(position);
         final String date = c.getString(1);

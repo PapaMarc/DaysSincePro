@@ -40,10 +40,20 @@
         android:id="@+id/onTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/timesThisYear"
+        android:layout_above="@+id/historyAdditionsHeader"
         android:layout_marginLeft="10dp"
         android:text="@string/percent_on_time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/historyAdditionsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timesThisYear"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/timesThisYear"
