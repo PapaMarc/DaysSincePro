@@ -22,9 +22,9 @@
         <item name="colorControlActivated">@color/holo_green_dark</item>
         <item name="android:windowBackground">@color/ui_surface_light</item>
         <item name="android:colorBackground">@color/ui_surface_light</item>
-        <item name="colorPrimary">@color/holo_green_dark</item>
-        <item name="colorPrimaryDark">@color/holo_green_dark</item>
-        <item name="colorPrimarySurface">@color/holo_green_dark</item>
+        <item name="colorPrimary">@color/ui_topbar_light</item>
+        <item name="colorPrimaryDark">@color/ui_topbar_light</item>
+        <item name="colorPrimarySurface">@color/ui_topbar_light</item>
     </style>
 
     <style name="AppOverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
@@ -59,9 +59,9 @@
         <item name="colorControlActivated">@color/holo_green_dark</item>
         <item name="android:windowBackground">@color/ui_surface_dark</item>
         <item name="android:colorBackground">@color/ui_surface_dark</item>
-        <item name="colorPrimary">@color/holo_green_dark</item>
-        <item name="colorPrimaryDark">@color/holo_green_dark</item>
-        <item name="colorPrimarySurface">@color/holo_green_dark</item>
+        <item name="colorPrimary">@color/ui_topbar_dark</item>
+        <item name="colorPrimaryDark">@color/ui_topbar_dark</item>
+        <item name="colorPrimarySurface">@color/ui_topbar_dark</item>
     </style>
 
     <!--  there is no such thing as a theme.light.dialog -->
