@@ -8,6 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PrefActivity extends AppCompatActivity {
@@ -108,6 +109,15 @@ public class PrefActivity extends AppCompatActivity {
 
             if ("noti".equals(key)) {
                 boolean isNotiOn = sharedPreferences.getBoolean("noti", false);
+                if (getActivity() != null) {
+                    Toast.makeText(
+                            getActivity(),
+                            isNotiOn
+                                    ? R.string.daily_notifications_enabled_toast
+                                    : R.string.daily_notifications_disabled_toast,
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
                 if (isNotiOn && getActivity() != null
                         && !NotificationPermissionHelper.areNotificationsEnabled(getActivity())) {
                     NotificationPermissionHelper.promptEnableNotifications(getActivity());

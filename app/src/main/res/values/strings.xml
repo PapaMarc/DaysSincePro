@@ -103,6 +103,11 @@
 
     <string name="theme"> Theme</string>
     <string name="notification">Notification</string>
+    <string name="daily_notifications">Daily Notifications</string>
+    <string name="currently_enabled">&lt;currently enabled&gt;</string>
+    <string name="currently_disabled">&lt;currently disabled&gt;</string>
+    <string name="daily_notifications_enabled_toast">Daily notifications enabled.</string>
+    <string name="daily_notifications_disabled_toast">Daily notifications disabled.</string>
     <string name="daysuntil">Until Next</string>
     <string name="sincelast">Since Last</string>
     <string name="user_settings">User Settings</string>
@@ -162,7 +167,7 @@
     <string name="no_events">There are no events.</string>
 
     <string name ="quarter_till">75 percent of days passed</string>
-    <string name ="show_tab">Days Since or Days Until</string>
+    <string name ="show_tab">Default Startup Tab</string>
 
 
     <string name="action_settings"> Settings</string>

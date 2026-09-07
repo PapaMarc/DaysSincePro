@@ -39,9 +39,9 @@
 			android:entryValues="@array/theme_values" android:defaultValue="0" />
 		
 		<CheckBoxPreference android:key="noti"
-		    android:title = "@string/notification"
-		    android:summaryOn="@string/send_noti"
-	        android:summaryOff="@string/no_send_noti"
+		    android:title = "@string/daily_notifications"
+		    android:summaryOn="@string/currently_enabled"
+	        android:summaryOff="@string/currently_disabled"
 			android:defaultValue="false"/>
 
 		<ListPreference
