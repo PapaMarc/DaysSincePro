@@ -569,6 +569,12 @@ modernizationCleanup scope labels:
 - modernizationCleanup-B (Mini-C(b)): remove Categories runtime dialog-button mutation and rely on shared dialog template path.
 - modernizationCleanup-C (Mini-C(c)): preserve `FontSizeListPreference` per-size preview behavior while aligning Settings alert-dialog theming to shared AppDialogTheme/AppDialogTheme2 template path.
 
+Mini-C(c) execution readiness (when to run full cleanup/removal):
+
+- C(a) and C(b) are complete and visual baseline is already captured/verified in emulator + physical-device Light/Dark.
+- C(c) should now execute as a dedicated cleanup-only PR with no intentional visual deltas.
+- C(c) completion requires an explicit inventory of remaining legacy paths, removal/rename decisions per path, and post-cleanup regression verification against the Mini-C(b) baseline.
+
 1. Mini-C(b) verification goal: visual target state.
 
 - validate Main and deferred About dialog control convergence in emulator Light/Dark
@@ -580,6 +586,13 @@ modernizationCleanup scope labels:
 - rerun Mini-C(b) baseline checks after cleanup/removal changes
 - confirm no intentional visual deltas versus Mini-C(b) baseline
 - confirm no functional regressions in Main navigation/search/tabs/overflow paths
+
+Mini-C status checkpoint (2026-09-07):
+
+- Steps 1-5 complete: modernizationCleanup-A/B implemented; modernizationCleanup-C template-alignment subset implemented; compile/unit-test/sideload gates passed; emulator + physical-device Light/Dark validation completed.
+- Step 6 targeted scan complete: no remaining direct framework `new AlertDialog.Builder(...)` call sites outside the shared `DialogThemeHelper` path.
+- Step 7 residual cleanup enumeration: one known framework-signature exception remains (`FontSizeListPreference.onPrepareDialogBuilder(AlertDialog.Builder)`), with per-size preview behavior preserved and Settings dialog theme now aligned via `alertDialogTheme` wiring.
+- Step 8 documentation complete: this checkpoint records PR-ready Mini-C progress and current residual count (1 known framework-signature exception; full legacy cleanup/removal inventory remains the open C(c) work item).
 
 ---
 
