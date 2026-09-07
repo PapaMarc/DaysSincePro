@@ -154,7 +154,7 @@
     <string name="not_found">not found.</string>
     <string name="opaque">Opaque</string>
     <string name="notify_midnight">Notify at 8:00 AM</string>
-    <string name="days_diff">Days Between</string>
+    <string name="days_diff">Days Between Calculator</string>
     <string name="days_events_diff">Days Between Events</string>
     <string name="click_choose">Date or Event</string>
     <string name="choose_category">Choose a Category</string>
