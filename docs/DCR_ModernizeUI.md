@@ -519,43 +519,47 @@ Pass rule:
 
 Scope lock:
 
-- [ ] Main tab host architecture is modernized.
-- [ ] Three-tab information architecture remains unchanged: Days Since, Since Last, Days Until.
-- [ ] About control convergence is excluded from Mini-C(a).
-- [ ] No label-casing policy change is introduced unless required to preserve current visible behavior.
-- [ ] No data-model or query-logic rewrite is introduced.
+- [x] Main tab host architecture is modernized.
+- [x] Three-tab information architecture remains unchanged: Days Since, Since Last, Days Until.
+- [x] About control convergence is excluded from Mini-C(a).
+- [x] No label-casing policy change is introduced unless required to preserve current visible behavior.
+- [x] No data-model or query-logic rewrite is introduced.
 
 Functional parity:
 
-- [ ] Default tab behavior at app open matches current production behavior.
-- [ ] Swipe and tab-tap both switch pages correctly.
-- [ ] Search targets the currently visible tab/page.
-- [ ] Return from Add/Edit/Delete refreshes the correct page content.
-- [ ] Rotation/config-change preserves selected tab and visible page.
+- [x] Default tab behavior at app open matches current production behavior.
+- [x] Swipe and tab-tap both switch pages correctly.
+- [x] Search targets the currently visible tab/page.
+- [x] Return from Add/Edit/Delete refreshes the correct page content.
+- [x] Rotation/config-change preserves selected tab and visible page.
 
 Visual and interaction minimums:
 
-- [ ] Tab text and ordering match current string-resource semantics.
-- [ ] No clipped tab labels on common phone widths.
-- [ ] No regression in top bar spacing, edge-to-edge padding, or system-bar overlap.
+- [x] Tab text and ordering match current string-resource semantics.
+- [x] No clipped tab labels on common phone widths.
+- [x] No regression in top bar spacing, edge-to-edge padding, or system-bar overlap.
 
 Regression guardrails:
 
-- [ ] No crashes during rapid tab switching.
-- [ ] No fragment duplication or stale page instances after rotation.
-- [ ] Back navigation behavior from Main remains unchanged.
+- [x] No crashes during rapid tab switching.
+- [x] No fragment duplication or stale page instances after rotation.
+- [x] Back navigation behavior from Main remains unchanged.
 
 Build and test gate:
 
-- [ ] `assembleSideload` succeeds.
-- [ ] `compileDebugJavaWithJavac` succeeds.
-- [ ] Existing unit tests show no net-new failures attributable to Mini-C(a).
+- [x] `assembleSideload` succeeds.
+- [x] `compileDebugJavaWithJavac` succeeds.
+- [x] Existing unit tests show no net-new failures attributable to Mini-C(a).
 
 Definition of done:
 
-- [ ] All checklist items pass.
-- [ ] Main list/search/refresh/navigation behavior is equivalent to pre-change Main.
-- [ ] Any intentional deltas are documented under Mini-C(a) before Mini-C(b) starts.
+- [x] All checklist items pass.
+- [x] Main list/search/refresh/navigation behavior is equivalent to pre-change Main.
+- [x] Any intentional deltas are documented under Mini-C(a) before Mini-C(b) starts.
+
+Mini-C(b) kickoff note:
+
+- Option A selected: neutral dark surfaces across Main-adjacent screens and menus; green reserved for accent/selection/action emphasis.
 
 ### 8.9 Mini-C(b) and Mini-C(c) Verification Split
 
