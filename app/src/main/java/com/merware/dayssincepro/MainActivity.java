@@ -13,6 +13,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,10 +24,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.TypedValue;
 
 import android.widget.Toast;
 
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
                         tab.setText(mSectionsPagerAdapter.getPageTitle(position));
                     }
                 }).attach();
+        applyTabTextStateColors(tabLayout);
 
         boolean notifyOptionJustNow = preferences.getBoolean("noti", false);
 
@@ -396,6 +400,27 @@ public class MainActivity extends AppCompatActivity implements
 
     void showToast(String s) {
         Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+    }
+
+    private void applyTabTextStateColors(TabLayout tabLayout) {
+        int selectedFallback = ThemeMode.isDark(appliedThemeValue) ? Color.WHITE : Color.BLACK;
+        int unselectedFallback = ThemeMode.isDark(appliedThemeValue) ? Color.LTGRAY : Color.DKGRAY;
+        int selectedColor = resolveThemeColor(android.R.attr.textColorPrimary, selectedFallback);
+        int unselectedColor = resolveThemeColor(android.R.attr.textColorSecondary, unselectedFallback);
+        tabLayout.setTabTextColors(unselectedColor, selectedColor);
+    }
+
+    private int resolveThemeColor(int attrResId, int fallbackColor) {
+        TypedValue typedValue = new TypedValue();
+        if (!getTheme().resolveAttribute(attrResId, typedValue, true)) {
+            return fallbackColor;
+        }
+
+        if (typedValue.resourceId != 0) {
+            return ContextCompat.getColor(this, typedValue.resourceId);
+        }
+
+        return typedValue.data;
     }
 
     DaysSinceFragment daysSinceFragment;
