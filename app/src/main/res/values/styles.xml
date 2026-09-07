@@ -179,6 +179,10 @@
         <item name="android:minWidth">72dp</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
     </style>
 
     <style name="SettingsThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
@@ -195,6 +199,8 @@
         <item name="uiPopupSurfaceColor">@color/ui_surface_light</item>
         <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
         <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="alertDialogTheme">@style/AppDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/AppDialogTheme</item>
     </style>
 
     <style name="SettingsThemeDark" parent="Theme.AppCompat.NoActionBar">
@@ -211,6 +217,8 @@
         <item name="uiPopupSurfaceColor">@color/ui_surface_dark</item>
         <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
         <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="alertDialogTheme">@style/AppDialogTheme2</item>
+        <item name="android:alertDialogTheme">@style/AppDialogTheme2</item>
     </style>
 
     <style name="MiniAThemeLight" parent="Theme.AppCompat.Light.NoActionBar">

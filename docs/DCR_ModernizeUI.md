@@ -567,7 +567,7 @@ modernizationCleanup scope labels:
 
 - modernizationCleanup-A (Mini-C(b)): introduce shared themed dialog builder utility and migrate Main/History/PastFuture/Notification/EditEvent call sites.
 - modernizationCleanup-B (Mini-C(b)): remove Categories runtime dialog-button mutation and rely on shared dialog template path.
-- modernizationCleanup-C (Mini-C(c) deferred): keep `FontSizeListPreference` platform dialog path as temporary exception or track separate migration card.
+- modernizationCleanup-C (Mini-C(c)): preserve `FontSizeListPreference` per-size preview behavior while aligning Settings alert-dialog theming to shared AppDialogTheme/AppDialogTheme2 template path.
 
 1. Mini-C(b) verification goal: visual target state.
 
