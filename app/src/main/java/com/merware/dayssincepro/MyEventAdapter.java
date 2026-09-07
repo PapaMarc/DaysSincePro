@@ -311,14 +311,17 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             setColumnWeight(eventView, 0.48f);
             setColumnWeight(dateView, 0.27f);
             setColumnWeight(explainView, 0.25f);
+            setColumnStartGutterDp(dateView, 8);
         } else if (fontSize >= 18) {
             setColumnWeight(eventView, 0.50f);
             setColumnWeight(dateView, 0.25f);
             setColumnWeight(explainView, 0.25f);
+            setColumnStartGutterDp(dateView, 6);
         } else {
             setColumnWeight(eventView, 0.54f);
             setColumnWeight(dateView, 0.21f);
             setColumnWeight(explainView, 0.25f);
+            setColumnStartGutterDp(dateView, 0);
         }
     }
 
@@ -329,6 +332,22 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             lp.weight = weight;
             lp.width = 0;
             view.setLayoutParams(lp);
+        }
+    }
+
+    private static void setColumnStartGutterDp(TextView view, int dp) {
+        float density = view.getResources().getDisplayMetrics().density;
+        int startPx = Math.round(dp * density);
+
+        int top = view.getPaddingTop();
+        int end = view.getPaddingRight();
+        int bottom = view.getPaddingBottom();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            end = view.getPaddingEnd();
+            view.setPaddingRelative(startPx, top, end, bottom);
+        } else {
+            view.setPadding(startPx, top, end, bottom);
         }
     }
 
