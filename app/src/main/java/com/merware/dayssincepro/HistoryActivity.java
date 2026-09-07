@@ -131,7 +131,7 @@ public class HistoryActivity extends AppCompatActivity {
             placeholderCursor.addRow(new Object[]{
                     PLACEHOLDER_HISTORY_ID,
                     getString(R.string.history_empty_placeholder),
-                    0,
+                    1,
                     ""
             });
             cursor = placeholderCursor;
