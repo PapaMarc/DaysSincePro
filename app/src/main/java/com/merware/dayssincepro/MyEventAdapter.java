@@ -11,12 +11,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class MyEventAdapter extends SimpleCursorAdapter {
+
+    private static final char WORD_JOINER = '\u2060';
+    private static final char NON_BREAKING_HYPHEN = '\u2011';
 
     private Cursor c;
     private Context context;
@@ -175,7 +179,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         }
 
         //Log.wtf("look", "dayText is " + dayText);
-        dateView.setText(dayText);
+        dateView.setText(stabilizeDateTokenWrapping(dayText));
 
         // ----------------- third column ----------------
 
@@ -296,7 +300,61 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         eventView.setTextSize(fontSize);
         dateView.setTextSize(fontSize - 2);
         explainView.setTextSize(fontSize - 2);
+        applyAdaptiveColumnWeights(eventView, dateView, explainView, fontSize);
 
         return rowView;
+    }
+
+    private static void applyAdaptiveColumnWeights(TextView eventView, TextView dateView,
+                                                   TextView explainView, int fontSize) {
+        if (fontSize >= 20) {
+            setColumnWeight(eventView, 0.48f);
+            setColumnWeight(dateView, 0.27f);
+            setColumnWeight(explainView, 0.25f);
+        } else if (fontSize >= 18) {
+            setColumnWeight(eventView, 0.50f);
+            setColumnWeight(dateView, 0.25f);
+            setColumnWeight(explainView, 0.25f);
+        } else {
+            setColumnWeight(eventView, 0.54f);
+            setColumnWeight(dateView, 0.21f);
+            setColumnWeight(explainView, 0.25f);
+        }
+    }
+
+    private static void setColumnWeight(TextView view, float weight) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params instanceof LinearLayout.LayoutParams) {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) params;
+            lp.weight = weight;
+            lp.width = 0;
+            view.setLayoutParams(lp);
+        }
+    }
+
+    // Prevent wraps inside a date token like yyyy-mm-dd while still allowing
+    // wrapping between separate tokens when multiple dates are shown.
+    static String stabilizeDateTokenWrapping(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder sb = new StringBuilder(text.length() + 8);
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '-' && i > 0 && i < text.length() - 1
+                    && Character.isDigit(text.charAt(i - 1))
+                    && Character.isDigit(text.charAt(i + 1))) {
+                sb.append(NON_BREAKING_HYPHEN);
+            } else if (c == '/' && i > 0 && i < text.length() - 1
+                    && Character.isDigit(text.charAt(i - 1))
+                    && Character.isDigit(text.charAt(i + 1))) {
+                sb.append(WORD_JOINER).append(c).append(WORD_JOINER);
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
     }
 }
