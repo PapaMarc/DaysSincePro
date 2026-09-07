@@ -594,6 +594,24 @@ Mini-C status checkpoint (2026-09-07):
 - Step 7 residual cleanup enumeration: one known framework-signature exception remains (`FontSizeListPreference.onPrepareDialogBuilder(AlertDialog.Builder)`), with per-size preview behavior preserved and Settings dialog theme now aligned via `alertDialogTheme` wiring.
 - Step 8 documentation complete: this checkpoint records PR-ready Mini-C progress and current residual count (1 known framework-signature exception; full legacy cleanup/removal inventory remains the open C(c) work item).
 
+Mini-C(c) legacy inventory and disposition (Step 9):
+
+1. Remove now (no intentional visual delta):
+
+- remove obsolete historical provenance header comments in `CategoriesActivity` that no longer describe current architecture.
+
+2. Keep for explicit deferred cleanup (documented exceptions, no hidden drift):
+
+- manifest-level `Theme.Holo.Light` fallback at application root remains until app-wide theme unification is executed as a dedicated change.
+- `holo_*` color token names remain in place for now because they are still active accent tokens across modernized and legacy paths; semantic rename is deferred to a dedicated no-visual-delta token-migration pass.
+- `FontSizeListPreference.onPrepareDialogBuilder(AlertDialog.Builder)` framework signature remains by platform API contract; behavior/template alignment is already handled via Settings theme `alertDialogTheme` wiring.
+- widget legacy surface drawables remain because widget path decisions are tracked separately and should not be mixed into Mini-C cleanup.
+
+Mini-C(c) implementation pass update (Step 10):
+
+- completed safe cleanup item: obsolete `CategoriesActivity` provenance comments removed.
+- remaining deferred cleanup items are explicitly listed above; no silent carryover.
+
 ---
 
 ## 9. Risks and Mitigations

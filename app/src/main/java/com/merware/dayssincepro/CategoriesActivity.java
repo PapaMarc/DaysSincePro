@@ -1,9 +1,5 @@
 package com.merware.dayssincepro;
 
-/* http://stackoverflow.com/questions/11815831/saving-listview-simple-list-item-multiple-choice-checkbox-state-using-an-array-a */
-
-// based on grocery app 10/13/2013
-
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
