@@ -1,7 +1,6 @@
 package com.merware.dayssincepro;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.ListFragment;
 
 import android.view.ContextMenu;
@@ -55,7 +55,7 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     void showDialog(String s) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(context);
         builder.setTitle("Look");
         builder.setMessage(s);
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -490,7 +490,7 @@ public class PastFutureListFragment extends ListFragment {
                     tomorrowItem(menuInfo.position, menuInfo.id);
                     break;
                 case MENU_REMOVE:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(context);
                     builder.setTitle(R.string.remove_event);
                     builder.setMessage(R.string.are_you_sure);
                     builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);

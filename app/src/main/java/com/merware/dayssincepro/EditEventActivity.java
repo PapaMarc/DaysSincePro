@@ -541,7 +541,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     void recurCallback() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = DialogThemeHelper.themedBuilder(this);
 
         alert.setTitle(R.string.recurrence);
         alert.setMessage(R.string.days_recur);

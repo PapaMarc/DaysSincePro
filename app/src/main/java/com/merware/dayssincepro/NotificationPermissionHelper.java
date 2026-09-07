@@ -2,7 +2,6 @@ package com.merware.dayssincepro;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -28,7 +28,7 @@ public class NotificationPermissionHelper {
                     != PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)) {
-                    new AlertDialog.Builder(activity)
+                        DialogThemeHelper.themedBuilder(activity)
                             .setTitle(R.string.enable_notifications_title)
                             .setMessage(R.string.notification_permission_rationale)
                             .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -54,7 +54,7 @@ public class NotificationPermissionHelper {
     }
 
     public static void showNotificationSettingsDialog(final Context context) {
-        new AlertDialog.Builder(context)
+        DialogThemeHelper.themedBuilder(context)
                 .setTitle(R.string.enable_notifications_title)
                 .setMessage(R.string.enable_notifications_msg)
                 .setPositiveButton(R.string.open_settings, new DialogInterface.OnClickListener() {

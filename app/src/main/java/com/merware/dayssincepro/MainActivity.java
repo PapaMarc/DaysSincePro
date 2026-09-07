@@ -1,7 +1,6 @@
 package com.merware.dayssincepro;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
@@ -21,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements
             launchExportCsvPicker();
 
         } else if (itemId == R.id.menu_import_db) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
             builder.setTitle(R.string.restore_from_database);
             builder.setMessage(getString(R.string.replace_data) + " " + getString(R.string.are_you_sure));
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -589,7 +589,7 @@ public class MainActivity extends AppCompatActivity implements
                 out.flush();
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
             builder.setTitle(R.string.backup_database_success);
             builder.setCancelable(true);
             builder.setMessage(getString(R.string.backup_success));
@@ -949,7 +949,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if(isTaskRoot()) {
 
-            new AlertDialog.Builder(this)
+                DialogThemeHelper.themedBuilder(this)
                     .setMessage(getString(R.string.exit))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {

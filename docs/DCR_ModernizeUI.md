@@ -563,6 +563,12 @@ Mini-C(b) kickoff note:
 
 ### 8.9 Mini-C(b) and Mini-C(c) Verification Split
 
+modernizationCleanup scope labels:
+
+- modernizationCleanup-A (Mini-C(b)): introduce shared themed dialog builder utility and migrate Main/History/PastFuture/Notification/EditEvent call sites.
+- modernizationCleanup-B (Mini-C(b)): remove Categories runtime dialog-button mutation and rely on shared dialog template path.
+- modernizationCleanup-C (Mini-C(c) deferred): keep `FontSizeListPreference` platform dialog path as temporary exception or track separate migration card.
+
 1. Mini-C(b) verification goal: visual target state.
 
 - validate Main and deferred About dialog control convergence in emulator Light/Dark

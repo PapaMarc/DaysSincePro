@@ -1,7 +1,6 @@
 package com.merware.dayssincepro;
 
 import java.util.Calendar;
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +12,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
@@ -93,7 +93,7 @@ public class HistoryActivity extends AppCompatActivity {
                 return true;
 
             case MENU_REMOVE:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
                 builder.setTitle(R.string.remove_item);
                 builder.setMessage(R.string.are_you_sure);
                 builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);

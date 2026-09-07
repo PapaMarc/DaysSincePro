@@ -31,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -229,7 +228,7 @@ public class CategoriesActivity extends AppCompatActivity {
                     return true;
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
                 builder.setTitle(R.string.remove_category);
                 builder.setMessage(R.string.remove_cat_msg);
                 builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
@@ -520,8 +519,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
     private void showAddCategoryDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                CategoriesActivity.this);
+        AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(CategoriesActivity.this);
         builder.setTitle(R.string.add_a_category);
 
         // Set up the input
@@ -582,8 +580,6 @@ public class CategoriesActivity extends AppCompatActivity {
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
         dialog.show();
-        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_POSITIVE);
-        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_NEGATIVE);
         input.requestFocus();
     }
 
@@ -596,7 +592,7 @@ public class CategoriesActivity extends AppCompatActivity {
         Cursor c = (Cursor) lv.getItemAtPosition(position);
         final String name = c.getString(1);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
         builder.setTitle(R.string.edit_category);
 
         // Set up the input
@@ -648,38 +644,7 @@ public class CategoriesActivity extends AppCompatActivity {
                     }
                 });
 
-        AlertDialog dialog = builder.show();
-        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_POSITIVE);
-        applyMiniRetroDialogButtonStyle(dialog, AlertDialog.BUTTON_NEGATIVE);
-    }
-
-    private void applyMiniRetroDialogButtonStyle(AlertDialog dialog, int whichButton) {
-        Button button = dialog.getButton(whichButton);
-        if (button == null) {
-            return;
-        }
-
-        float density = getResources().getDisplayMetrics().density;
-        button.setAllCaps(false);
-        button.setTextColor(getColor(R.color.holo_green_dark));
-        button.setBackgroundResource(R.drawable.mini_b_button_fill);
-        button.setMinHeight((int) (40 * density));
-        button.setMinWidth((int) (72 * density));
-        int horizontalPaddingPx = (int) (12 * density);
-        int verticalPaddingPx = (int) (6 * density);
-        button.setPadding(horizontalPaddingPx, verticalPaddingPx,
-                horizontalPaddingPx, verticalPaddingPx);
-
-        ViewGroup.LayoutParams params = button.getLayoutParams();
-        if (params instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
-            int separationPx = (int) (8 * density);
-            if (whichButton == AlertDialog.BUTTON_POSITIVE) {
-                marginParams.setMarginStart(separationPx);
-                marginParams.leftMargin = separationPx;
-            }
-            button.setLayoutParams(marginParams);
-        }
+        builder.show();
     }
 
     private boolean categoryExistsByName(String categoryName, long excludeCategoryId) {

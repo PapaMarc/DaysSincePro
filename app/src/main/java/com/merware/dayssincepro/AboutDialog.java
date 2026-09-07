@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 
 public class AboutDialog {
     public static AlertDialog create(Context context, String author,
@@ -139,10 +138,7 @@ public class AboutDialog {
         message.setMovementMethod(LinkMovementMethod.getInstance());
         message.setLinksClickable(true);
 
-        String themeValue = ThemeMode.getThemeValue(context);
-        Context themedContext = new ContextThemeWrapper(context, ThemeMode.dialogThemeResId(themeValue));
-
-                return new AlertDialog.Builder(themedContext)
+        return DialogThemeHelper.themedBuilder(context)
                 .setCustomTitle(title)
                 .setCancelable(true)
                 .setPositiveButton(context.getString(android.R.string.ok), null)
