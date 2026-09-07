@@ -599,10 +599,10 @@ Mini-C(c) legacy inventory and disposition (Step 9):
 1. Remove now (no intentional visual delta):
 
 - remove obsolete historical provenance header comments in `CategoriesActivity` that no longer describe current architecture.
+- remove manifest-level `Theme.Holo.Light` fallback at application root and replace with AppCompat fallback theme.
 
 2. Keep for explicit deferred cleanup (documented exceptions, no hidden drift):
 
-- manifest-level `Theme.Holo.Light` fallback at application root remains until app-wide theme unification is executed as a dedicated change.
 - `holo_*` color token names remain in place for now because they are still active accent tokens across modernized and legacy paths; semantic rename is deferred to a dedicated no-visual-delta token-migration pass.
 - `FontSizeListPreference.onPrepareDialogBuilder(AlertDialog.Builder)` framework signature remains by platform API contract; behavior/template alignment is already handled via Settings theme `alertDialogTheme` wiring.
 - widget legacy surface drawables remain because widget path decisions are tracked separately and should not be mixed into Mini-C cleanup.
@@ -610,6 +610,7 @@ Mini-C(c) legacy inventory and disposition (Step 9):
 Mini-C(c) implementation pass update (Step 10):
 
 - completed safe cleanup item: obsolete `CategoriesActivity` provenance comments removed.
+- completed safe cleanup item: manifest app theme migrated from `Theme.Holo.Light` to `@style/AppBaseTheme` fallback.
 - remaining deferred cleanup items are explicitly listed above; no silent carryover.
 
 ---
