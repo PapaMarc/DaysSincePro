@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.ContextWrapper;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,6 +15,7 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 public class AboutDialog {
     public static AlertDialog create(Context context, String author,
@@ -138,9 +140,11 @@ public class AboutDialog {
         message.setMovementMethod(LinkMovementMethod.getInstance());
         message.setLinksClickable(true);
 
-        return new AlertDialog.Builder(context)
+        String themeValue = ThemeMode.getThemeValue(context);
+        Context themedContext = new ContextThemeWrapper(context, ThemeMode.dialogThemeResId(themeValue));
+
+        return new AlertDialog.Builder(themedContext)
                 .setCustomTitle(title)
-                .setInverseBackgroundForced(true)
                 .setCancelable(true)
                 .setPositiveButton(context.getString(android.R.string.ok), null)
                 .setView(message).create();

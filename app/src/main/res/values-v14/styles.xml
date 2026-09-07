@@ -10,10 +10,21 @@
         <item name="actionBarTabTextStyle">@style/AppActionBarTabText</item>
     </style>
 
-    <!--  Dialog theme -->
-    <style name="AppDialogTheme" parent="@android:style/Theme.Holo.Light.Dialog"/>
+    <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@color/ui_surface_light</item>
+        <item name="colorAccent">@color/holo_green_dark</item>
+        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+    </style>
 
-    <style name="AppDialogTheme2" parent="@android:style/Theme.Holo.Dialog"/>
+    <style name="AppDialogTheme2" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@color/ui_surface_dark</item>
+        <item name="colorAccent">@color/holo_green_dark</item>
+        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+        <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
+    </style>
 
 
 </resources>
