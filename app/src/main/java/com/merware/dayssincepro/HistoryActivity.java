@@ -398,7 +398,7 @@ public class HistoryActivity extends AppCompatActivity {
             } else {
 
                 textView2.setTextColor(context.getResources().getColor(
-                        R.color.holo_green_dark));
+                        R.color.ui_accent_primary));
             }
 
             return rowView;

@@ -370,7 +370,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                                 .setSmallIcon(R.drawable.ic_today)
                                 .setContentTitle(title)
                                 .setContentText(text)
-                                .setColor(context.getResources().getColor(R.color.holo_green_dark));
+                                .setColor(context.getResources().getColor(R.color.ui_accent_primary));
 
                         // some intent code
 
@@ -385,7 +385,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                         noti = new NotificationCompat.Builder(context)
                                 .setContentTitle(title).setContentText(text)
                                 .setSmallIcon(R.drawable.ic_today)
-                                .setColor(context.getResources().getColor(R.color.holo_green_dark))
+                                .setColor(context.getResources().getColor(R.color.ui_accent_primary))
                                 .build();
                     }
                 }
@@ -417,7 +417,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                                 .setSmallIcon(R.drawable.ic_near)
                                 .setContentTitle(title)
                                 .setContentText(text)
-                                .setColor(context.getResources().getColor(R.color.holo_yellow));
+                                .setColor(context.getResources().getColor(R.color.ui_accent_warning));
 
 
                         // some intent code
@@ -431,7 +431,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                         noti = new NotificationCompat.Builder(context)
                                 .setContentTitle(title).setContentText(text)
                                 .setSmallIcon(R.drawable.ic_near)
-                                .setColor(context.getResources().getColor(R.color.holo_yellow))
+                                .setColor(context.getResources().getColor(R.color.ui_accent_warning))
                                 // .setContentIntent(pIntent)
                                 .build();
                     }
@@ -464,7 +464,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                                 .setSmallIcon(R.drawable.ic_due)
                                 .setContentTitle(title)
                                 .setContentText(text)
-                                .setColor(context.getResources().getColor(R.color.holo_red));
+                                .setColor(context.getResources().getColor(R.color.ui_accent_error));
 
                         // some intent code
 
@@ -476,7 +476,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                         noti = new NotificationCompat.Builder(context)
                                 .setContentTitle(title).setContentText(text)
                                 .setSmallIcon(R.drawable.ic_due)
-                                .setColor(context.getResources().getColor(R.color.holo_red))
+                                .setColor(context.getResources().getColor(R.color.ui_accent_error))
                                 // .setContentIntent(pIntent)
                                 .build();
                     }

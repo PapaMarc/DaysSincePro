@@ -18,8 +18,8 @@
         <item name="actionBarTabTextStyle">@style/AppActionBarTabText</item>
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_light</item>
         <item name="android:colorBackground">@color/ui_surface_light</item>
         <item name="colorPrimary">@color/ui_topbar_light</item>
@@ -58,8 +58,8 @@
     <style name="AppTheme2" parent="AppBaseTheme2">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_dark</item>
         <item name="android:colorBackground">@color/ui_surface_dark</item>
         <item name="colorPrimary">@color/ui_topbar_dark</item>
@@ -70,18 +70,18 @@
 
     <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@color/ui_surface_light</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
         <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
     </style>
 
     <style name="AppDialogTheme2" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@color/ui_surface_dark</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
         <item name="android:buttonBarButtonStyle">@style/SettingsDialogActionButton</item>
     </style>
@@ -97,7 +97,7 @@
     </style>
 
     <style name="AccentDialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/holo_green_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
     </style>
 
     <!-- Material 3 themes for the 3 activities hosting MaterialDatePicker (DaysDiffActivity,
@@ -106,21 +106,21 @@
          but scoped separately so the other activities sharing those two styles are
          unaffected. See DCR_evolveToMaterialDatePicker.md §4/§8. -->
     <style name="DatePickerHostThemeLight" parent="Theme.Material3.Light">
-        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorPrimary">@color/ui_accent_primary</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
         <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="DatePickerHostThemeDark" parent="Theme.Material3.Dark">
-        <item name="colorPrimary">@color/holo_green_dark</item>
+        <item name="colorPrimary">@color/ui_accent_primary</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
         <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
@@ -143,8 +143,8 @@
     <style name="DatePickerActionButtonLight" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/holo_green_dark</item>
-        <item name="backgroundTint">@color/mini_b_button_fill_light</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
+        <item name="backgroundTint">@color/ui_button_fill_light</item>
         <item name="cornerRadius">3dp</item>
         <item name="android:minWidth">72dp</item>
         <item name="android:minHeight">40dp</item>
@@ -157,8 +157,8 @@
     <style name="DatePickerActionButtonDark" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/holo_green_dark</item>
-        <item name="backgroundTint">@color/mini_b_button_fill_dark</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
+        <item name="backgroundTint">@color/ui_button_fill_dark</item>
         <item name="cornerRadius">3dp</item>
         <item name="android:minWidth">72dp</item>
         <item name="android:minHeight">40dp</item>
@@ -172,7 +172,7 @@
         <item name="android:background">@drawable/mini_b_button_fill</item>
         <item name="android:backgroundTint">@null</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
         <item name="android:minHeight">40dp</item>
@@ -188,9 +188,9 @@
     <style name="SettingsThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_light</item>
         <item name="android:colorBackground">@color/ui_surface_light</item>
         <item name="colorPrimary">@color/ui_topbar_light</item>
@@ -206,9 +206,9 @@
     <style name="SettingsThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_dark</item>
         <item name="android:colorBackground">@color/ui_surface_dark</item>
         <item name="colorPrimary">@color/ui_topbar_dark</item>
@@ -224,9 +224,9 @@
     <style name="MiniAThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_light</item>
         <item name="android:colorBackground">@color/ui_surface_light</item>
         <item name="colorPrimary">@color/ui_topbar_light</item>
@@ -238,9 +238,9 @@
     <style name="MiniAThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/AppOverflowMenu</item>
         <item name="popupMenuStyle">@style/AppPopupMenu</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
-        <item name="colorAccent">@color/holo_green_dark</item>
-        <item name="colorControlActivated">@color/holo_green_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
+        <item name="colorAccent">@color/ui_accent_primary</item>
+        <item name="colorControlActivated">@color/ui_accent_primary</item>
         <item name="android:windowBackground">@color/ui_surface_dark</item>
         <item name="android:colorBackground">@color/ui_surface_dark</item>
         <item name="colorPrimary">@color/ui_topbar_dark</item>
@@ -254,12 +254,12 @@
         <item name="colorPrimaryDark">@color/ui_topbar_light</item>
         <item name="colorSurface">@color/ui_surface_light</item>
         <item name="android:windowBackground">@color/ui_surface_light</item>
-        <item name="colorSecondary">@color/holo_green_dark</item>
-        <item name="colorTertiary">@color/holo_green_dark</item>
+        <item name="colorSecondary">@color/ui_accent_primary</item>
+        <item name="colorTertiary">@color/ui_accent_primary</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_light</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
         <item name="uiPopupSurfaceColor">@color/ui_surface_light</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
@@ -269,12 +269,12 @@
         <item name="colorPrimaryDark">@color/ui_topbar_dark</item>
         <item name="colorSurface">@color/ui_surface_dark</item>
         <item name="android:windowBackground">@color/ui_surface_dark</item>
-        <item name="colorSecondary">@color/holo_green_dark</item>
-        <item name="colorTertiary">@color/holo_green_dark</item>
+        <item name="colorSecondary">@color/ui_accent_primary</item>
+        <item name="colorTertiary">@color/ui_accent_primary</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
-        <item name="miniBButtonFillColor">@color/mini_b_button_fill_dark</item>
+        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
         <item name="uiPopupSurfaceColor">@color/ui_surface_dark</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
@@ -283,7 +283,7 @@
         <item name="android:background">@drawable/mini_b_button_fill</item>
         <item name="android:backgroundTint">@null</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
     </style>
@@ -292,7 +292,7 @@
         <item name="android:background">@drawable/mini_b_button_outline</item>
         <item name="android:backgroundTint">@null</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
         <item name="android:minHeight">40dp</item>
@@ -305,7 +305,7 @@
     </style>
 
     <style name="MiniBSectionLabel">
-        <item name="android:textColor">@color/holo_green_dark</item>
+        <item name="android:textColor">@color/ui_accent_primary</item>
     </style>
 
 </resources>

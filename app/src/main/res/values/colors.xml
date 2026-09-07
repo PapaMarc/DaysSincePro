@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="holo_blue_light">#ff33b5e5</color>
-    <color name="holo_green_dark">#ff669900</color>
-    <color name="holo_yellow">#FFFFC107</color>
-    <color name="holo_red">#FFF44336</color>
+    <color name="ui_text_event_title">#ff33b5e5</color>
+    <color name="ui_accent_primary">#ff669900</color>
+    <color name="ui_accent_warning">#FFFFC107</color>
+    <color name="ui_accent_error">#FFF44336</color>
 
-    <!-- Material 3 primaryContainer/onPrimaryContainer pairs carried forward from
-         holo_green_dark for the date-picker host themes (see styles.xml). Hand-picked
+        <!-- Material 3 primaryContainer/onPrimaryContainer pairs carried forward from
+            ui_accent_primary for the date-picker host themes (see styles.xml). Hand-picked
          light/dark tints rather than a generated tonal palette (DCR_evolveToMaterialDatePicker.md §4). -->
     <color name="picker_primary_container_light">#E1F0C4</color>
     <color name="picker_on_primary_container_light">#1B2900</color>
     <color name="picker_primary_container_dark">#3A4D00</color>
     <color name="picker_on_primary_container_dark">#E1F0C4</color>
-    <color name="mini_b_button_fill_light">#D6D6D6</color>
-    <color name="mini_b_button_fill_dark">#3B3B3B</color>
+    <color name="ui_button_fill_light">#D6D6D6</color>
+    <color name="ui_button_fill_dark">#3B3B3B</color>
 
     <!-- Mini-C(b) Option A shared surfaces: neutral backgrounds, green as accent only. -->
     <color name="ui_surface_light">#F4F4F4</color>

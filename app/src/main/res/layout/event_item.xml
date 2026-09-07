@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_weight=".54"
         android:paddingLeft="8dip"
-        android:textColor="@color/holo_blue_light"
+        android:textColor="@color/ui_text_event_title"
         android:textSize="15sp" >
     </TextView>
 

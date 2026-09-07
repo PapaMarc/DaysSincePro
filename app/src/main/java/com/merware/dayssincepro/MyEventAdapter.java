@@ -222,7 +222,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             }
 
             if (dsc.getDaysSinceEvent() == 0) {
-                explainView.setTextColor(context.getResources().getColor(R.color.holo_green_dark));
+                explainView.setTextColor(context.getResources().getColor(R.color.ui_accent_primary));
             }
         }
 
