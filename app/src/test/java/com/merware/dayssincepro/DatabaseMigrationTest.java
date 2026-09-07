@@ -93,17 +93,37 @@ public class DatabaseMigrationTest {
     }
 
     @Test
+    public void v4ToV5_addsPlannedDateAndCleansOrphans() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(4, 5);
+        assertEquals(2, statements.size());
+        assertTrue(statements.get(0).contains("planned_date"));
+        assertTrue(statements.get(1).contains("DELETE FROM history"));
+    }
+
+    @Test
+    public void v1ToV5_appliesAllStepsInOrder() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(1, 5);
+        assertEquals(6, statements.size());
+        assertTrue(statements.get(0).contains("history"));
+        assertTrue(statements.get(1).contains("end_date"));
+        assertTrue(statements.get(2).contains("details"));
+        assertTrue(statements.get(3).contains("last_notified_date"));
+        assertTrue(statements.get(4).contains("planned_date"));
+        assertTrue(statements.get(5).contains("DELETE FROM history"));
+    }
+
+    @Test
     public void sameVersion_returnsEmptyList() {
-        List<String> statements = DatabaseHelper.getMigrationStatements(4, 4);
+        List<String> statements = DatabaseHelper.getMigrationStatements(5, 5);
         assertEquals(0, statements.size());
     }
 
     @Test
     public void unknownFutureVersion_returnsNullInsteadOfDroppingData() {
-        // No step is defined yet from v4 to v5 - must return null (refuse), not silently
+        // No step is defined yet from v5 to v6 - must return null (refuse), not silently
         // fabricate/execute a destructive migration.
-        assertNull(DatabaseHelper.getMigrationStatements(4, 5));
-        assertNull(DatabaseHelper.getMigrationStatements(1, 5));
+        assertNull(DatabaseHelper.getMigrationStatements(5, 6));
+        assertNull(DatabaseHelper.getMigrationStatements(1, 6));
     }
 
     @Test
@@ -163,31 +183,33 @@ public class DatabaseMigrationTest {
     }
 
     @Test
-    public void upgradeFromV1_preservesDataAndReachesV3Schema() throws SQLException, IOException {
+    public void upgradeFromV1_preservesDataAndReachesV5Schema() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV1Schema(conn);
-            applyMigration(conn, 1, 4);
+            applyMigration(conn, 1, 5);
 
-            assertTrue("history table should exist after v1->v4", tableExists(conn, "history"));
-            assertTrue("event.end_date should exist after v1->v4", columnExists(conn, "event", "end_date"));
-            assertTrue("event.details should exist after v1->v4", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v1->v4", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("history table should exist after v1->v5", tableExists(conn, "history"));
+            assertTrue("event.end_date should exist after v1->v5", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v1->v5", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v1->v5", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v1->v5", columnExists(conn, "event", "planned_date"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
         }
     }
 
     @Test
-    public void upgradeFromV2_preservesDataAndReachesV3Schema() throws SQLException, IOException {
+    public void upgradeFromV2_preservesDataAndReachesV5Schema() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV2Schema(conn);
-            applyMigration(conn, 2, 4);
+            applyMigration(conn, 2, 5);
 
-            assertTrue("event.end_date should exist after v2->v4", columnExists(conn, "event", "end_date"));
-            assertTrue("event.details should exist after v2->v4", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v2->v4", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.end_date should exist after v2->v5", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v2->v5", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v2->v5", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v2->v5", columnExists(conn, "event", "planned_date"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
             assertEquals("history rows must survive migration", 1, rowCount(conn, "history"));
@@ -195,7 +217,7 @@ public class DatabaseMigrationTest {
     }
 
     @Test
-    public void upgradeFromV3_preservesDataAndAddsV4Columns() throws SQLException, IOException {
+    public void upgradeFromV3_preservesDataAndAddsV5Columns() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV2Schema(conn);
@@ -205,11 +227,40 @@ public class DatabaseMigrationTest {
                 st.execute("UPDATE event SET end_date = '2020-12-31' WHERE _id = 1");
             }
 
-            applyMigration(conn, 3, 4);
+            applyMigration(conn, 3, 5);
 
-            assertTrue("event.details should exist after v3->v4", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v3->v4", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.details should exist after v3->v5", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v3->v5", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v3->v5", columnExists(conn, "event", "planned_date"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
+        }
+    }
+
+    @Test
+    public void upgradeFromV4ToV5_removesLegacyOrphanHistoryRowsOnly() throws SQLException, IOException {
+        File dbFile = newTempDbPath();
+        try (Connection conn = open(dbFile)) {
+            try (Statement st = conn.createStatement()) {
+                st.execute("CREATE TABLE category (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, type INTEGER)");
+                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, catId INTEGER, event TEXT, date DATE, recur INTEGER, end_date DATE, details TEXT, last_notified_date DATE)");
+                st.execute(DatabaseHelper.CREATE_HISTORY_TABLE_SQL);
+
+                st.execute("INSERT INTO category (_id, category, type) VALUES (1, 'Bills', 0)");
+                st.execute("INSERT INTO event (_id, catId, event, date, recur, end_date, details, last_notified_date) VALUES (1, 1, 'Oil Change', '2020-01-15', 365, NULL, '', NULL)");
+                st.execute("INSERT INTO history (eventId, catID, date, onTime, note) VALUES (1, 1, '2021-01-15', 1, 'valid')");
+                st.execute("INSERT INTO history (eventId, catID, date, onTime, note) VALUES (99, 1, '2021-02-15', 0, 'orphan')");
+            }
+
+            applyMigration(conn, 4, 5);
+
+            assertTrue("event.planned_date should exist after v4->v5", columnExists(conn, "event", "planned_date"));
+            assertEquals("valid history row should remain", 1, rowCount(conn, "history"));
+
+            try (Statement st = conn.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT eventId FROM history")) {
+                rs.next();
+                assertEquals(1, rs.getInt(1));
+            }
         }
     }
 }

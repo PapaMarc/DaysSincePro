@@ -462,6 +462,10 @@ public class HistoryActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
 
                     dateText = data.getStringExtra("date");
+                    if (HistoryDateRules.isFutureHappenedDate(dateText)) {
+                        showToast(getString(R.string.history_future_date_not_allowed));
+                        break;
+                    }
                     isOnTime = data.getBooleanExtra("onTime", false);
                     note = data.getStringExtra("note");
 
@@ -489,6 +493,10 @@ public class HistoryActivity extends AppCompatActivity {
             case EDIT_HISTORY_ACTIVITY:
                 if (resultCode == RESULT_OK) {
                     dateText = data.getStringExtra("date");
+                    if (HistoryDateRules.isFutureHappenedDate(dateText)) {
+                        showToast(getString(R.string.history_future_date_not_allowed));
+                        break;
+                    }
                     isOnTime = data.getBooleanExtra("onTime", false);
                     note = data.getStringExtra("note");
 

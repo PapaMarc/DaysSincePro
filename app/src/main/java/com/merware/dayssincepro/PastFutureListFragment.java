@@ -144,10 +144,11 @@ public class PastFutureListFragment extends ListFragment {
             now = new SimpleDate(new Date());
 
             String today = now.getDate(SimpleDate.DateStyle.YMD);
+            maybeClearStaleOneTimePlannedDates(today);
 
             Cursor cursor;
 
-            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event ";
+            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date from event ";
 
             String whereClause = "where ";
 
@@ -156,8 +157,9 @@ public class PastFutureListFragment extends ListFragment {
             if (kind == TabKind.DaysSince || kind == TabKind.SinceLast)
                 whereClause += "date <= '" + today + "'";
             else {
-                whereClause += "(date > '" + today + "' or (recur > 0 and (end_date is null or end_date > '"
-                        + today + "')))";
+                whereClause += "(date > '" + today + "'"
+                        + " or (recur = 0 and planned_date > '" + today + "')"
+                        + " or (recur > 0 and (end_date is null or end_date > '" + today + "')))";
             }
 
             categories = preferences.getString("CategoryIds", "");
@@ -254,6 +256,7 @@ public class PastFutureListFragment extends ListFragment {
 
         try {
             orderBy = getOrderBy();
+            maybeClearStaleOneTimePlannedDates(HistoryDateRules.todayIsoDate());
 
             Cursor cursor;
 
@@ -287,8 +290,28 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     static String buildSearchSql(String orderBy) {
-        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details from event "
+        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date from event "
                 + "where UPPER(event) like UPPER(?) order by " + orderBy;
+    }
+
+    private void maybeClearStaleOneTimePlannedDates(String todayIso) {
+        if (db == null || todayIso == null) {
+            return;
+        }
+
+        ContentValues args = new ContentValues();
+        args.putNull("planned_date");
+
+        int cleared = db.update(
+                "event",
+                args,
+                "recur = 0 and planned_date is not null and planned_date <= ?",
+                new String[]{todayIso}
+        );
+
+        if (cleared > 0) {
+            showToast(getString(R.string.planned_date_cleared_info));
+        }
     }
 
     // fill data when tab is redrawn.
@@ -335,25 +358,13 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     void todayItem(int position, long id) {
-
-        ContentValues args = new ContentValues();
         SimpleDate now = new SimpleDate(new Date());
-        args.put("date", now.getDate(SimpleDate.DateStyle.YMD));
-
-        db.update("event", args, "_id = " + id, null);
-
-        //    Log.wtf("update", "update to " +  now.getDate(SimpleDate.DateStyle.YMD) + "  for id" + id);
+        logHappened(id, now.getDate(SimpleDate.DateStyle.YMD));
 
         listData();
-
-        if (kind == TabKind.DaysUntil) {
-            showToast(getString(R.string.untilToSince));
-        }
     }
 
     private void chooseDayItemDate(int position, long id, SimpleDate d) {
-        // showToast("days from is " + daysFrom);
-
         ContentValues args = new ContentValues();
         args.put("date", d.getDate(SimpleDate.DateStyle.YMD));
 
@@ -368,29 +379,19 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     private void chooseDayItem(int position, long id, int daysFrom) {
-        // showToast("days from is " + daysFrom);
+        // Positive values are days in the past, negative values are days in the future.
         Calendar now = Calendar.getInstance();
-
-        // negative daysFrom means future (as in To Happen Tomorrow)
         now.add(Calendar.DAY_OF_YEAR, -daysFrom);
 
-        SimpleDate yesterday = new SimpleDate(now.getTime());
+        SimpleDate happenedDate = new SimpleDate(now.getTime());
+        String isoDate = happenedDate.getDate(SimpleDate.DateStyle.YMD);
+        if (HistoryDateRules.isFutureHappenedDate(isoDate)) {
+            showToast(getString(R.string.history_future_date_not_allowed));
+            return;
+        }
 
-        ContentValues args = new ContentValues();
-        args.put("date", yesterday.getDate(SimpleDate.DateStyle.YMD));
-
-        db.update("event", args, "_id = " + id, null);
+        logHappened(id, isoDate);
         listData();
-
-        if (kind == TabKind.DaysUntil) {
-            showToast(getString(R.string.untilToSince));
-        }
-
-        if (kind == TabKind.DaysSince && daysFrom == -1)
-        {
-            // tomorrow
-            showToast(getString(R.string.sincetoUntil));
-        }
     }
 
     void yesterdayItem(int position, long id) {
@@ -398,7 +399,9 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     void tomorrowItem(int position, long id) {
-        chooseDayItem(position, id, -1);
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        chooseDayItemDate(position, id, new SimpleDate(tomorrow.getTime()));
     }
 
     static final private int MENU_YESTERDAY = Menu.FIRST;
@@ -430,7 +433,7 @@ public class PastFutureListFragment extends ListFragment {
      //   menu.setHeaderTitle(R.string.event);
         menu.add(0, MENU_YESTERDAY, Menu.NONE + 1, R.string.yesterday);
         menu.add(1, MENU_TODAY, Menu.NONE + 2, R.string.today);
-        menu.add(2, MENU_TOMORROW, Menu.NONE + 3, R.string.tomorrow);
+        MenuItem tomorrowItem = menu.add(2, MENU_TOMORROW, Menu.NONE + 3, R.string.tomorrow);
 
         SubMenu weekDayMenu = menu.addSubMenu(GROUP1, MENU_EARLIER,  Menu.NONE + 4, R.string.last_week);
         weekDayMenu.add(GROUP1, SUBMENU0, 1, R.string.sunday);
@@ -442,9 +445,36 @@ public class PastFutureListFragment extends ListFragment {
         weekDayMenu.add(GROUP1, SUBMENU6, 7, R.string.saturday);
 
         menu.add(4, MENU_REMOVE, Menu.NONE + 5, R.string.remove);
-        menu.add(5, MENU_SKIP, Menu.NONE + 6, R.string.skip);
+        MenuItem skipItem = menu.add(5, MENU_SKIP, Menu.NONE + 6, R.string.skip);
         menu.add(6, MENU_HISTORY, Menu.NONE + 7, R.string.history);
 
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        if (info != null && isOneTimeEvent(info.id)) {
+            tomorrowItem.setEnabled(false);
+            skipItem.setEnabled(false);
+        }
+
+    }
+
+    private boolean isOneTimeEvent(long eventId) {
+        Cursor cursor = db.query(
+                "event",
+                new String[] { "recur" },
+                "_id = ?",
+                new String[] { String.valueOf(eventId) },
+                null,
+                null,
+                null
+        );
+
+        try {
+            if (!cursor.moveToFirst()) {
+                return false;
+            }
+            return cursor.getInt(0) == 0;
+        } finally {
+            cursor.close();
+        }
     }
 
     private long parentMenuId = 0;
@@ -478,15 +508,16 @@ public class PastFutureListFragment extends ListFragment {
             switch (item.getItemId()) {
 
                 case MENU_YESTERDAY:
-                    logHappened(eventId, dateLastHappened(eventId));
                     yesterdayItem(menuInfo.position, menuInfo.id);
                     break;
                 case MENU_TODAY:
-                    logHappened(eventId, dateLastHappened(eventId));
                     todayItem(menuInfo.position, menuInfo.id);
                     break;
                 case MENU_TOMORROW:
-                    logHappened(eventId, dateLastHappened(eventId));
+                    if (isOneTimeEvent(eventId)) {
+                        showToast(getString(R.string.action_not_available_for_one_time));
+                        break;
+                    }
                     tomorrowItem(menuInfo.position, menuInfo.id);
                     break;
                 case MENU_REMOVE:
@@ -693,6 +724,10 @@ public class PastFutureListFragment extends ListFragment {
 
                     break;
                 case MENU_SKIP:
+                    if (isOneTimeEvent(eventId)) {
+                        showToast(getString(R.string.action_not_available_for_one_time));
+                        break;
+                    }
 
                     // find how many days until next event should happen.
 
@@ -700,19 +735,19 @@ public class PastFutureListFragment extends ListFragment {
 
                     Cursor cursor = db.rawQuery(sql, null);
 
-                    if (cursor.moveToFirst())
-                    {
-                        String nextdate = cursor.getString(2);
-                        showToast("skip until next date " + nextdate);
-                        chooseDayItemDate(menuInfo.position, menuInfo.id, new SimpleDate(nextdate));
+                    try {
+                        if (cursor.moveToFirst())
+                        {
+                            String nextdate = cursor.getString(2);
+                            showToast("skip until next date " + nextdate);
+                            chooseDayItemDate(menuInfo.position, menuInfo.id, new SimpleDate(nextdate));
+                        }
+                    } finally {
+                        cursor.close();
                     }
                     break;
 
                 case MENU_HISTORY:
-
-                    // if not there already, log happened, so at least there
-                    // will be one entry.
-                    logHappened(eventId, dateLastHappened(eventId));
                     Intent intent = new Intent(context, HistoryActivity.class);
 
                     long catId = getCatIdFromEvent(menuInfo.id);
@@ -737,7 +772,14 @@ public class PastFutureListFragment extends ListFragment {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     // Yes button clicked
-                    db.delete("event", "_id=" + removeId, null);
+                    db.beginTransaction();
+                    try {
+                        db.delete("history", "eventId=?", new String[]{String.valueOf(removeId)});
+                        db.delete("event", "_id=?", new String[]{String.valueOf(removeId)});
+                        db.setTransactionSuccessful();
+                    } finally {
+                        db.endTransaction();
+                    }
 
                     listData();
                     break;
@@ -779,6 +821,11 @@ public class PastFutureListFragment extends ListFragment {
      *            there for the id.
      */
     void logHappened(long eventId, String dateText) {
+        if (HistoryDateRules.isFutureHappenedDate(dateText)) {
+            showToast(getString(R.string.history_future_date_not_allowed));
+            return;
+        }
+
         // determine is onTime or not
         int nEstDays = 0;
         int timeVal = 1;

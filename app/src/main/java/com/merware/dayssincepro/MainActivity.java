@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
             launchExportDbPicker();
 
         } else if (itemId == R.id.menu_export_csv) {
-            launchExportCsvPicker();
+            maybeWarnAndLaunchFullCsvExport();
 
         } else if (itemId == R.id.menu_import_db) {
             AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
@@ -249,6 +249,62 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(Intent.EXTRA_TITLE, "daysSince.csv");
         CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_CSV_SAF);
+    }
+
+    private void maybeWarnAndLaunchFullCsvExport() {
+        long[] counts = getHistoryCounts();
+        long historyEntries = counts[0];
+        long eventsWithHistory = counts[1];
+
+        if (historyEntries <= 0) {
+            launchExportCsvPicker();
+            return;
+        }
+
+        String message = getString(
+                R.string.csv_history_warning_message,
+                historyEntries,
+                eventsWithHistory
+        );
+
+        AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
+        builder.setTitle(R.string.csv_history_warning_title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.csv_history_warning_continue, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                launchExportCsvPicker();
+            }
+        });
+        builder.setNeutralButton(R.string.csv_history_warning_export_db, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                launchExportDbPicker();
+            }
+        });
+        builder.setNegativeButton(R.string.Cancel, null);
+        builder.show();
+    }
+
+    private long[] getHistoryCounts() {
+        Cursor c = null;
+        try {
+            SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
+            c = db.rawQuery(
+                    "SELECT COUNT(*), COUNT(DISTINCT eventId) FROM history",
+                    null
+            );
+            if (c.moveToFirst()) {
+                return new long[]{c.getLong(0), c.getLong(1)};
+            }
+        } catch (Exception e) {
+            Log.e("DSP_EXPORT_CSV", "Failed to count history before CSV export", e);
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return new long[]{0L, 0L};
     }
 
     private void launchRestoreDbPicker() {

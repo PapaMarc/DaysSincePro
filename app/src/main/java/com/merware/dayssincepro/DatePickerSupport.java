@@ -3,6 +3,7 @@ package com.merware.dayssincepro;
 import android.content.Context;
 
 import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
@@ -59,6 +60,23 @@ final class DatePickerSupport {
                 .setSelection(initialSelectionUtcMillis)
                 .build();
     }
+
+            static MaterialDatePicker<Long> newPastOrTodayPicker(Context context, long initialSelectionUtcMillis) {
+            String themeValue = ThemeMode.getThemeValue(context);
+            int pickerThemeResId = ThemeMode.datePickerDialogThemeResId(themeValue);
+
+            CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setStart(MIN_DATE_UTC_MILLIS)
+                .setOpenAt(initialSelectionUtcMillis)
+                .setValidator(DateValidatorPointBackward.now())
+                .build();
+
+            return MaterialDatePicker.Builder.datePicker()
+                .setTheme(pickerThemeResId)
+                .setCalendarConstraints(constraints)
+                .setSelection(initialSelectionUtcMillis)
+                .build();
+            }
 
     static MaterialDatePicker<Long> newPicker(long initialSelectionUtcMillis) {
         CalendarConstraints constraints = new CalendarConstraints.Builder()

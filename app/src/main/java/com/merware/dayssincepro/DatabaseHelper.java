@@ -11,7 +11,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "alex_db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     // Single shared instance so the whole app uses one connection to alex_db,
     // instead of every Activity/Fragment opening its own.
@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 2 add history table
         // 3 add end date column
         // 4 add details + last_notified_date columns
+        // 5 add planned_date + one-time orphan history cleanup for upgraded installs
     }
 
     @Override
@@ -58,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String sql2 = "CREATE TABLE IF NOT EXISTS event ("
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "catId INTEGER, "
             + "event TEXT, " + "date DATE, " + "recur INTEGER, "
-            + "end_date DATE, details TEXT, last_notified_date DATE)";
+            + "end_date DATE, details TEXT, last_notified_date DATE, planned_date DATE)";
 
         db.execSQL(sql2);
 
@@ -98,10 +99,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // event.end_date column, new for version 3.
     static final String ADD_END_DATE_COLUMN_SQL = "ALTER TABLE event ADD COLUMN end_date DATE";
 
-        // event.details and event.last_notified_date columns, new for version 4.
-        static final String ADD_DETAILS_COLUMN_SQL = "ALTER TABLE event ADD COLUMN details TEXT";
-        static final String ADD_LAST_NOTIFIED_DATE_COLUMN_SQL =
+    // event.details and event.last_notified_date columns, new for version 4.
+    static final String ADD_DETAILS_COLUMN_SQL = "ALTER TABLE event ADD COLUMN details TEXT";
+    static final String ADD_LAST_NOTIFIED_DATE_COLUMN_SQL =
             "ALTER TABLE event ADD COLUMN last_notified_date DATE";
+
+    // event.planned_date column + legacy orphan cleanup, new for version 5.
+    static final String ADD_PLANNED_DATE_COLUMN_SQL =
+            "ALTER TABLE event ADD COLUMN planned_date DATE";
+    static final String CLEAN_ORPHAN_HISTORY_SQL =
+            "DELETE FROM history WHERE eventId NOT IN (SELECT _id FROM event)";
 
     /**
      * Returns the ordered SQL statements needed to migrate a database from oldVersion to
@@ -142,6 +149,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             List<String> step = new ArrayList<>();
             step.add(ADD_DETAILS_COLUMN_SQL);
             step.add(ADD_LAST_NOTIFIED_DATE_COLUMN_SQL);
+            return step;
+        }
+        if (fromVersion == 4 && toVersion == 5) {
+            List<String> step = new ArrayList<>();
+            step.add(ADD_PLANNED_DATE_COLUMN_SQL);
+            step.add(CLEAN_ORPHAN_HISTORY_SQL);
             return step;
         }
         return null;

@@ -205,4 +205,11 @@
     <string name="notification_permission_rationale">Notifications are required to alert you when events are due or approaching recurrence.</string>
     <string name="open_settings">Open Settings</string>
     <string name="mini_b_ok">Ok</string>
+    <string name="history_future_date_not_allowed">Happened date cannot be in the future.</string>
+    <string name="action_not_available_for_one_time">This action is only available for recurring events.</string>
+    <string name="planned_date_cleared_info">Planned future date cleared because it is no longer in the future.</string>
+    <string name="csv_history_warning_title">CSV export does not include History</string>
+    <string name="csv_history_warning_message">History entries: %1$d\nEvents with history: %2$d\n\nCSV export/import does not preserve History. Use database export for full-fidelity backup and restore.</string>
+    <string name="csv_history_warning_continue">Continue CSV Export</string>
+    <string name="csv_history_warning_export_db">Export .db Instead</string>
 </resources>

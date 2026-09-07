@@ -37,11 +37,11 @@ public class SearchFilterSqlParityTest {
     public void searchSql_caseInsensitiveTitleMatch_returnsSameEventSetRegardlessOfDateType() throws Exception {
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
             try (Statement st = conn.createStatement()) {
-                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, catID INTEGER, event TEXT, date DATE, recur INTEGER, end_date DATE, details TEXT)");
+                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, catID INTEGER, event TEXT, date DATE, recur INTEGER, end_date DATE, details TEXT, planned_date DATE)");
 
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details) VALUES (1, 'Jill BDay', '1961-04-11', 0, NULL, '')");
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details) VALUES (2, 'Naturalis Ji Chronicle', '2045-06-15', 0, NULL, '')");
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details) VALUES (3, 'No Match Item', '2020-01-01', 365, '2022-01-01', '')");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (1, 'Jill BDay', '1961-04-11', 0, NULL, '', NULL)");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (2, 'Naturalis Ji Chronicle', '2045-06-15', 0, NULL, '', NULL)");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (3, 'No Match Item', '2020-01-01', 365, '2022-01-01', '', NULL)");
             }
 
             String sql = PastFutureListFragment.buildSearchSql("event ASC");

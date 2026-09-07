@@ -108,7 +108,7 @@ public class EditHistory extends AppCompatActivity {
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(EditHistory.this, initial);
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPastOrTodayPicker(EditHistory.this, initial);
             picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);
@@ -161,6 +161,11 @@ public class EditHistory extends AppCompatActivity {
             Intent intent = new Intent();
 
             String dateText = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
+
+            if (HistoryDateRules.isFutureHappenedDate(dateText)) {
+                showToast(getString(R.string.history_future_date_not_allowed));
+                return;
+            }
 
             intent.putExtra("date", dateText);
             intent.putExtra("onTime", isOnTime);

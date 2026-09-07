@@ -59,6 +59,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         long nEstDays = c.getLong(4); // recur
         String sNextDate = c.getString(6);
+        String plannedDate = c.getString(8);
 
         if (nEstDays == 0) { // distinct real future one time date
             if (themeOption == 1) // dark
@@ -81,6 +82,15 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         SimpleDate nextDate = sd;
         Calendar now = Calendar.getInstance();
         String usEndDate = c.getString(5);
+        SimpleDate plannedFutureDate = null;
+        boolean hasPlannedFutureDate = false;
+
+        if (nEstDays == 0 && plannedDate != null && plannedDate.length() > 0) {
+            if (plannedDate.compareTo(HistoryDateRules.todayIsoDate()) > 0) {
+                plannedFutureDate = new SimpleDate(plannedDate, SimpleDate.DateStyle.US);
+                hasPlannedFutureDate = true;
+            }
+        }
 
         EventTimeline.Snapshot timeline = EventTimeline.compute(sd, usEndDate, nEstDays, now);
         nextDate = timeline.nextOccurrence;
@@ -97,11 +107,11 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         } else if (kind == TabKind.SinceLast) {
             dsc = dsc3;
         } else {
-            dsc = dsc2;
+            dsc = hasPlannedFutureDate ? new DaysSinceCalculations(plannedDate) : dsc2;
 
             // if event hasn't happened quite yet, use predetermined says till.
 
-            if (now.getTime().before(sd.getDate())) {
+            if (!hasPlannedFutureDate && now.getTime().before(sd.getDate())) {
                 dsc = dsc1;
             }
         }
@@ -129,7 +139,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             }
             else {
                 // Log.wtf("look", "ok no system date format what is useNextDate " + useNextDate);
-                if (useNextDate) {
+                if (hasPlannedFutureDate) {
+                    dayText = plannedFutureDate.getDate(DateStyle.US);
+                } else if (useNextDate) {
                     dayText = nextDate.getDate(DateStyle.US);
                 }
                 else
@@ -157,7 +169,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             else {
                 // Log.wtf("look", "days until ok what is useNextDate " + useNextDate);
 
-                if (useNextDate) {
+                if (hasPlannedFutureDate) {
+                    dayText = plannedFutureDate.getDate(dateStyle);
+                } else if (useNextDate) {
                     dayText = nextDate.getDate(dateStyle);
                 }
                 else {
