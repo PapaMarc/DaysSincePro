@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.ContextWrapper;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -143,7 +142,7 @@ public class AboutDialog {
         String themeValue = ThemeMode.getThemeValue(context);
         Context themedContext = new ContextThemeWrapper(context, ThemeMode.dialogThemeResId(themeValue));
 
-        return new AlertDialog.Builder(themedContext)
+                return new AlertDialog.Builder(themedContext)
                 .setCustomTitle(title)
                 .setCancelable(true)
                 .setPositiveButton(context.getString(android.R.string.ok), null)
