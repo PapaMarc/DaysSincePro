@@ -148,7 +148,9 @@ public class PastFutureListFragment extends ListFragment {
 
             Cursor cursor;
 
-            sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date from event ";
+                sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, "
+                    + "(select max(h.date) from history h where h.eventId = event._id and h.date <= '" + today + "') as last_happened_date "
+                    + "from event ";
 
             String whereClause = "where ";
 
@@ -290,7 +292,9 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     static String buildSearchSql(String orderBy) {
-        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date from event "
+        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, "
+            + "(select max(h.date) from history h where h.eventId = event._id and h.date <= date('now', 'localtime')) as last_happened_date "
+            + "from event "
                 + "where UPPER(event) like UPPER(?) order by " + orderBy;
     }
 

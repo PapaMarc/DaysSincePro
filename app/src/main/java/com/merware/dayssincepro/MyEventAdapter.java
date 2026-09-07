@@ -58,8 +58,9 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         c.moveToPosition(position);
 
         long nEstDays = c.getLong(4); // recur
-        String sNextDate = c.getString(6);
         String plannedDate = c.getString(8);
+        int lastHappenedDateCol = c.getColumnIndex("last_happened_date");
+        String lastHappenedDate = (lastHappenedDateCol >= 0) ? c.getString(lastHappenedDateCol) : null;
 
         if (nEstDays == 0) { // distinct real future one time date
             if (themeOption == 1) // dark
@@ -100,7 +101,12 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             dateView.setText(nextDate.getDate(dateStyle));
         }
 
-        DaysSinceCalculations dsc3 = new DaysSinceCalculations(timeline.sinceLastReferenceDate);
+        SimpleDate sinceLastDate = timeline.sinceLastReferenceDate;
+        if (nEstDays == 0 && lastHappenedDate != null && lastHappenedDate.length() > 0) {
+            sinceLastDate = new SimpleDate(lastHappenedDate, SimpleDate.DateStyle.US);
+        }
+
+        DaysSinceCalculations dsc3 = new DaysSinceCalculations(sinceLastDate);
 
         if (kind == TabKind.DaysSince) {
             dsc = dsc1;
@@ -135,7 +141,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
                 dayText = timeline.daysSinceReferenceDate.getDate(DateStyle.US);
             }
             else if (kind == TabKind.SinceLast) {
-                dayText = timeline.sinceLastReferenceDate.getDate(DateStyle.US);
+                dayText = sinceLastDate.getDate(DateStyle.US);
             }
             else {
                 // Log.wtf("look", "ok no system date format what is useNextDate " + useNextDate);
@@ -164,7 +170,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
                 dayText = timeline.daysSinceReferenceDate.getDate(dateStyle);
             }
             else if (kind == TabKind.SinceLast) {
-                dayText = timeline.sinceLastReferenceDate.getDate(dateStyle);
+                dayText = sinceLastDate.getDate(dateStyle);
             }
             else {
                 // Log.wtf("look", "days until ok what is useNextDate " + useNextDate);

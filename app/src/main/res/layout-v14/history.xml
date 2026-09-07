@@ -18,12 +18,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/anchorDateHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/onTime"
-        android:layout_alignParentTop="true" />
+        android:layout_below="@+id/anchorDateHeader" />
 
     <TextView
         android:id="@+id/onTime"

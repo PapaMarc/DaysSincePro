@@ -50,6 +50,7 @@ public class HistoryActivity extends AppCompatActivity {
     private TextView onTime;
     private TextView timesThisYear;
     private TextView timesThisMonth;
+    private TextView anchorDateHeader;
 
     private TextView tvInterval;
 
@@ -260,6 +261,7 @@ public class HistoryActivity extends AppCompatActivity {
         timesThisYear = (TextView) findViewById(R.id.timesThisYear);
         timesThisMonth = (TextView) findViewById(R.id.timesThisMonth);
         tvInterval = (TextView) findViewById(R.id.interval);
+        anchorDateHeader = (TextView) findViewById(R.id.anchorDateHeader);
 
         Intent intent = getIntent();
         eventId = intent.getLongExtra("eventId", 0);
@@ -276,6 +278,7 @@ public class HistoryActivity extends AppCompatActivity {
         event = cursor.getString(0);
 
         setTitle(getString(R.string.history) + " : " + event);
+        setAnchorHeaderText();
 
         // allow click
         lv = (ListView) findViewById(android.R.id.list);
@@ -318,6 +321,39 @@ public class HistoryActivity extends AppCompatActivity {
 
         listData();
 
+    }
+
+    private void setAnchorHeaderText() {
+        String anchorDateIso = null;
+        Cursor eventCursor = null;
+        try {
+            eventCursor = db.query("event", new String[] { "date" },
+                    "_id = " + eventId, null, null, null, null);
+            if (eventCursor.moveToFirst()) {
+                anchorDateIso = eventCursor.getString(0);
+            }
+        } finally {
+            if (eventCursor != null) {
+                eventCursor.close();
+            }
+        }
+
+        if (anchorDateIso == null || anchorDateIso.trim().isEmpty()) {
+            anchorDateHeader.setText(getString(R.string.history_anchor_header_missing));
+            return;
+        }
+
+        SimpleDate sd = new SimpleDate(anchorDateIso, SimpleDate.DateStyle.US);
+        String systemDateFormat = DateFormat.GetSystemDateFormat(this);
+        SimpleDate.DateStyle displayStyle = SimpleDate.DateStyle.US;
+        if (getString(R.string.uk_date_style).equals(systemDateFormat)) {
+            displayStyle = SimpleDate.DateStyle.UK;
+        } else if (getString(R.string.us_date_style).equals(systemDateFormat)) {
+            displayStyle = SimpleDate.DateStyle.YMD;
+        }
+
+        String displayDate = sd.getDate(displayStyle);
+        anchorDateHeader.setText(getString(R.string.history_anchor_header, displayDate));
     }
 
     @Override
