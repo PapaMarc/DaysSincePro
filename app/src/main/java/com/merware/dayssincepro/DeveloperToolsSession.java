@@ -72,6 +72,26 @@ public final class DeveloperToolsSession {
         }
     }
 
+    static void logSessionMarker(String message) {
+        String line;
+        synchronized (LOCK) {
+            if (!sideloadBuild) {
+                return;
+            }
+
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+                    .format(new Date());
+            line = timestamp + " | DeveloperToolsSession | " + message;
+
+            bufferedLines.addLast(line);
+            while (bufferedLines.size() > MAX_BUFFER_LINES) {
+                bufferedLines.removeFirst();
+            }
+        }
+
+        Log.i(TAG, line);
+    }
+
     static void log(String source, String message) {
         String line;
         synchronized (LOCK) {

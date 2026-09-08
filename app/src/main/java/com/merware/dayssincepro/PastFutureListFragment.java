@@ -133,7 +133,9 @@ public class PastFutureListFragment extends ListFragment {
 
         if (!searchText.isEmpty()) {
             DeveloperToolsSession.log("PastFutureListFragment",
-                    "listData route=search kind=" + kind + " query=\"" + searchText + "\"");
+                    "listData route=search kind=" + kind
+                            + " fragment=" + debugFragmentId()
+                            + " query=\"" + searchText + "\"");
             listDataAjax(searchText);
             return;
         }
@@ -193,12 +195,21 @@ public class PastFutureListFragment extends ListFragment {
 
             sql = sql + whereClause + " order by " + orderBy;
 
+                DeveloperToolsSession.log("PastFutureListFragment",
+                    "listData begin route=normal kind=" + kind
+                        + " fragment=" + debugFragmentId()
+                        + " categoryIds=" + categories
+                        + " where=\"" + whereClause + "\"");
+
             //    showToast(sql);
             cursor = db.rawQuery(sql, null);
+                String firstRowProbe = firstRowProbe(cursor);
                 DeveloperToolsSession.log("PastFutureListFragment",
-                    "listData kind=" + kind
+                    "listData end route=normal kind=" + kind
+                        + " fragment=" + debugFragmentId()
                         + " categoryIds=" + categories
-                        + " rows=" + cursor.getCount());
+                        + " rows=" + cursor.getCount()
+                        + " firstRow=" + firstRowProbe);
 
             String[] from = new String[]{"event", "date"}; // columns
 
@@ -275,13 +286,22 @@ public class PastFutureListFragment extends ListFragment {
 
             sql = buildSearchSql(orderBy);
 
+                DeveloperToolsSession.log("PastFutureListFragment",
+                    "listDataAjax begin route=search kind=" + kind
+                        + " fragment=" + debugFragmentId()
+                        + " query=\"" + str + "\""
+                        + " categoryFilterApplied=false");
+
             //   showToast(sql);
 
             cursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
+                String firstRowProbe = firstRowProbe(cursor);
                 DeveloperToolsSession.log("PastFutureListFragment",
-                    "listDataAjax kind=" + kind
+                    "listDataAjax end route=search kind=" + kind
+                        + " fragment=" + debugFragmentId()
                         + " query=\"" + str + "\""
-                        + " rows=" + cursor.getCount());
+                        + " rows=" + cursor.getCount()
+                        + " firstRow=" + firstRowProbe);
 
             String[] from = new String[]{"event", "date"}; // columns
 
@@ -311,6 +331,27 @@ public class PastFutureListFragment extends ListFragment {
             + "(select max(h.date) from history h where h.eventId = event._id and h.date <= date('now', 'localtime')) as last_happened_date "
             + "from event "
                 + "where UPPER(event) like UPPER(?) order by " + orderBy;
+    }
+
+    private String firstRowProbe(Cursor cursor) {
+        if (cursor == null || cursor.getCount() == 0) {
+            return "empty";
+        }
+
+        int originalPosition = cursor.getPosition();
+        String probe = "empty";
+        if (cursor.moveToFirst()) {
+            long eventId = cursor.getLong(0);
+            long catId = cursor.getLong(1);
+            probe = "eventId=" + eventId + ",catId=" + catId;
+        }
+        cursor.moveToPosition(originalPosition);
+        return probe;
+    }
+
+    private String debugFragmentId() {
+        return getClass().getSimpleName() + "@"
+                + Integer.toHexString(System.identityHashCode(this));
     }
 
     private void maybeClearStaleOneTimePlannedDates(String todayIso) {

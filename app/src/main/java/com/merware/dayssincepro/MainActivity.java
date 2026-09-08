@@ -240,7 +240,13 @@ public class MainActivity extends AppCompatActivity implements
 
         } else if (itemId == MENU_DEVELOPER_TOGGLE_LOGGING) {
             boolean enable = !DeveloperToolsSession.isLoggingEnabled();
+            if (!enable) {
+                DeveloperToolsSession.logSessionMarker("loggingToggle=false");
+            }
             DeveloperToolsSession.setLoggingEnabled(enable);
+            if (enable) {
+                DeveloperToolsSession.logSessionMarker("loggingToggle=true");
+            }
             invalidateOptionsMenu();
             showToast(enable
                     ? getString(R.string.developer_logging_enabled)
@@ -593,12 +599,36 @@ public class MainActivity extends AppCompatActivity implements
     // Skips any tab fragment not yet instantiated by the pager (i.e. never visited/scrolled to).
     static void refreshTabs(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
                             PastFutureListFragment daysUntil) {
-        if (daysSince != null)
+        if (daysSince != null) {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke start fragment=" + debugFragmentId(daysSince));
             daysSince.listData();
-        if (sinceLast != null)
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke end fragment=" + debugFragmentId(daysSince));
+        } else {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs skip fragment=DaysSinceFragment(null)");
+        }
+        if (sinceLast != null) {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke start fragment=" + debugFragmentId(sinceLast));
             sinceLast.listData();
-        if (daysUntil != null)
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke end fragment=" + debugFragmentId(sinceLast));
+        } else {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs skip fragment=SinceLastFragment(null)");
+        }
+        if (daysUntil != null) {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke start fragment=" + debugFragmentId(daysUntil));
             daysUntil.listData();
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs invoke end fragment=" + debugFragmentId(daysUntil));
+        } else {
+            DeveloperToolsSession.log("MainActivity",
+                "refreshTabs skip fragment=DaysUntilFragment(null)");
+        }
     }
 
     static void refreshCurrentTab(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
@@ -1096,6 +1126,8 @@ public class MainActivity extends AppCompatActivity implements
                 // reset title
                 String categoryIds = preferences.getString(PREF_CATEGORY_IDS, "");
                 String text = preferences.getString(PREF_CATEGORIES_LABEL, "");
+                CharSequence previousTitle = getTitle();
+                int currentTab = mViewPager != null ? mViewPager.getCurrentItem() : -1;
 
                 if (text == null || text.isEmpty()) {
                     text = getString(R.string.uncategorized);
@@ -1103,7 +1135,9 @@ public class MainActivity extends AppCompatActivity implements
 
                 DeveloperToolsSession.log(
                     "MainActivity",
-                    "CATEGORY_ACTIVITY result ids=" + categoryIds
+                    "CATEGORY_ACTIVITY preApply tab=" + currentTab
+                        + " titleBefore=\"" + (previousTitle == null ? "" : previousTitle.toString()) + "\""
+                        + " ids=" + categoryIds
                         + " label=\"" + text + "\"");
 
                 setTitle(text);
@@ -1119,6 +1153,12 @@ public class MainActivity extends AppCompatActivity implements
                         + " du=" + debugFragmentId(daysUntilFragment));
 
                 refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+
+                DeveloperToolsSession.log(
+                    "MainActivity",
+                    "CATEGORY_ACTIVITY postApply tab="
+                        + (mViewPager != null ? mViewPager.getCurrentItem() : -1)
+                        + " titleAfter=\"" + String.valueOf(getTitle()) + "\"");
                 break;
         }
 
