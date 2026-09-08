@@ -42,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_EXPORT_CSV_SAF = 11;
     private static final int REQUEST_RESTORE_DB_SAF = 12;
     private static final int REQUEST_IMPORT_CSV_SAF = 13;
+    private static final int REQUEST_EXPORT_DIAGS_SAF = 14;
     private static final String EXTRA_SELECTED_TAB = "selected_tab";
     private static final String STATE_SELECTED_TAB = "selected_tab";
     private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String PREF_CATEGORIES_LABEL = "Categories";
     private static final int MENU_DEVELOPER_TOOLS = Menu.FIRST + 8100;
     private static final int MENU_DEVELOPER_TOGGLE_LOGGING = Menu.FIRST + 8101;
+    private static final int MENU_DEVELOPER_EXPORT_DIAGS = Menu.FIRST + 8102;
     private static final long DEV_TOOLS_TAP_WINDOW_MS = 850L;
 
     private String appliedThemeValue = "0";
@@ -198,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements
                     MENU_DEVELOPER_TOGGLE_LOGGING,
                     1,
                     labelRes);
+                toolsMenu.add(0,
+                    MENU_DEVELOPER_EXPORT_DIAGS,
+                    2,
+                    R.string.export_diagnostics);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -239,6 +246,10 @@ public class MainActivity extends AppCompatActivity implements
                     ? getString(R.string.developer_logging_enabled)
                     : getString(R.string.developer_logging_disabled));
             DeveloperToolsSession.log("MainActivity", "developerLogging=" + enable);
+            return true;
+
+        } else if (itemId == MENU_DEVELOPER_EXPORT_DIAGS) {
+            launchExportDiagnosticsPicker();
             return true;
 
         } else if (itemId == R.id.menu_export_db) {
@@ -335,6 +346,15 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(Intent.EXTRA_TITLE, "daysSince.csv");
         CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_CSV_SAF);
+    }
+
+    private void launchExportDiagnosticsPicker() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, DeveloperToolsSession.defaultDiagnosticsFilename());
+        CsvExporter.setDownloadsInitialUri(intent);
+        startActivityForResult(intent, REQUEST_EXPORT_DIAGS_SAF);
     }
 
     private void maybeWarnAndLaunchFullCsvExport() {
@@ -831,6 +851,27 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void handleExportDiagnosticsSaf(Uri uri) {
+        if (uri == null) return;
+        try (OutputStream out = getContentResolver().openOutputStream(uri);
+             OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8")) {
+            if (out == null) {
+                showToast(getString(R.string.export_diagnostics_failed));
+                return;
+            }
+
+            String report = DeveloperToolsSession.buildDiagnosticsReport();
+            writer.write(report);
+            writer.flush();
+
+            showToast(getString(R.string.export_diagnostics_success,
+                    DeveloperToolsSession.getBufferedLineCount()));
+        } catch (Exception e) {
+            Log.e("DSP_EXPORT_DIAGS", "Diagnostics export failed", e);
+            showToast(getString(R.string.export_diagnostics_failed) + ": " + e.getMessage());
+        }
+    }
+
     private void handleImportCsvSaf(Intent data) {
         if (data == null) return;
         List<Uri> uris = new ArrayList<>();
@@ -983,6 +1024,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case REQUEST_IMPORT_CSV_SAF:
                 if (data != null) handleImportCsvSaf(data);
+                break;
+            case REQUEST_EXPORT_DIAGS_SAF:
+                if (data != null) handleExportDiagnosticsSaf(data.getData());
                 break;
 
             case ADD_ACTIVITY:

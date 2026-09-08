@@ -179,6 +179,9 @@
         <string name="developer_tools_unlocked">Developer Tools unlocked for this session.</string>
         <string name="developer_logging_enabled">Developer logging enabled.</string>
         <string name="developer_logging_disabled">Developer logging disabled.</string>
+        <string name="export_diagnostics">Export Diagnostics</string>
+        <string name="export_diagnostics_success">Diagnostics exported (%1$d lines).</string>
+        <string name="export_diagnostics_failed">Diagnostics export failed</string>
 
     <string name="search">Search</string>
     <string name="exit">Are you sure you want to exit?</string>
