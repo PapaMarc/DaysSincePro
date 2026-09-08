@@ -36,6 +36,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class PastFutureListFragment extends ListFragment {
 
+    private static final String PREF_CATEGORY_IDS = "CategoryIds";
+    private static final String PREF_CATEGORIES_LABEL = "Categories";
+
     private ListView lv;
     Context context;
     protected SQLiteDatabase db;
@@ -87,13 +90,15 @@ public class PastFutureListFragment extends ListFragment {
         db = DatabaseHelper.getInstance(context).getWritableDatabase();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        String text = preferences.getString("Categories", "");
+        String text = preferences.getString(PREF_CATEGORIES_LABEL, "");
 
         if (text == "") {
             text = getString(R.string.uncategorized);
         }
 
         getActivity().setTitle(text);
+        DeveloperToolsSession.log("PastFutureListFragment",
+            "onActivityCreated kind=" + kind + " title=\"" + text + "\"");
 
         listData();
     }
@@ -127,6 +132,8 @@ public class PastFutureListFragment extends ListFragment {
     public void listData() {
 
         if (!searchText.isEmpty()) {
+            DeveloperToolsSession.log("PastFutureListFragment",
+                    "listData route=search kind=" + kind + " query=\"" + searchText + "\"");
             listDataAjax(searchText);
             return;
         }
@@ -164,7 +171,7 @@ public class PastFutureListFragment extends ListFragment {
                         + " or (recur > 0 and (end_date is null or end_date > '" + today + "')))";
             }
 
-            categories = preferences.getString("CategoryIds", "");
+            categories = preferences.getString(PREF_CATEGORY_IDS, "");
             categories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
 
             String[] items = categories.split(",");
@@ -188,6 +195,10 @@ public class PastFutureListFragment extends ListFragment {
 
             //    showToast(sql);
             cursor = db.rawQuery(sql, null);
+                DeveloperToolsSession.log("PastFutureListFragment",
+                    "listData kind=" + kind
+                        + " categoryIds=" + categories
+                        + " rows=" + cursor.getCount());
 
             String[] from = new String[]{"event", "date"}; // columns
 
@@ -267,6 +278,10 @@ public class PastFutureListFragment extends ListFragment {
             //   showToast(sql);
 
             cursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
+                DeveloperToolsSession.log("PastFutureListFragment",
+                    "listDataAjax kind=" + kind
+                        + " query=\"" + str + "\""
+                        + " rows=" + cursor.getCount());
 
             String[] from = new String[]{"event", "date"}; // columns
 

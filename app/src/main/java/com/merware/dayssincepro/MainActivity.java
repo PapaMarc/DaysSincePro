@@ -29,6 +29,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.util.TypedValue;
 
 import android.widget.Toast;
@@ -66,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements
     private static final String EXTRA_SELECTED_TAB = "selected_tab";
     private static final String STATE_SELECTED_TAB = "selected_tab";
     private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
+    private static final String PREF_CATEGORY_IDS = "CategoryIds";
+    private static final String PREF_CATEGORIES_LABEL = "Categories";
+    private static final int MENU_DEVELOPER_TOOLS = Menu.FIRST + 8100;
+    private static final int MENU_DEVELOPER_TOGGLE_LOGGING = Menu.FIRST + 8101;
+    private static final long DEV_TOOLS_TAP_WINDOW_MS = 850L;
 
     private String appliedThemeValue = "0";
     private boolean appliedNotifyOption = false;
@@ -73,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean addLaunchedFromUncategorizedContext = false;
     private boolean addLaunchedWithNoEvents = false;
     private static final String VIEW_PAGER2_FRAGMENT_TAG_PREFIX = "f";
+    private long devToolsLastTapMs = 0L;
+    private int devToolsTapCount = 0;
 
 
     @Override
@@ -80,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         alarmHelp = new AlarmHelper(this);
+        DeveloperToolsSession.initialize(getPackageName());
 
         String sTheme = ThemeMode.getThemeValue(this);
         appliedThemeValue = sTheme;
@@ -170,6 +180,30 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.removeItem(MENU_DEVELOPER_TOOLS);
+
+        if (DeveloperToolsSession.isAvailable() && DeveloperToolsSession.isUnlocked()) {
+            SubMenu toolsMenu = menu.addSubMenu(R.id.menu_group_meta,
+                MENU_DEVELOPER_TOOLS,
+                302,
+                R.string.developer_tools);
+            MenuItem toolsItem = toolsMenu.getItem();
+            toolsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+            int labelRes = DeveloperToolsSession.isLoggingEnabled()
+                    ? R.string.disable_logging
+                    : R.string.enable_logging;
+            toolsMenu.add(0,
+                    MENU_DEVELOPER_TOGGLE_LOGGING,
+                    1,
+                    labelRes);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -196,6 +230,16 @@ public class MainActivity extends AppCompatActivity implements
 
         } else if (itemId == R.id.action_settings) {
             settings();
+
+        } else if (itemId == MENU_DEVELOPER_TOGGLE_LOGGING) {
+            boolean enable = !DeveloperToolsSession.isLoggingEnabled();
+            DeveloperToolsSession.setLoggingEnabled(enable);
+            invalidateOptionsMenu();
+            showToast(enable
+                    ? getString(R.string.developer_logging_enabled)
+                    : getString(R.string.developer_logging_disabled));
+            DeveloperToolsSession.log("MainActivity", "developerLogging=" + enable);
+            return true;
 
         } else if (itemId == R.id.menu_export_db) {
             launchExportDbPicker();
@@ -240,6 +284,48 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(Intent.EXTRA_TITLE, "daysSince.db");
         CsvExporter.setDownloadsInitialUri(intent);
         startActivityForResult(intent, REQUEST_EXPORT_DB_SAF);
+    }
+
+    private boolean isInTopAppBarRegion(MotionEvent event) {
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(
+                    tv.data,
+                    getResources().getDisplayMetrics());
+        }
+
+        return event.getY() >= 0 && event.getY() <= actionBarHeight;
+    }
+
+    private void maybeUnlockDeveloperToolsFromTouch(MotionEvent event) {
+        if (!DeveloperToolsSession.isAvailable() || DeveloperToolsSession.isUnlocked()) {
+            return;
+        }
+
+        if (event.getActionMasked() != MotionEvent.ACTION_UP) {
+            return;
+        }
+
+        if (!isInTopAppBarRegion(event)) {
+            devToolsTapCount = 0;
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if ((now - devToolsLastTapMs) <= DEV_TOOLS_TAP_WINDOW_MS) {
+            devToolsTapCount++;
+        } else {
+            devToolsTapCount = 1;
+        }
+        devToolsLastTapMs = now;
+
+        if (devToolsTapCount >= 3) {
+            devToolsTapCount = 0;
+            DeveloperToolsSession.unlockForSession();
+            invalidateOptionsMenu();
+            showToast(getString(R.string.developer_tools_unlocked));
+        }
     }
 
     private void launchExportCsvPicker() {
@@ -351,11 +437,11 @@ public class MainActivity extends AppCompatActivity implements
 
         addLaunchedFromUncategorizedContext =
             CategorySelectionPolicy.isPristineUncategorizedFilterContext(
-                preferences.getString("CategoryIds", ""),
-                preferences.getString("Categories", ""));
+                preferences.getString(PREF_CATEGORY_IDS, ""),
+                preferences.getString(PREF_CATEGORIES_LABEL, ""));
         addLaunchedWithNoEvents = hasNoEventsInDatabase();
 
-        categories = preferences.getString("CategoryIds", "");
+        categories = preferences.getString(PREF_CATEGORY_IDS, "");
         categories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
 
         String[] items = categories.split(",");
@@ -728,8 +814,8 @@ public class MainActivity extends AppCompatActivity implements
             setTitle(R.string.all_categories);
 
             SharedPreferences.Editor ed = preferences.edit();
-            ed.putString("CategoryIds", "");
-            ed.putString("Categories", "");
+            ed.putString(PREF_CATEGORY_IDS, "");
+            ed.putString(PREF_CATEGORIES_LABEL, "");
             ed.commit();
 
             // Restart Activity to re-bind fresh SQLite helpers and reload fragments
@@ -791,8 +877,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean bootstrapFilterContextForFirstCategorizedAdd(long createdCategoryId) {
-        String categoryIdsPref = preferences.getString("CategoryIds", "");
-        String categoriesPref = preferences.getString("Categories", "");
+        String categoryIdsPref = preferences.getString(PREF_CATEGORY_IDS, "");
+        String categoriesPref = preferences.getString(PREF_CATEGORIES_LABEL, "");
         boolean hasExplicitFilterSelection = preferences.getBoolean(
                 PREF_HAS_EXPLICIT_FILTER_SELECTION,
                 false);
@@ -813,8 +899,8 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         SharedPreferences.Editor ed = preferences.edit();
-        ed.putString("CategoryIds", CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
-        ed.putString("Categories", categoryName);
+        ed.putString(PREF_CATEGORY_IDS, CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
+        ed.putString(PREF_CATEGORIES_LABEL, categoryName);
         ed.commit();
 
         data = new long[]{createdCategoryId};
@@ -829,8 +915,8 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         SharedPreferences.Editor ed = preferences.edit();
-        ed.putString("CategoryIds", CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
-        ed.putString("Categories", categoryName);
+        ed.putString(PREF_CATEGORY_IDS, CategorySelectionPolicy.formatSingleSelectedCategoryIds(createdCategoryId));
+        ed.putString(PREF_CATEGORIES_LABEL, categoryName);
         ed.commit();
 
         data = new long[]{createdCategoryId};
@@ -964,17 +1050,42 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case CATEGORY_ACTIVITY:
                 // reset title
-                String text = preferences.getString("Categories", "");
+                String categoryIds = preferences.getString(PREF_CATEGORY_IDS, "");
+                String text = preferences.getString(PREF_CATEGORIES_LABEL, "");
 
                 if (text == null || text.isEmpty()) {
                     text = getString(R.string.uncategorized);
                 }
 
+                DeveloperToolsSession.log(
+                    "MainActivity",
+                    "CATEGORY_ACTIVITY result ids=" + categoryIds
+                        + " label=\"" + text + "\"");
+
                 setTitle(text);
+
+                daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+                sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+                daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+
+                DeveloperToolsSession.log(
+                    "MainActivity",
+                    "CATEGORY_ACTIVITY fragments ds=" + debugFragmentId(daysSinceFragment)
+                        + " sl=" + debugFragmentId(sinceLastFragment)
+                        + " du=" + debugFragmentId(daysUntilFragment));
+
                 refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
                 break;
         }
 
+    }
+
+    private static String debugFragmentId(Fragment fragment) {
+        if (fragment == null) {
+            return "null";
+        }
+        return fragment.getClass().getSimpleName() + "@"
+                + Integer.toHexString(System.identityHashCode(fragment));
     }
 
 
@@ -1020,6 +1131,12 @@ public class MainActivity extends AppCompatActivity implements
         {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        maybeUnlockDeveloperToolsFromTouch(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override

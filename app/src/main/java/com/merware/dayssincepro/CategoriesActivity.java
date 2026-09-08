@@ -3,6 +3,7 @@ package com.merware.dayssincepro;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -47,6 +48,8 @@ public class CategoriesActivity extends AppCompatActivity {
     public static final String EXTRA_AUTO_OPEN_ADD_CATEGORY = "extra_auto_open_add_category";
     public static final String EXTRA_CREATED_CATEGORY_ID = "extra_created_category_id";
     private static final String PREF_HAS_EXPLICIT_FILTER_SELECTION = "has_explicit_filter_selection";
+    private static final String PREF_CATEGORY_IDS = "CategoryIds";
+    private static final String PREF_CATEGORIES_LABEL = "Categories";
 
     SimpleCursorAdapter categoryAdapter;
     protected SQLiteDatabase db;
@@ -142,7 +145,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
         // check to see which ones were selected from preference
 
-        String categories = preferences.getString("CategoryIds", "");
+        String categories = preferences.getString(PREF_CATEGORY_IDS, "");
         String[] items = categories.replaceAll("\\[", "").replaceAll("\\]", "")
                 .split(",");
 
@@ -174,22 +177,6 @@ public class CategoriesActivity extends AppCompatActivity {
         }
 
         updateTitle();
-
-        // if nothing is selected set button to all
-        if (checkCount == 0)
-            setAllButton();
-
-        if (checkCount == lv.getCount()) {
-            setClearButton();
-        }
-
-        // if no categories, remove the button
-        if (lv.getCount() == 0) {
-
-            all_clearButton.setVisibility(View.INVISIBLE);
-        } else {
-            all_clearButton.setVisibility(View.VISIBLE);
-        }
 
     }
 
@@ -247,26 +234,12 @@ public class CategoriesActivity extends AppCompatActivity {
     }
 
     private void onListRowClicked(int position) {
-
-        // isItemChecked() return opposite of what it should do.
-        Boolean isChecked = !lv.isItemChecked(position);
-
-        // showToast(position + " isChecked" + isChecked);
-
-        cursor = (Cursor) lv.getItemAtPosition(position);
-        selectedCategory = cursor.getString(1); // 0 is _id
-
-        if (isChecked) {
-            lv.setItemChecked(position, false);
-            checkCount--;
-            selectedCategories.remove(selectedCategory);
-
-        } else {
-            lv.setItemChecked(position, true);
-            checkCount++;
-            selectedCategories.add(selectedCategory);
-        }
-
+        CheckedSelectionSnapshot snapshot = collectCheckedSelection();
+        DeveloperToolsSession.log(
+                "CategoriesActivity",
+                "rowClick pos=" + position
+                        + " checkedIds=" + Arrays.toString(snapshot.selectedIds)
+                        + " checkedNames=" + snapshot.selectedNames);
         updateTitle();
     }
 
@@ -307,6 +280,28 @@ public class CategoriesActivity extends AppCompatActivity {
                 selectedCategories.add(c.getString(1));
             }
         }
+    }
+
+    private CheckedSelectionSnapshot collectCheckedSelection() {
+        List<Long> checkedIds = new ArrayList<Long>();
+        ArrayList<String> checkedNames = new ArrayList<String>();
+
+        for (int i = 0; i < lv.getCount(); i++) {
+            if (!lv.isItemChecked(i)) {
+                continue;
+            }
+
+            checkedIds.add(lv.getItemIdAtPosition(i));
+            Cursor c = (Cursor) lv.getItemAtPosition(i);
+            checkedNames.add(c.getString(1));
+        }
+
+        long[] selectedIds = new long[checkedIds.size()];
+        for (int i = 0; i < checkedIds.size(); i++) {
+            selectedIds[i] = checkedIds.get(i);
+        }
+
+        return new CheckedSelectionSnapshot(selectedIds, checkedNames);
     }
 
     private void listData() {
@@ -367,8 +362,7 @@ public class CategoriesActivity extends AppCompatActivity {
     };
 
     private void exitDialog() {
-
-        persistSelectionToPreferences(data);
+        persistSelectionToPreferences();
 
         // showToast("joined: " + joined);
 
@@ -381,21 +375,28 @@ public class CategoriesActivity extends AppCompatActivity {
         finish();
     }
 
-    private void persistSelectionToPreferences(long[] selectedIds) {
-        long[] stableSelection = CategorySelectionPolicy.ensureFallbackUncategorizedSelection(selectedIds);
+    private void persistSelectionToPreferences() {
+        CheckedSelectionSnapshot snapshot = collectCheckedSelection();
+        long[] stableSelection = CategorySelectionPolicy.ensureFallbackUncategorizedSelection(
+                snapshot.selectedIds);
         String dataArr = Arrays.toString(stableSelection);
 
-        String joined = TextUtils.join(", ", selectedCategories);
+        String joined = TextUtils.join(", ", snapshot.selectedNames);
         if (stableSelection.length == 1
                 && stableSelection[0] == CategorySelectionPolicy.UNCATEGORIZED_CAT_ID) {
             joined = getString(R.string.uncategorized);
         }
 
         Editor ed = preferences.edit();
-        ed.putString("CategoryIds", dataArr);
-        ed.putString(getString(R.string.categories), joined);
+        ed.putString(PREF_CATEGORY_IDS, dataArr);
+        ed.putString(PREF_CATEGORIES_LABEL, joined);
         ed.putBoolean(PREF_HAS_EXPLICIT_FILTER_SELECTION, true);
         ed.commit();
+
+        DeveloperToolsSession.log(
+                "CategoriesActivity",
+                "persistSelection ids=" + Arrays.toString(stableSelection)
+                        + " label=\"" + joined + "\"");
     }
 
     @Override
@@ -467,6 +468,18 @@ public class CategoriesActivity extends AppCompatActivity {
     private void updateTitle() {
         syncSelectedCategoriesFromChecked();
         checkCount = this.selectedCategories.size();
+
+        if (checkCount == 0) {
+            setAllButton();
+        } else if (checkCount == lv.getCount()) {
+            setClearButton();
+        }
+
+        if (lv.getCount() >= 2) {
+            all_clearButton.setVisibility(View.VISIBLE);
+        } else {
+            all_clearButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private OnClickListener all_clearListener = new OnClickListener() {
@@ -475,8 +488,6 @@ public class CategoriesActivity extends AppCompatActivity {
             if (isClearButton) {
 
                 // clear
-                selectedCategories.clear();
-
                 for (int i = 0; i < lv.getCount(); i++) {
                     lv.setItemChecked(i, false);
                 }
@@ -485,14 +496,8 @@ public class CategoriesActivity extends AppCompatActivity {
 
             } else {
 
-                selectedCategories.clear();
                 for (int i = 0; i < lv.getCount(); i++) {
                     lv.setItemChecked(i, true);
-
-                    cursor = (Cursor) lv.getItemAtPosition(i);
-                    selectedCategory = cursor.getString(1); // 0 is _id
-
-                    selectedCategories.add(selectedCategory);
                 }
 
                 isClearButton = true;
@@ -745,7 +750,7 @@ public class CategoriesActivity extends AppCompatActivity {
                     reApplyChecked();
 
                         syncSelectedCategoriesFromChecked();
-                        persistSelectionToPreferences(data);
+                        persistSelectionToPreferences();
                         setResult(RESULT_OK, null);
                     break;
 
@@ -804,6 +809,16 @@ public class CategoriesActivity extends AppCompatActivity {
             case REQUEST_EXPORT_CATEGORY_CSV_SAF:
                 handleExportCategoryCsvSaf(data.getData());
                 break;
+        }
+    }
+
+    private static final class CheckedSelectionSnapshot {
+        final long[] selectedIds;
+        final ArrayList<String> selectedNames;
+
+        CheckedSelectionSnapshot(long[] selectedIds, ArrayList<String> selectedNames) {
+            this.selectedIds = selectedIds;
+            this.selectedNames = selectedNames;
         }
     }
 }
