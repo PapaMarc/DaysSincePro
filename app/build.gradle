@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 50
-        versionName "3.12.181.50"
+        versionName "3.12.181.51"
     }
 
     signingConfigs {
