@@ -772,14 +772,17 @@ public class CategoriesActivity extends AppCompatActivity {
             }
             CsvExportResult result = CsvExporter.exportCategory(db, exportId, os);
             if (result.isSuccess()) {
-                showToast(selectedCategory + ".csv saved (" + result.getRowsExported() + " events)");
+                showToast(getString(R.string.category_csv_export_saved_with_rows,
+                        selectedCategory,
+                        result.getRowsExported()));
             } else {
-                showToast("Export failed: " + result.getErrorMessage());
+                showToast(getString(R.string.csv_export_failed_with_reason,
+                        result.getErrorMessage()));
                 Log.e("DSP_EXPORT", "Export failed: " + result.getErrorMessage());
             }
         } catch (Exception e) {
             Log.e("DSP_EXPORT", "Export error", e);
-            showToast("Export failed: " + e.getMessage());
+            showToast(getString(R.string.csv_export_failed_with_reason, e.getMessage()));
         }
     }
 

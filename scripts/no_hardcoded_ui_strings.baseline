@@ -1,13 +1,1 @@
-﻿\app\src\main\java\com\merware\dayssincepro\CategoriesActivity.java|\bshowToast\s*\(\s*"|showToast("Export failed: " + e.getMessage());
-\app\src\main\java\com\merware\dayssincepro\CategoriesActivity.java|\bshowToast\s*\(\s*"|showToast("Export failed: " + result.getErrorMessage());
-\app\src\main\java\com\merware\dayssincepro\CategoriesActivity.java|\bshowToast\s*\(\s*"|showToast("Failed to open output stream");
-\app\src\main\java\com\merware\dayssincepro\ConfigWidgetActivity.java|\bshowToast\s*\(\s*"|showToast("db problems." + e.getMessage());
-\app\src\main\java\com\merware\dayssincepro\DaysDiffActivity.java|\bsetText\s*\(\s*"|explainText.setText("(" + dsc.toString() + ")");
-\app\src\main\java\com\merware\dayssincepro\EditEventActivity.java|\bsetText\s*\(\s*"|recurTextView.setText("");
-\app\src\main\java\com\merware\dayssincepro\EditEventActivity.java|\bshowToast\s*\(\s*"|showToast("End date should not be earlier than the Date");
-\app\src\main\java\com\merware\dayssincepro\HistoryActivity.java|\bsetText\s*\(\s*"|onTime.setText("");
-\app\src\main\java\com\merware\dayssincepro\HistoryActivity.java|\bshowToast\s*\(\s*"|showToast("remove failed");
-\app\src\main\java\com\merware\dayssincepro\HistoryActivity.java|\bshowToast\s*\(\s*"|showToast("sorry update failed");
-\app\src\main\java\com\merware\dayssincepro\PastFutureListFragment.java|\bsetTitle\s*\(\s*"|builder.setTitle("Look");
-\app\src\main\java\com\merware\dayssincepro\PastFutureListFragment.java|\bshowToast\s*\(\s*"|showToast("skip until next date " + nextdate);
-\app\src\main\java\com\merware\dayssincepro\PastFutureListFragment.java|\bshowToast\s*\(\s*"|showToast("Sorry, database problems." +e.getMessage());
+﻿\app\src\main\java\com\merware\dayssincepro\CategoriesActivity.java|\bshowToast\s*\(\s*"|showToast("Failed to open output stream");

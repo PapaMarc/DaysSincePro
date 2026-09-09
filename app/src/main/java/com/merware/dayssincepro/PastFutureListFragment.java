@@ -59,7 +59,7 @@ public class PastFutureListFragment extends ListFragment {
 
     void showDialog(String s) {
         AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(context);
-        builder.setTitle("Look");
+        builder.setTitle(R.string.generic_error_title);
         builder.setMessage(s);
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -226,7 +226,8 @@ public class PastFutureListFragment extends ListFragment {
             setListAdapter(eventAdapter);
 
         } catch (Exception e) {
-            showToast("Sorry, database problems." +e.getMessage());
+            showToast(getString(R.string.past_future_database_problem_with_reason,
+                    e.getMessage()));
             showDialog(sql);
         }
     }
@@ -799,7 +800,7 @@ public class PastFutureListFragment extends ListFragment {
                         if (cursor.moveToFirst())
                         {
                             String nextdate = cursor.getString(2);
-                            showToast("skip until next date " + nextdate);
+                            showToast(getString(R.string.skip_until_next_date, nextdate));
                             chooseDayItemDate(menuInfo.position, menuInfo.id, new SimpleDate(nextdate));
                         }
                     } finally {

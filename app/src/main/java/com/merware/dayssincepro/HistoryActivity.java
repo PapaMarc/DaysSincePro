@@ -409,7 +409,7 @@ public class HistoryActivity extends AppCompatActivity {
                     int rc = db.delete("history", "_id=" + removeId, null);
 
                     if (rc == 0)
-                        showToast("remove failed");
+                        showToast(getString(R.string.history_remove_failed));
 
                     listData();
                     break;
@@ -552,8 +552,9 @@ public class HistoryActivity extends AppCompatActivity {
 
                     if (db.insert("history", "history", values) == -1) {
                         // unique constrain
-                        showToast(event + " happened on " + dateText
-                                + " was already noted.");
+                        showToast(getString(R.string.history_happened_already_noted,
+                            event,
+                            dateText));
                     }
                     listData();
                 }
@@ -581,7 +582,7 @@ public class HistoryActivity extends AppCompatActivity {
                     // Log.wtf("update", "note is " + note);
 
                     if (db.update("history", values, "_id =" + historyId, null) == -1) {
-                        showToast("sorry update failed");
+                        showToast(getString(R.string.history_update_failed));
                     }
 
                     listData();

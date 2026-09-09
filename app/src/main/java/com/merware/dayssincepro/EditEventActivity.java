@@ -473,7 +473,7 @@ public class EditEventActivity extends AppCompatActivity {
             SimpleDate endDate = new SimpleDate(mEndYear, mEndMonth, mEndDay);
 
             if (endDate.getDate().before(eventDate.getDate())) {
-                showToast("End date should not be earlier than the Date");
+                showToast(getString(R.string.end_date_before_start_date));
                 if (fromEndDayCheckbox) {
                     cbEndDay.setChecked(false);
                     mEndYear = 0;

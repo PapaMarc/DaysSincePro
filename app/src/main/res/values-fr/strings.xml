@@ -16,7 +16,16 @@
     <string name="csv_export_failed_open_output_stream">Impossible d\'ouvrir le flux de sortie.</string>
     <string name="csv_export_saved_events">daysSince.csv enregistré (%1$d événements)</string>
     <string name="csv_export_failed_with_reason">Échec de l\'exportation : %1$s</string>
+    <string name="category_csv_export_saved_with_rows">%1$s.csv enregistré (%2$d événements)</string>
     <string name="csv_restore_invalid_database_file">Désolé, fichier de base de données invalide.</string>
+    <string name="widget_db_problem_with_reason">Problème de base de données : %1$s</string>
+    <string name="end_date_before_start_date">La date de fin ne doit pas être antérieure à la date de l\'événement.</string>
+    <string name="history_remove_failed">La suppression a échoué.</string>
+    <string name="history_happened_already_noted">%1$s le %2$s a déjà été noté.</string>
+    <string name="history_update_failed">Désolé, la mise à jour a échoué.</string>
+    <string name="generic_error_title">Erreur</string>
+    <string name="past_future_database_problem_with_reason">Désolé, problèmes de base de données : %1$s</string>
+    <string name="skip_until_next_date">Ignorer jusqu\'à la prochaine date %1$s</string>
     <string name="csv_import_no_events_imported">Aucun événement importé.</string>
     <string name="csv_import_error_with_reason">Erreur d\'importation : %1$s</string>
     <string name="csv_import_failed_with_reason">Échec de l\'importation : %1$s</string>

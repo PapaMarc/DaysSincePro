@@ -37,6 +37,11 @@ $patterns = @(
     '\bSnackbar\.make\s*\([^\)]*"'
 )
 
+$approvedNonLocalizableLineRegexes = @(
+    '^\s*[\w\.]+\s*\.setText\(\s*""\s*\)\s*;?\s*$',
+    '^\s*[\w\.]+\s*\.setText\(\s*"\("\s*\+\s*.+\+\s*"\)"\s*\)\s*;?\s*$'
+)
+
 $violationRecords = New-Object System.Collections.Generic.List[object]
 
 foreach ($root in $includeRoots) {
@@ -62,6 +67,12 @@ foreach ($root in $includeRoots) {
             # Skip fully commented lines.
             if ($line -match '^\s*//') {
                 return
+            }
+
+            foreach ($approved in $approvedNonLocalizableLineRegexes) {
+                if ($line -match $approved) {
+                    return
+                }
             }
 
             foreach ($regex in $patterns) {
@@ -91,7 +102,7 @@ foreach ($root in $includeRoots) {
     }
 }
 
-$uniqueRecords = $violationRecords | Sort-Object Fingerprint -Unique
+$uniqueRecords = @($violationRecords | Sort-Object Fingerprint -Unique)
 $baselinePath = Join-Path -Path $RepoRoot -ChildPath "scripts/no_hardcoded_ui_strings.baseline"
 
 if ($UpdateBaseline) {
@@ -107,9 +118,9 @@ if ($UpdateBaseline) {
 
 $baselineFingerprints = @()
 if (Test-Path $baselinePath) {
-    $baselineFingerprints = Get-Content -Path $baselinePath | Where-Object {
+    $baselineFingerprints = @(Get-Content -Path $baselinePath | Where-Object {
         -not [string]::IsNullOrWhiteSpace($_) -and -not $_.TrimStart().StartsWith('#')
-    }
+    })
 }
 
 $newViolations = @($uniqueRecords | Where-Object {

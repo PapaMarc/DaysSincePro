@@ -214,7 +214,16 @@
     <string name="csv_export_failed_open_output_stream">Failed to open output stream.</string>
     <string name="csv_export_saved_events">daysSince.csv saved (%1$d events)</string>
     <string name="csv_export_failed_with_reason">Export failed: %1$s</string>
+    <string name="category_csv_export_saved_with_rows">%1$s.csv saved (%2$d events)</string>
     <string name="csv_restore_invalid_database_file">Sorry, invalid database file.</string>
+    <string name="widget_db_problem_with_reason">Database problem: %1$s</string>
+    <string name="end_date_before_start_date">End date should not be earlier than the date.</string>
+    <string name="history_remove_failed">Remove failed.</string>
+    <string name="history_happened_already_noted">%1$s happened on %2$s was already noted.</string>
+    <string name="history_update_failed">Sorry, update failed.</string>
+    <string name="generic_error_title">Error</string>
+    <string name="past_future_database_problem_with_reason">Sorry, database problems: %1$s</string>
+    <string name="skip_until_next_date">Skip until next date %1$s</string>
 
     <string name="csv_import_no_events_imported">No events imported.</string>
     <string name="csv_import_error_with_reason">Import error: %1$s</string>

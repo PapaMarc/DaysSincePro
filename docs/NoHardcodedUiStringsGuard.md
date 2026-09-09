@@ -39,6 +39,22 @@ The scanner excludes:
 - `app/src/androidTest`
 - `build` folders
 
+Approved non-localizable code patterns are also ignored:
+
+- Empty-string UI resets, for example `setText("")`.
+- Wrapper punctuation composition, for example `setText("(" + value + ")")`.
+
+## Intentional Baseline Example
+
+One literal is intentionally kept in baseline as a known working verification example for the guard/bootstrap workflow:
+
+- `showToast("Failed to open output stream")` in `CategoriesActivity`.
+
+Reason it remains:
+
+- It is a low-frequency fallback toast.
+- It demonstrates that baseline behavior is functioning (known debt is tracked while new debt is blocked).
+
 ## Notes
 
 - This is a targeted regex guard for fast local/CI feedback.

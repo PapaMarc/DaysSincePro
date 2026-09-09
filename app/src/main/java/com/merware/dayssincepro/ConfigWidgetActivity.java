@@ -100,7 +100,7 @@ public class ConfigWidgetActivity extends AppCompatActivity {
 
             startManagingCursor(cursor);
         } catch (Exception e) {
-            showToast("db problems." + e.getMessage());
+            showToast(getString(R.string.widget_db_problem_with_reason, e.getMessage()));
             Log.wtf("PROB", e.getMessage());
 
         }
