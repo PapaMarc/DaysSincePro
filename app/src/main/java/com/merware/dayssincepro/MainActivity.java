@@ -223,8 +223,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivityForResult(intentDD, DAYSDIFF_ACTIVITY);
 
         } else if (itemId == R.id.menu_about) {
-            AboutDialog.create(this, "Alex Mak", "2.x Aug 2015 --> v3.0.2 Sep 30 2016 --> v3.1.5 Nov 23, 2023",
-                    "").show();
+            AboutDialog.create(this).show();
 
         } else if (itemId == R.id.action_add) {
 
@@ -804,19 +803,19 @@ public class MainActivity extends AppCompatActivity implements
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
             OutputStream out = getContentResolver().openOutputStream(uri);
             if (out == null) {
-                showToast("Failed to open output stream");
+                showToast(getString(R.string.csv_export_failed_open_output_stream));
                 return;
             }
             CsvExportResult result = CsvExporter.exportAllCategories(db, out);
             if (result.isSuccess()) {
-                showToast("daysSince.csv saved (" + result.getRowsExported() + " events)");
+                showToast(getString(R.string.csv_export_saved_events, result.getRowsExported()));
             } else {
-                showToast("Export failed: " + result.getErrorMessage());
+                showToast(getString(R.string.csv_export_failed_with_reason, result.getErrorMessage()));
                 Log.e("DSP_EXPORT_CSV", "CSV export failed: " + result.getErrorMessage());
             }
         } catch (Exception e) {
             Log.e("DSP_EXPORT_CSV", "CSV export failed", e);
-            showToast("Export failed: " + e.getMessage());
+            showToast(getString(R.string.csv_export_failed_with_reason, e.getMessage()));
         }
     }
 
@@ -832,7 +831,7 @@ public class MainActivity extends AppCompatActivity implements
                 byte[] byteArr = new byte[6];
                 int read = testIn.read(byteArr);
                 if (read < 6 || !Arrays.equals(byteArr, "SQLite".getBytes())) {
-                    showToast("Sorry, invalid database file.");
+                    showToast(getString(R.string.csv_restore_invalid_database_file));
                     return;
                 }
             }
@@ -924,16 +923,18 @@ public class MainActivity extends AppCompatActivity implements
             CsvImportResult result = CsvImporter.importMultipleCsvUris(this, db, uris, 0);
 
             if (result.isSuccess()) {
-                showToast(result.getSummaryMessage());
+                showToast(result.getSummaryMessage(this));
                 refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
             } else {
-                String firstErr = result.getErrors().isEmpty() ? "No events imported." : result.getErrors().get(0);
-                showToast("Import error: " + firstErr);
+                String firstErr = result.getErrors().isEmpty()
+                        ? getString(R.string.csv_import_no_events_imported)
+                        : result.getErrors().get(0);
+                showToast(getString(R.string.csv_import_error_with_reason, firstErr));
                 Log.e("DSP_IMPORT_CSV", "CSV import failed: " + firstErr);
             }
         } catch (Exception e) {
             Log.e("DSP_IMPORT_CSV", "CSV import error", e);
-            showToast("Import failed: " + e.getMessage());
+            showToast(getString(R.string.csv_import_failed_with_reason, e.getMessage()));
         }
     }
 

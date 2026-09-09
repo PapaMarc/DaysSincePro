@@ -16,8 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 public class AboutDialog {
-    public static AlertDialog create(Context context, String author,
-                                     String date, String url) {
+        public static AlertDialog create(Context context) {
 
         String versionInfo = "0.0";
 
@@ -33,16 +32,19 @@ public class AboutDialog {
 
         }
 
-        String aboutTitle = "About: DaysSincePro";
-        String versionString = String.format("Version: %s", versionInfo);
+        String author = context.getString(R.string.about_author_name);
+        String date = context.getString(R.string.about_author_timeline);
+
+        String aboutTitle = context.getString(R.string.about_title, context.getString(R.string.app_name));
+        String versionString = context.getString(R.string.about_version_format, versionInfo);
         String packageName = context.getPackageName();
         boolean isSideloadBuild = packageName.endsWith(".dev");
-        String schemaString = String.format("Schema: v%d", DatabaseHelper.DATABASE_VERSION);
-        String sideloadString = String.format("SideLoad .apk: %s", packageName);
+        String schemaString = context.getString(R.string.about_schema_format, DatabaseHelper.DATABASE_VERSION);
+        String sideloadString = context.getString(R.string.about_sideload_format, packageName);
         String headerText = isSideloadBuild
                 ? versionString + "\n" + schemaString + "\n" + sideloadString
                 : versionString;
-        String aboutText = "Originally written by " + author + "\n" + date;
+        String aboutText = context.getString(R.string.about_originally_written_by, author, date);
 
         String maintained = context.getString(R.string.about_maintained);
         String republished = context.getString(R.string.about_republished);
@@ -51,17 +53,17 @@ public class AboutDialog {
                 maintained,
                 republished);
 
-        String marcSeinfeld = "Marc Seinfeld";
-        String merWare = "MerWare";
-        String donationLinkText = "optional donation here";
-        String donationText = "Voluntary contributions help keep this app free. " +
-                "You can share your " + donationLinkText +
-                ", though doing so does not unlock features.";
+        String marcSeinfeld = context.getString(R.string.about_marc_name);
+        String merWare = context.getString(R.string.about_merware_name);
+        String donationLinkText = context.getString(R.string.about_donation_link_text);
+        String donationText = context.getString(R.string.about_donation_text, donationLinkText);
+        String supportText = context.getString(R.string.about_support_feedback);
+        String supportEmail = context.getString(R.string.about_support_email);
 
         // Maintained/republished line appears first, then the donation blurb,
         // then the original author credit below it, each separated by a blank line.
         String fullAboutText = maintainedAndRepublished + "\n\n" + donationText +
-                "\n\n" + aboutText;
+                "\n\n" + supportText + "\n\n" + aboutText;
 
         // Custom centered title
         final TextView title = new TextView(context);
@@ -121,6 +123,15 @@ public class AboutDialog {
                     new URLSpan("https://merware.net/index.html#support"),
                     donationLinkStart,
                     donationLinkStart + donationLinkText.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        int supportEmailStart = messageText.toString().indexOf(supportEmail);
+        if (supportEmailStart >= 0) {
+            messageText.setSpan(
+                    new URLSpan("mailto:" + supportEmail),
+                    supportEmailStart,
+                    supportEmailStart + supportEmail.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 

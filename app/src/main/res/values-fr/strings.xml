@@ -3,4 +3,54 @@
     <string name="about_maintained">maintenu</string>
     <string name="about_republished">republié</string>
     <string name="about_maintained_and_republished">DaysSincePro — %1$s et %2$s par Marc Seinfeld / MerWare</string>
+    <string name="about_title">À propos : %1$s</string>
+    <string name="about_version_format">Version : %1$s</string>
+    <string name="about_schema_format">Schéma : v%1$d</string>
+    <string name="about_sideload_format">APK installée manuellement : %1$s</string>
+    <string name="about_originally_written_by">Initialement écrit par %1$s\n%2$s</string>
+    <string name="about_donation_link_text">don optionnel ici</string>
+    <string name="about_donation_text">Les contributions volontaires aident à garder cette application gratuite. Vous pouvez partager votre %1$s, mais cela ne débloque aucune fonctionnalité.</string>
+    <string name="about_support_email">support@merware.com</string>
+    <string name="about_support_feedback">Toute question ou tout retour peut être envoyé à support@merware.com, et toute aide de traduction, qu\'il s\'agisse d\'un bref e-mail ou d\'une collaboration plus approfondie sur un fichier strings.xml, est sincèrement appréciée.</string>
+
+    <string name="csv_export_failed_open_output_stream">Impossible d\'ouvrir le flux de sortie.</string>
+    <string name="csv_export_saved_events">daysSince.csv enregistré (%1$d événements)</string>
+    <string name="csv_export_failed_with_reason">Échec de l\'exportation : %1$s</string>
+    <string name="csv_restore_invalid_database_file">Désolé, fichier de base de données invalide.</string>
+    <string name="csv_import_no_events_imported">Aucun événement importé.</string>
+    <string name="csv_import_error_with_reason">Erreur d\'importation : %1$s</string>
+    <string name="csv_import_failed_with_reason">Échec de l\'importation : %1$s</string>
+    <string name="csv_import_summary_period">.</string>
+    <plurals name="csv_import_events_imported">
+        <item quantity="one">%1$d événement importé</item>
+        <item quantity="other">%1$d événements importés</item>
+    </plurals>
+    <plurals name="csv_import_new_categories">
+        <item quantity="one"> (%1$d nouvelle catégorie)</item>
+        <item quantity="other"> (%1$d nouvelles catégories)</item>
+    </plurals>
+    <plurals name="csv_import_skipped">
+        <item quantity="one">, %1$d ignoré</item>
+        <item quantity="other">, %1$d ignorés</item>
+    </plurals>
+
+    <!-- Phase 1 bridge keys from legacy hardcoded setTerms() French copy. -->
+    <string name="dsc_term_tomorrow">demain</string>
+    <string name="dsc_term_today">aujourd\'hui</string>
+    <string name="dsc_term_yesterday">hier</string>
+    <string name="dsc_term_one_day">1 jour</string>
+    <string name="dsc_term_day">jour</string>
+    <string name="dsc_term_days">jours</string>
+    <string name="dsc_term_year">an</string>
+    <string name="dsc_term_years">ans</string>
+    <string name="dsc_term_month">mois</string>
+    <string name="dsc_term_months">mois</string>
+    <string name="dsc_term_week">semaine</string>
+    <string name="dsc_term_weeks">semaines</string>
+    <string name="dsc_term_weekday">jour de la semaine</string>
+    <string name="dsc_term_weekdays">jours de la semaine</string>
+    <string name="dsc_term_is"></string>
+    <string name="dsc_term_was"></string>
+    <string name="dsc_term_in_future_suffix">dans le futur.</string>
+    <string name="dsc_term_in_past_suffix">auparavant.</string>
 </resources>

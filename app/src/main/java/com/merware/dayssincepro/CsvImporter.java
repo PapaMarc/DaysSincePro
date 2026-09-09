@@ -100,9 +100,17 @@ public class CsvImporter {
 
     private static final String TAG = "CsvImporter";
     private static final int MAX_DETAILS_LENGTH = 256;
+    private static final Locale FALLBACK_LOCALE = Locale.US;
 
     private CsvImporter() {
         // Utility class; prevent instantiation
+    }
+
+    private static String localized(Context context, int resId, String fallback, Object... formatArgs) {
+        if (context != null) {
+            return context.getString(resId, formatArgs);
+        }
+        return String.format(FALLBACK_LOCALE, fallback, formatArgs);
     }
 
     static class ExistingEventRecord {
@@ -127,7 +135,8 @@ public class CsvImporter {
                 || (isBlank(existingDetails) && !isBlank(incomingDetails));
     }
 
-    static String normalizeDetailsForImport(String rawDetails, int rowNumber, List<String> messages) {
+    static String normalizeDetailsForImport(Context context, String rawDetails, int rowNumber,
+                                            List<String> messages) {
         if (rawDetails == null) {
             return null;
         }
@@ -139,13 +148,21 @@ public class CsvImporter {
 
         if (trimmed.length() > MAX_DETAILS_LENGTH) {
             if (messages != null) {
-                messages.add("Row " + rowNumber + ": details exceeded " + MAX_DETAILS_LENGTH
-                        + " characters and was truncated.");
+                messages.add(localized(
+                        context,
+                        R.string.csv_import_row_details_truncated,
+                        "Row %d: details exceeded %d characters and was truncated.",
+                        rowNumber,
+                        MAX_DETAILS_LENGTH));
             }
             return trimmed.substring(0, MAX_DETAILS_LENGTH);
         }
 
         return trimmed;
+    }
+
+    static String normalizeDetailsForImport(String rawDetails, int rowNumber, List<String> messages) {
+        return normalizeDetailsForImport(null, rawDetails, rowNumber, messages);
     }
 
     private static ExistingEventRecord findExistingEventRecord(SQLiteDatabase db, long catId,
@@ -540,7 +557,12 @@ public class CsvImporter {
      * @return CsvImportResult with summary metrics and diagnostics.
      */
     public static CsvImportResult importCsv(SQLiteDatabase db, Reader reader, long defaultCategoryId) {
-        return importCsv(db, reader, defaultCategoryId, null, null, true);
+        return importCsv(null, db, reader, defaultCategoryId, null, null, true);
+    }
+
+    public static CsvImportResult importCsv(Context context, SQLiteDatabase db, Reader reader,
+                                            long defaultCategoryId) {
+        return importCsv(context, db, reader, defaultCategoryId, null, null, true);
     }
 
     /**
@@ -557,8 +579,20 @@ public class CsvImporter {
     public static CsvImportResult importCsv(SQLiteDatabase db, Reader reader, long defaultCategoryId,
                                             Map<String, Long> categoryCache, Set<String> existingEventKeys,
                                             boolean manageTransaction) {
+        return importCsv(null, db, reader, defaultCategoryId, categoryCache, existingEventKeys,
+            manageTransaction);
+        }
+
+        public static CsvImportResult importCsv(Context context, SQLiteDatabase db, Reader reader,
+                            long defaultCategoryId,
+                            Map<String, Long> categoryCache,
+                            Set<String> existingEventKeys,
+                            boolean manageTransaction) {
         if (db == null || reader == null) {
-            return CsvImportResult.failure("Database or reader is null");
+            return CsvImportResult.failure(localized(
+                context,
+                R.string.csv_import_failure_db_or_reader_null,
+                "Database or reader is null"));
         }
 
         BufferedReader br = (reader instanceof BufferedReader)
@@ -570,20 +604,28 @@ public class CsvImporter {
             records = parseRecords(br);
         } catch (IOException e) {
             Log.e(TAG, "Error reading CSV records", e);
-            return CsvImportResult.failure("Failed to read CSV: " + e.getMessage());
+            return CsvImportResult.failure(localized(
+                    context,
+                    R.string.csv_import_failure_read_csv,
+                    "Failed to read CSV: %s",
+                    e.getMessage()));
         }
 
-        return importParsedRecords(db, records, defaultCategoryId,
+        return importParsedRecords(context, db, records, defaultCategoryId,
                 categoryCache, existingEventKeys, manageTransaction);
     }
 
-    static CsvImportResult importParsedRecords(SQLiteDatabase db, List<List<String>> records,
+    static CsvImportResult importParsedRecords(Context context, SQLiteDatabase db,
+                                               List<List<String>> records,
                                                long defaultCategoryId,
                                                Map<String, Long> categoryCache,
                                                Set<String> existingEventKeys,
                                                boolean manageTransaction) {
         if (db == null) {
-            return CsvImportResult.failure("Database is null");
+            return CsvImportResult.failure(localized(
+                    context,
+                    R.string.csv_import_failure_db_null,
+                    "Database is null"));
         }
 
         if (records.isEmpty()) {
@@ -691,7 +733,11 @@ public class CsvImporter {
                 String eventName = (colEvent >= 0 && colEvent < row.size()) ? row.get(colEvent).trim() : "";
                 if (eventName.isEmpty()) {
                     skippedCount++;
-                    errors.add("Row " + rowNumber + ": Event name is empty.");
+                    errors.add(localized(
+                            context,
+                            R.string.csv_import_row_event_name_empty,
+                            "Row %d: Event name is empty.",
+                            rowNumber));
                     continue;
                 }
 
@@ -699,7 +745,13 @@ public class CsvImporter {
                 String isoDate = parseAndFormatIsoDate(rawDate);
                 if (isoDate == null) {
                     skippedCount++;
-                    errors.add("Row " + rowNumber + " ('" + eventName + "'): Invalid date format '" + rawDate + "'. Expected yyyy-MM-dd.");
+                    errors.add(localized(
+                            context,
+                            R.string.csv_import_row_invalid_date,
+                            "Row %d ('%s'): Invalid date format '%s'. Expected yyyy-MM-dd.",
+                            rowNumber,
+                            eventName,
+                            rawDate));
                     continue;
                 }
 
@@ -723,14 +775,19 @@ public class CsvImporter {
                     endDate = parseAndFormatIsoDate(rawEndDate);
                     if (endDate == null) {
                         skippedCount++;
-                        errors.add("Row " + rowNumber + " ('" + eventName
-                                + "'): Invalid end_date format '" + rawEndDate
-                                + "'. Expected yyyy-MM-dd.");
+                    errors.add(localized(
+                        context,
+                        R.string.csv_import_row_invalid_end_date,
+                        "Row %d ('%s'): Invalid end_date format '%s'. Expected yyyy-MM-dd.",
+                        rowNumber,
+                        eventName,
+                        rawEndDate));
                         continue;
                     }
                 }
 
                 String details = normalizeDetailsForImport(
+                    context,
                         (colDetails >= 0 && colDetails < row.size()) ? row.get(colDetails) : null,
                         rowNumber,
                         errors);
@@ -779,8 +836,12 @@ public class CsvImporter {
                                 importedCount++;
                                 continue;
                             }
-                            errors.add("Row " + rowNumber + " ('" + eventName
-                                    + "'): Duplicate enrichment update failed.");
+                            errors.add(localized(
+                                    context,
+                                    R.string.csv_import_row_duplicate_enrichment_update_failed,
+                                    "Row %d ('%s'): Duplicate enrichment update failed.",
+                                    rowNumber,
+                                    eventName));
                         }
                     }
 
@@ -802,7 +863,12 @@ public class CsvImporter {
                     existingEventKeys.add(eventKey);
                 } else {
                     skippedCount++;
-                    errors.add("Row " + rowNumber + " ('" + eventName + "'): Database insert failed.");
+                    errors.add(localized(
+                            context,
+                            R.string.csv_import_row_database_insert_failed,
+                            "Row %d ('%s'): Database insert failed.",
+                            rowNumber,
+                            eventName));
                 }
             }
 
@@ -828,7 +894,12 @@ public class CsvImporter {
      * @return CsvImportResult with summary metrics.
      */
     public static CsvImportResult importCsv(SQLiteDatabase db, InputStream inputStream, long defaultCategoryId) {
-        return importCsv(db, inputStream, defaultCategoryId, null, null, true);
+        return importCsv(null, db, inputStream, defaultCategoryId, null, null, true);
+    }
+
+    public static CsvImportResult importCsv(Context context, SQLiteDatabase db,
+                                            InputStream inputStream, long defaultCategoryId) {
+        return importCsv(context, db, inputStream, defaultCategoryId, null, null, true);
     }
 
     /**
@@ -845,11 +916,23 @@ public class CsvImporter {
     public static CsvImportResult importCsv(SQLiteDatabase db, InputStream inputStream, long defaultCategoryId,
                                             Map<String, Long> categoryCache, Set<String> existingEventKeys,
                                             boolean manageTransaction) {
+        return importCsv(null, db, inputStream, defaultCategoryId, categoryCache, existingEventKeys,
+                manageTransaction);
+    }
+
+    public static CsvImportResult importCsv(Context context, SQLiteDatabase db, InputStream inputStream,
+                                            long defaultCategoryId,
+                                            Map<String, Long> categoryCache, Set<String> existingEventKeys,
+                                            boolean manageTransaction) {
         if (inputStream == null) {
-            return CsvImportResult.failure("InputStream is null");
+            return CsvImportResult.failure(localized(
+                    context,
+                    R.string.csv_import_failure_input_stream_null,
+                    "InputStream is null"));
         }
         try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-            return importCsv(db, reader, defaultCategoryId, categoryCache, existingEventKeys, manageTransaction);
+            return importCsv(context, db, reader, defaultCategoryId,
+                    categoryCache, existingEventKeys, manageTransaction);
         } catch (IOException e) {
             Log.e(TAG, "Error closing InputStream", e);
             return CsvImportResult.failure(e.getMessage());
@@ -870,7 +953,9 @@ public class CsvImporter {
     public static CsvImportResult importMultipleCsvUris(Context context, SQLiteDatabase db,
                                                         List<Uri> uris, long defaultCategoryId) {
         if (context == null || db == null || uris == null || uris.isEmpty()) {
-            return CsvImportResult.failure("Invalid context, database, or empty URIs list");
+            return CsvImportResult.failure(context != null
+                    ? context.getString(R.string.csv_import_failure_invalid_context_db_or_uris)
+                    : "Invalid context, database, or empty URIs list");
         }
 
         int totalDataRows = 0;
@@ -918,7 +1003,7 @@ public class CsvImporter {
                             }
                         }
 
-                        CsvImportResult res = importParsedRecords(db, records, fileDefaultCatId,
+                        CsvImportResult res = importParsedRecords(context, db, records, fileDefaultCatId,
                                 sharedCategoryCache, sharedEventKeys, false);
                         totalDataRows += res.getTotalRows();
                         totalImported += res.getImportedCount();
@@ -926,11 +1011,16 @@ public class CsvImporter {
                         initialCategoriesCreated += res.getCategoriesCreated();
                         combinedErrors.addAll(res.getErrors());
                     } else {
-                        combinedErrors.add("Unable to open stream for URI: " + uri);
+                        combinedErrors.add(context.getString(
+                                R.string.csv_import_error_unable_to_open_uri_stream,
+                                uri.toString()));
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error importing URI: " + uri, e);
-                    combinedErrors.add("Error reading " + (displayName != null ? displayName : uri) + ": " + e.getMessage());
+                    combinedErrors.add(context.getString(
+                            R.string.csv_import_error_reading_source,
+                            (displayName != null ? displayName : uri.toString()),
+                            e.getMessage()));
                 }
             }
 
@@ -954,10 +1044,13 @@ public class CsvImporter {
      */
     public static CsvImportResult importCsv(Context context, SQLiteDatabase db, File file, long defaultCategoryId) {
         if (file == null || !file.exists()) {
-            return CsvImportResult.failure("File does not exist: " + (file != null ? file.getAbsolutePath() : "null"));
+            return CsvImportResult.failure(context != null
+                    ? context.getString(R.string.csv_import_failure_file_not_found,
+                    (file != null ? file.getAbsolutePath() : "null"))
+                    : "File does not exist: " + (file != null ? file.getAbsolutePath() : "null"));
         }
         try (FileInputStream fis = new FileInputStream(file)) {
-            return importCsv(db, fis, defaultCategoryId);
+            return importCsv(context, db, fis, defaultCategoryId);
         } catch (Exception e) {
             Log.e(TAG, "Failed to import CSV from " + file.getAbsolutePath(), e);
             return CsvImportResult.failure(e.getMessage());
@@ -973,9 +1066,17 @@ public class CsvImporter {
      * @return CsvImportResult with summary metrics.
      */
     public static CsvImportResult importCsvString(SQLiteDatabase db, String csvContent, long defaultCategoryId) {
+        return importCsvString(null, db, csvContent, defaultCategoryId);
+    }
+
+    public static CsvImportResult importCsvString(Context context, SQLiteDatabase db,
+                                                  String csvContent, long defaultCategoryId) {
         if (csvContent == null) {
-            return CsvImportResult.failure("CSV content string is null");
+            return CsvImportResult.failure(localized(
+                    context,
+                    R.string.csv_import_failure_content_string_null,
+                    "CSV content string is null"));
         }
-        return importCsv(db, new StringReader(csvContent), defaultCategoryId);
+        return importCsv(context, db, new StringReader(csvContent), defaultCategoryId);
     }
 }

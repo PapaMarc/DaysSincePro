@@ -197,6 +197,77 @@
     <string name="about_maintained">maintained</string>
     <string name="about_republished">republished</string>
     <string name="about_maintained_and_republished">DaysSincePro — %1$s and %2$s by Marc Seinfeld / MerWare</string>
+    <string name="about_title">About: %1$s</string>
+    <string name="about_version_format">Version: %1$s</string>
+    <string name="about_schema_format">Schema: v%1$d</string>
+    <string name="about_sideload_format">SideLoad .apk: %1$s</string>
+    <string name="about_author_name">Alex Mak</string>
+    <string name="about_author_timeline">2.x Aug 2015 --&gt; v3.0.2 Sep 30 2016 --&gt; v3.1.5 Nov 23, 2023</string>
+    <string name="about_originally_written_by">Originally written by %1$s\n%2$s</string>
+    <string name="about_marc_name">Marc Seinfeld</string>
+    <string name="about_merware_name">MerWare</string>
+    <string name="about_donation_link_text">optional donation here</string>
+    <string name="about_donation_text">Voluntary contributions help keep this app free. You can share your %1$s, though doing so does not unlock features.</string>
+    <string name="about_support_email">support@merware.com</string>
+    <string name="about_support_feedback">Any questions or feedback may be sent to support@merware.com, and any translation assistance, whether a brief email or deeper collaboration on a strings.xml file, is sincerely appreciated.</string>
+
+    <string name="csv_export_failed_open_output_stream">Failed to open output stream.</string>
+    <string name="csv_export_saved_events">daysSince.csv saved (%1$d events)</string>
+    <string name="csv_export_failed_with_reason">Export failed: %1$s</string>
+    <string name="csv_restore_invalid_database_file">Sorry, invalid database file.</string>
+
+    <string name="csv_import_no_events_imported">No events imported.</string>
+    <string name="csv_import_error_with_reason">Import error: %1$s</string>
+    <string name="csv_import_failed_with_reason">Import failed: %1$s</string>
+    <string name="csv_import_summary_period">.</string>
+    <plurals name="csv_import_events_imported">
+        <item quantity="one">Imported %1$d event</item>
+        <item quantity="other">Imported %1$d events</item>
+    </plurals>
+    <plurals name="csv_import_new_categories">
+        <item quantity="one"> (%1$d new category)</item>
+        <item quantity="other"> (%1$d new categories)</item>
+    </plurals>
+    <plurals name="csv_import_skipped">
+        <item quantity="one">, %1$d skipped</item>
+        <item quantity="other">, %1$d skipped</item>
+    </plurals>
+
+    <string name="csv_import_failure_db_or_reader_null">Database or reader is null</string>
+    <string name="csv_import_failure_read_csv">Failed to read CSV: %1$s</string>
+    <string name="csv_import_failure_db_null">Database is null</string>
+    <string name="csv_import_row_details_truncated">Row %1$d: details exceeded %2$d characters and was truncated.</string>
+    <string name="csv_import_row_event_name_empty">Row %1$d: Event name is empty.</string>
+    <string name="csv_import_row_invalid_date">Row %1$d (\'%2$s\'): Invalid date format \'%3$s\'. Expected yyyy-MM-dd.</string>
+    <string name="csv_import_row_invalid_end_date">Row %1$d (\'%2$s\'): Invalid end_date format \'%3$s\'. Expected yyyy-MM-dd.</string>
+    <string name="csv_import_row_duplicate_enrichment_update_failed">Row %1$d (\'%2$s\'): Duplicate enrichment update failed.</string>
+    <string name="csv_import_row_database_insert_failed">Row %1$d (\'%2$s\'): Database insert failed.</string>
+    <string name="csv_import_failure_input_stream_null">InputStream is null</string>
+    <string name="csv_import_failure_invalid_context_db_or_uris">Invalid context, database, or empty URIs list</string>
+    <string name="csv_import_error_unable_to_open_uri_stream">Unable to open stream for URI: %1$s</string>
+    <string name="csv_import_error_reading_source">Error reading %1$s: %2$s</string>
+    <string name="csv_import_failure_file_not_found">File does not exist: %1$s</string>
+    <string name="csv_import_failure_content_string_null">CSV content string is null</string>
+
+    <!-- Phase 1 bridge: preserve currently shipped French terminology from DaysSinceCalculations.setTerms(). -->
+    <string name="dsc_term_tomorrow">Tomorrow</string>
+    <string name="dsc_term_today">Today</string>
+    <string name="dsc_term_yesterday">Yesterday</string>
+    <string name="dsc_term_one_day">1 day</string>
+    <string name="dsc_term_day">day</string>
+    <string name="dsc_term_days">days</string>
+    <string name="dsc_term_year">year</string>
+    <string name="dsc_term_years">years</string>
+    <string name="dsc_term_month">month</string>
+    <string name="dsc_term_months">months</string>
+    <string name="dsc_term_week">week</string>
+    <string name="dsc_term_weeks">weeks</string>
+    <string name="dsc_term_weekday">weekday</string>
+    <string name="dsc_term_weekdays">weekdays</string>
+    <string name="dsc_term_is">is</string>
+    <string name="dsc_term_was">was</string>
+    <string name="dsc_term_in_future_suffix">in future.</string>
+    <string name="dsc_term_in_past_suffix">ago.</string>
 
     <!-- Menu bucket & Data I/O strings -->
     <string name="export_to_files">Export to file(s)</string>

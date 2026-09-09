@@ -1,5 +1,7 @@
 package com.merware.dayssincepro;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +71,38 @@ public class CsvImportResult {
 
     /**
      * Builds a human-readable summary string for display in UI toasts or dialogs.
+     */
+    public String getSummaryMessage(Context context) {
+        if (context == null) {
+            return getSummaryMessage();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(context.getResources().getQuantityString(
+                R.plurals.csv_import_events_imported,
+                importedCount,
+                importedCount));
+
+        if (categoriesCreated > 0) {
+            sb.append(context.getResources().getQuantityString(
+                    R.plurals.csv_import_new_categories,
+                    categoriesCreated,
+                    categoriesCreated));
+        }
+
+        if (skippedCount > 0) {
+            sb.append(context.getResources().getQuantityString(
+                    R.plurals.csv_import_skipped,
+                    skippedCount,
+                    skippedCount));
+        }
+
+        sb.append(context.getString(R.string.csv_import_summary_period));
+        return sb.toString();
+    }
+
+    /**
+     * Legacy summary formatter retained for non-UI call sites.
      */
     public String getSummaryMessage() {
         StringBuilder sb = new StringBuilder();
