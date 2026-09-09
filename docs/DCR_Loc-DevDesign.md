@@ -1,7 +1,7 @@
-# Design Companion: Localization Phase 1 Dev Design
+# Design Companion: Localization Dev Design
 
 **Companion To:** [DCR_LocalizationPlan.md](DCR_LocalizationPlan.md)  
-**Target Phase:** Phase 1 implementation  
+**Target Phase:** Phase 1 through Phase 4 implementation  
 **Status:** Proposed  
 **Audience:** Implementation and review
 
@@ -28,6 +28,7 @@ Out of scope for Phase 1 extraction:
 Implementation rule: no new user-facing string literals may be introduced in Java/Kotlin during extraction.
 
 In short: file format remains canonical English; app feedback about that file format is localized.
+This boundary is a cross-phase contract: CSV schema/header identifiers remain canonical; user-visible import/export text localizes.
 
 ---
 
@@ -40,8 +41,10 @@ Use stable, translator-friendly key conventions during extraction to avoid futur
 3. One semantic meaning per key (do not reuse one key for unrelated contexts)
 4. Avoid UI-position-based names (`label1`, `text_top`) that become ambiguous over time
 5. Preserve existing key names unless there is a clear quality reason to rename
+6. Cross-phase key stability policy: once a key is merged, do not rename/delete it during Phases 1-4 unless it is objectively defective
 
 If a rename is necessary, do it in the same PR as all call-site updates.
+If a rename is necessary, update all active locale files in that same PR so no locale is left behind on stale keys.
 
 ---
 
@@ -55,11 +58,12 @@ Localization-safe formatting standards for all new/updated strings:
 4. Keep punctuation and spacing in resources, not code
 5. Keep grammar/phrasing in resources, not locale-specific conditionals in business logic
 
-Phase 2 will apply these rules when refactoring `DaysSinceCalculations` term handling.
+Policy timing: this standard is effective immediately in Phase 1 extraction work and remains mandatory for Phases 2-4.
+Phase 2 specifically applies it to `DaysSinceCalculations` term/plural refactoring.
 
 ---
 
-## 4. Language Picker UX Contract (Phase 1 Behavior)
+## 4. Language Picker UX Contract (Phase 1-3 Behavior)
 
 Language picker behavior should be explicit and deterministic:
 
@@ -67,7 +71,7 @@ Language picker behavior should be explicit and deterministic:
 2. Include only currently exposed locales from the release allow-list
 3. Persist language selection through `AppCompatDelegate.setApplicationLocales(...)`
 4. Locale precedence: app-selected locale > device locale > default English
-5. Language change effect in Phase 1: apply after restart prompt acceptance
+5. Language change effect in Phases 1-3: apply after restart prompt acceptance (restart-first policy for reliability)
 
 Recommended restart prompt text:
 
@@ -85,6 +89,15 @@ Keep translation assets and release exposure decoupled:
 4. Rollback path: remove a locale from allow-list in next build without deleting translation files
 
 This model supports Wave 2 preparation while shipping only approved locales.
+
+Recommended implementation detail (source of truth):
+
+1. Use one canonical constants class named `LocaleExposureConfig`.
+2. Define `RELEASE_EXPOSED_LOCALES` for production exposure.
+3. Define `SIDELOAD_ALWAYS_EXPOSED_LOCALES` for pseudolocale/test additions (`en-XA`, `ar-XB`).
+4. Compute picker-visible locales from these constants, applying sideload/internal additions when build type is `sideload`.
+5. Keep build-type-specific locale config XML files for platform integration (`locale_config` in release, `locale_config` in sideload) and mirror the same exposure policy.
+6. Add a drift guard test/check that compares `LocaleExposureConfig` effective lists with locale tags declared in each build-type locale config XML.
 
 ---
 
@@ -127,7 +140,76 @@ This section is informational and not a release gate for Phase 1.
 
 ---
 
-## Implementation Notes
+## 9. Feedback Severity and Triage Rubric
+
+Use this four-level severity rubric for localization feedback:
+
+1. `P0-ShipStopper`: crash, unusable flow, or severe text defect that blocks normal use.
+2. `P1-MustHave`: major issue that does not fully block use but must be fixed before release.
+3. `P2-ShouldHave`: meaningful quality issue that should be fixed when feasible.
+4. `P3-NiceToHave`: minor polish or preference-level feedback.
+
+Minimum intake fields per report:
+
+1. Locale
+2. Screen/feature
+3. App version
+4. Screenshot (when possible)
+5. Severity (`P0`/`P1`/`P2`/`P3`)
+
+No-hardcoded-UI-string enforcement guard:
+
+1. Keep the policy rule: no new user-facing string literals in Java/Kotlin.
+2. Add an automated pre-commit/CI check (regex or script) for common UI-string sinks in Java/Kotlin (for example `setText("...")`, `showToast("...")`, `setTitle("...")`, dialog builder text literals).
+3. Exclude test sources and known non-UI constants paths from this check.
+4. Treat any new violation as `P1-MustHave` until triaged.
+5. Keep human review as a backstop for false negatives/positives.
+
+Owner-managed triage workflow:
+
+1. Assign severity (`P0`/`P1`/`P2`/`P3`) on intake.
+2. Validate reproducibility in the reported locale and one control locale (`en`).
+3. Record disposition: fix now, fix later, or reject with rationale.
+4. For `P0` and `P1`, prioritize into the next shipping build.
+5. For `P2` and `P3`, track in backlog and batch by locale/surface.
+
+---
+
+## 10. English Regression Baseline (12 Strings)
+
+Before and after Phase 1 extraction, verify these English strings remain unchanged unless intentionally edited:
+
+1. `dayssince` -> `Days Since` (tab label)
+2. `daysuntil` -> `Until Next` (tab label)
+3. `sincelast` -> `Since Last` (tab label)
+4. `add_new` -> `Add` (button/menu label)
+5. `edit` -> `Edit` (button/menu label)
+6. `remove` -> `Remove` (button/menu label)
+7. `search` -> `Search` (menu/toolbar)
+8. `about` -> `About` (menu)
+9. `days_diff` -> `Days Between Calculator` (main overflow menu)
+10. `config` -> `Options` (main overflow menu)
+11. `daily_notifications` -> `Daily Notifications` (settings)
+12. `are_you_sure` -> `Are you sure?` (confirmation dialog)
+
+If any of these change unexpectedly during extraction-only work, treat as regression and review before merge.
+
+---
+
+## 11. French Mapping Prep for Phase 2
+
+Before removing legacy locale branching in `DaysSinceCalculations`, prepare a one-to-one mapping table in implementation notes/PR description:
+
+1. Legacy hardcoded French token/phrase
+2. New resource key name
+3. French value placed into `values-fr/strings.xml` (or `<plurals>` entry)
+4. Matching English default key/value in `values/strings.xml`
+
+Goal: preserve currently working French wording behavior while moving from code-branch strings to resource-driven localization.
+
+---
+
+## 12. Implementation Notes
 
 1. Keep changes small and reviewable by grouping extraction logically (About, category, import/export, Main toast) rather than one giant mixed commit.
 2. Avoid touching date-format behavior in Phase 1; that remains deferred by policy.
