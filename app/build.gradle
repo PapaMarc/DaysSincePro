@@ -58,3 +58,22 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.14.0' 
 }
+
+tasks.register("checkNoHardcodedUiStrings", Exec) {
+    group = "verification"
+    description = "Fails if obvious UI sink calls use hardcoded string literals in main source."
+
+    commandLine "powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+            "${rootProject.projectDir}/scripts/check_no_hardcoded_ui_strings.ps1",
+            "-RepoRoot", "${rootProject.projectDir}"
+}
+
+tasks.register("updateNoHardcodedUiStringsBaseline", Exec) {
+    group = "verification"
+    description = "Updates baseline for known hardcoded UI string guard violations."
+
+    commandLine "powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+            "${rootProject.projectDir}/scripts/check_no_hardcoded_ui_strings.ps1",
+            "-RepoRoot", "${rootProject.projectDir}",
+            "-UpdateBaseline"
+}

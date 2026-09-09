@@ -1,5 +1,7 @@
 package com.merware.dayssincepro;
 
+import android.content.Context;
+
 import java.util.Locale;
 
 /**
@@ -8,9 +10,8 @@ import java.util.Locale;
 public final class CategorySelectionPolicy {
 
     public static final long UNCATEGORIZED_CAT_ID = 0L;
-    public static final String UNCATEGORIZED_LABEL = "Uncategorized";
+    private static final String UNCATEGORIZED_CANONICAL_TOKEN = "Uncategorized";
     public static final long ACTION_ADD_NEW_CATEGORY_ID = -100L;
-    public static final String ACTION_ADD_NEW_CATEGORY_LABEL = "<Add New Category>";
 
     private CategorySelectionPolicy() {
         // Utility class; prevent instantiation.
@@ -133,7 +134,7 @@ public final class CategorySelectionPolicy {
             return true;
         }
         return normalized.toLowerCase(Locale.US)
-                .equals(UNCATEGORIZED_LABEL.toLowerCase(Locale.US));
+            .equals(UNCATEGORIZED_CANONICAL_TOKEN.toLowerCase(Locale.US));
     }
 
     public static boolean isReservedCategoryName(String rawCategoryName) {
@@ -142,11 +143,18 @@ public final class CategorySelectionPolicy {
             return false;
         }
         return normalized.toLowerCase(Locale.US)
-                .equals(UNCATEGORIZED_LABEL.toLowerCase(Locale.US));
+                .equals(UNCATEGORIZED_CANONICAL_TOKEN.toLowerCase(Locale.US));
     }
 
     public static String getUncategorizedDisplayLabel() {
-        return UNCATEGORIZED_LABEL;
+        return UNCATEGORIZED_CANONICAL_TOKEN;
+    }
+
+    public static String getUncategorizedDisplayLabel(Context context) {
+        if (context == null) {
+            return getUncategorizedDisplayLabel();
+        }
+        return context.getString(R.string.uncategorized).trim();
     }
 
     public static ImportCategoryDecision decideImportCategory(String rawCategory,

@@ -214,7 +214,7 @@ public class EventChooserActivity extends AppCompatActivity {
 
             if (CategorySelectionPolicy.shouldIncludeSyntheticUncategorized(getUncategorizedEventCount())) {
                 listOfCatIds.add((int) CategorySelectionPolicy.UNCATEGORIZED_CAT_ID);
-                catAdapter.add(CategorySelectionPolicy.getUncategorizedDisplayLabel());
+                catAdapter.add(CategorySelectionPolicy.getUncategorizedDisplayLabel(this));
             }
 
             String sql = "select _id, category from category order by "

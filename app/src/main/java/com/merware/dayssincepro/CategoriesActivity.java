@@ -331,7 +331,7 @@ public class CategoriesActivity extends AppCompatActivity {
             MatrixCursor synthetic = new MatrixCursor(new String[]{"_id", "category", "type"});
             synthetic.addRow(new Object[]{
                 CategorySelectionPolicy.UNCATEGORIZED_CAT_ID,
-                CategorySelectionPolicy.getUncategorizedDisplayLabel(),
+                CategorySelectionPolicy.getUncategorizedDisplayLabel(this),
                 0
             });
             cursor = new MergeCursor(new Cursor[]{synthetic, categoryCursor});

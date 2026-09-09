@@ -842,7 +842,7 @@ public class EditEventActivity extends AppCompatActivity {
             MatrixCursor synthetic = new MatrixCursor(new String[]{"_id", "category"});
             synthetic.addRow(new Object[]{
                 CategorySelectionPolicy.UNCATEGORIZED_CAT_ID,
-                CategorySelectionPolicy.getUncategorizedDisplayLabel()
+                CategorySelectionPolicy.getUncategorizedDisplayLabel(this)
             });
             cursor = new MergeCursor(new Cursor[]{synthetic, cursor});
         }
