@@ -69,6 +69,13 @@
     <string name="settings_language_use_device">Utiliser la langue de l\'appareil</string>
     <string name="settings_language_english">Anglais</string>
     <string name="settings_language_french">Francais</string>
+    <string name="settings_language_spanish">Espagnol</string>
+    <string name="settings_language_german">Allemand</string>
+    <string name="settings_language_portuguese">Portugais</string>
+    <string name="settings_language_portuguese_brazil">Portugais (Bresil)</string>
+    <string name="settings_language_italian">Italien</string>
+    <string name="settings_language_chinese_simplified">Chinois (simplifie)</string>
+    <string name="settings_language_hindi">Hindi</string>
     <string name="settings_language_restart_prompt">Redemarrez l\'application pour appliquer la mise a jour de la langue.</string>
     <string name="settings_restart_now">Redemarrer maintenant</string>
     <string name="settings_later">Plus tard</string>

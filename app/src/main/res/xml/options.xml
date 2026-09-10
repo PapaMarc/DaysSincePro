@@ -56,11 +56,11 @@
 		<ListPreference
             android:dialogTitle="@string/remind_repeat_events"
             android:entries="@array/remind_percent"
-            android:entryValues="@array/remind_percent"
+			android:entryValues="@array/remind_percent_values"
             android:key="remind_percent"
             android:summary="@string/remind_repeat_events"
 			android:title="@string/remind_repeat_events"
-			android:defaultValue="75 percent of days passed"/>
+			android:defaultValue="75"/>
 
 
 </PreferenceScreen>
