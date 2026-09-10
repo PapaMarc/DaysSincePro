@@ -221,6 +221,7 @@
     <string name="about_donation_text">自愿捐助有助于本应用保持免费。你可以通过 %1$s 支持，但这不会解锁任何功能。</string>
     <string name="about_support_email">support@merware.com</string>
     <string name="about_support_feedback">如有任何问题或反馈，可发送到 support@merware.com。也非常感谢任何翻译协助，无论是简短邮件还是对 strings.xml 的深入协作。</string>
+    <string name="about_cafe_thanks">感谢尊贵顾客对我们的厚爱。</string>
 
     <string name="csv_export_failed_open_output_stream">无法打开输出流。</string>
     <string name="csv_export_saved_events">daysSince.csv 已保存（%1$d 个事件）</string>

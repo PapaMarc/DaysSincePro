@@ -203,6 +203,7 @@
   <string name="about_donation_text">Les contributions volontaires aident à garder cette application gratuite. Vous pouvez partager votre %1$s, mais cela ne débloque aucune fonctionnalité.</string>
   <string name="about_support_email">support@merware.com</string>
   <string name="about_support_feedback">Toute question ou tout retour peut être envoyé à support@merware.com, et toute aide de traduction, qu\'il s\'agisse d\'un bref e-mail ou d\'une collaboration plus approfondie sur un fichier strings.xml, est sincèrement appréciée.</string>
+  <string name="about_cafe_thanks">Nous remercions notre aimable clientèle de la préférence qu’elle nous a accordée.</string>
   <string name="csv_export_failed_open_output_stream">Impossible d\'ouvrir le flux de sortie.</string>
   <string name="csv_export_saved_events">daysSince.csv enregistré (%1$d événements)</string>
   <string name="csv_export_failed_with_reason">Échec de l\'exportation : %1$s</string>

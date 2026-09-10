@@ -221,6 +221,7 @@
     <string name="about_donation_text">Voluntary contributions help keep this app free. You can share your %1$s, though doing so does not unlock features.</string>
     <string name="about_support_email">support@merware.com</string>
     <string name="about_support_feedback">Any questions or feedback may be sent to support@merware.com, and any translation assistance, whether a brief email or deeper collaboration on a strings.xml file, is sincerely appreciated.</string>
+    <string name="about_cafe_thanks">हम अपनी आदरणीय ग्राहक मंडली का हमें दी गई प्राथमिकता के लिए धन्यवाद करते हैं।</string>
 
     <string name="csv_export_failed_open_output_stream">आउटपुट स्ट्रीम खोलने में विफल।</string>
     <string name="csv_export_saved_events">daysSince.csv सहेजा गया (%1$d इवेंट)</string>

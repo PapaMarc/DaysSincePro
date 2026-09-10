@@ -58,12 +58,13 @@ public class AboutDialog {
         String donationLinkText = context.getString(R.string.about_donation_link_text);
         String donationText = context.getString(R.string.about_donation_text, donationLinkText);
         String supportText = context.getString(R.string.about_support_feedback);
+        String cafeThanksText = context.getString(R.string.about_cafe_thanks);
         String supportEmail = context.getString(R.string.about_support_email);
 
-        // Maintained/republished line appears first, then the donation blurb,
-        // then the original author credit below it, each separated by a blank line.
+        // Maintained/republished line appears first, then donation and support notes,
+        // then a traditional thank-you line and finally the original author credit.
         String fullAboutText = maintainedAndRepublished + "\n\n" + donationText +
-                "\n\n" + supportText + "\n\n" + aboutText;
+                "\n\n" + supportText + "\n\n" + cafeThanksText + "\n\n" + aboutText;
 
         // Custom centered title
         final TextView title = new TextView(context);
