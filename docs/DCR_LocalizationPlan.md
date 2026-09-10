@@ -149,11 +149,45 @@ app/src/main/res/
         strings.xml
     xml/
         locales_config.xml      ← new (Phase 3): declares supported locale tags for android:localeConfig
+app/src/sideload/res/
+    xml/
+        locales_config.xml      ← sideload-only locale overlay (adds test/pseudolocale exposure)
+app/src/main/java/com/merware/dayssincepro/
+    LocaleExposureConfig.java   ← in-app picker exposure policy (release + sideload additions)
 ```
 
 No changes to `layout/`, `layout-v14/`, `layout-land/`, or `layout-w820dp/` folders are anticipated for Tier 1 languages (see Section 5's risk notes and Section 8).
 
-Language enable/disable policy: all locale resource folders can exist in source while only a subset is exposed via an allow-list consumed by `locales_config.xml` and the in-app language picker list. This applies to both production locales and pseudolocales, with profile-specific defaults (release can hide pseudolocales and versions that publish to Google Play Store typically will; sideload/internal may expose them more regularly).
+Language enable/disable policy (implemented): all locale resource folders can exist in source while only a subset is exposed by a three-file control surface: `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java` (in-app picker policy), `app/src/main/res/xml/locales_config.xml` (release platform App Language list), and `app/src/sideload/res/xml/locales_config.xml` (sideload platform overlay). This applies to both production locales and pseudolocales, with profile-specific defaults (release can hide pseudolocales; sideload/internal can keep them visible).
+
+### 6.1 Locale Exposure Operator Guide
+
+Use these concrete edit patterns to expose/hide locales without deleting translation folders.
+
+1. Hide pseudolocales in release, keep visible in sideload (default)
+   - In `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`: keep `en-XA` and `ar-XB` only in `SIDELOAD_ALWAYS_EXPOSED_LOCALES`, not in `RELEASE_EXPOSED_LOCALES`.
+   - In `app/src/main/res/xml/locales_config.xml`: omit `<locale android:name="en-XA"/>` and `<locale android:name="ar-XB"/>`.
+   - In `app/src/sideload/res/xml/locales_config.xml`: include both tags.
+
+2. Disable one normal locale in both release and sideload (example: `it`)
+   - Remove `it` from `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Remove `<locale android:name="it"/>` from `app/src/main/res/xml/locales_config.xml`.
+   - Remove `<locale android:name="it"/>` from `app/src/sideload/res/xml/locales_config.xml`.
+   - Keep `app/src/main/res/values-it/strings.xml` in source.
+
+3. Enable one normal locale in both release and sideload (example: `it`)
+   - Add `it` to `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="it"/>` to both XML files.
+
+4. Add a QA-only locale in sideload (example: `en-XA`)
+   - Add `en-XA` to `SIDELOAD_ALWAYS_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="en-XA"/>` to `app/src/sideload/res/xml/locales_config.xml` only.
+   - Keep it absent from `RELEASE_EXPOSED_LOCALES` and from `app/src/main/res/xml/locales_config.xml`.
+
+5. Promote sideload-only locale to release (example: `en-XA`)
+   - Add `en-XA` to `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="en-XA"/>` to `app/src/main/res/xml/locales_config.xml`.
+   - Optionally keep it in `SIDELOAD_ALWAYS_EXPOSED_LOCALES` if sideload should continue forcing visibility.
 
 ---
 
@@ -222,7 +256,7 @@ Directional ranking based on common global Android usage/native-speaker populati
 2. **Release sequencing:** two waves. Wave 1 includes `es`, `fr`, `de`, `pt`, `pt-rBR`, `it`, `zh-rCN`, `hi`; Wave 2 follows with the remaining Tier 1 languages.
 3. **API 30-32 behavior:** expose the in-app "Language" setting on API 30-32 as well (same capability as API 33+ users), applying locales through `AppCompatDelegate.setApplicationLocales(...)`.
 4. **Release posture during closed testing:** ship planned locales and observe real usage/feedback; no minimum feedback-count threshold is required before release. Users can always switch back to English.
-5. **Fallback/rollback posture (recommended):** keep translation folders in source, but gate user exposure through a single allow-list used by both `locales_config.xml` and the in-app picker list. If a locale regresses, remove it from the allow-list for the next build without deleting translation work. The same mechanism governs pseudolocale exposure.
+5. **Fallback/rollback posture (recommended):** keep translation folders in source, but gate user exposure through the implemented control surface: `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`, `app/src/main/res/xml/locales_config.xml`, and `app/src/sideload/res/xml/locales_config.xml`. If a locale regresses, remove it from exposure in those files for the next build without deleting translation work. The same mechanism governs pseudolocale exposure.
 6. **Ownership and intake:** product owner reviews and incorporates localization feedback directly (email and/or GitHub PR), with process formalization deferred until scale requires it.
 7. **No new hardcoded UI strings rule:** no new user-facing string literals are allowed in Java/Kotlin code. All user-facing copy must come from resources.
 8. **No locale-branching in business logic rule:** avoid `if (Locale...)` branches inside domain/business classes for phrasing/grammar. Locale-specific wording must live in string/plural resources and be resolved via Android resource APIs.

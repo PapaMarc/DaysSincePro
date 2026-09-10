@@ -84,20 +84,49 @@ Recommended restart prompt text:
 Keep translation assets and release exposure decoupled:
 
 1. Translation folders may exist in source even if not exposed yet
-2. User-visible locale list is controlled by a single release allow-list
-3. `locales_config.xml` and in-app picker must use the same allow-list source
-4. Rollback path: remove a locale from allow-list in next build without deleting translation files
+2. User-visible locale list is controlled by one policy class plus build-type platform locale config files
+3. In-app picker and Android system App Language lists must be intentionally kept in sync
+4. Rollback path: remove a locale from exposure controls in the next build without deleting translation files
 
 This model supports Wave 2 preparation while shipping only approved locales.
 
-Recommended implementation detail (source of truth):
+Implemented control surface (operator view):
 
-1. Use one canonical constants class named `LocaleExposureConfig`.
-2. Define `RELEASE_EXPOSED_LOCALES` for production exposure.
-3. Define `SIDELOAD_ALWAYS_EXPOSED_LOCALES` for pseudolocale/test additions (`en-XA`, `ar-XB`).
-4. Compute picker-visible locales from these constants, applying sideload/internal additions when build type is `sideload`.
-5. Keep build-type-specific locale config XML files for platform integration (`locale_config` in release, `locale_config` in sideload) and mirror the same exposure policy.
-6. Add a drift guard test/check that compares `LocaleExposureConfig` effective lists with locale tags declared in each build-type locale config XML.
+1. In-app language picker policy: `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`
+2. Release platform locale list (Android Settings -> App Language): `app/src/main/res/xml/locales_config.xml`
+3. Sideload platform locale list override: `app/src/sideload/res/xml/locales_config.xml`
+
+Operator guide: common enable/disable actions
+
+1. Hide pseudolocales in release, but show in sideload (current default)
+   - Keep `en-XA` and `ar-XB` out of `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Keep `en-XA` and `ar-XB` in `SIDELOAD_ALWAYS_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Keep `en-XA` and `ar-XB` absent from `app/src/main/res/xml/locales_config.xml`.
+   - Keep `en-XA` and `ar-XB` present in `app/src/sideload/res/xml/locales_config.xml`.
+
+2. Disable a normal locale everywhere without deleting translations (example: `it`)
+   - Remove `it` from `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Remove `<locale android:name="it"/>` from `app/src/main/res/xml/locales_config.xml`.
+   - Remove `<locale android:name="it"/>` from `app/src/sideload/res/xml/locales_config.xml`.
+   - Do not delete `app/src/main/res/values-it/`; keep translation assets intact for future re-enable.
+
+3. Re-enable a normal locale everywhere (example: `it`)
+   - Add `it` back to `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="it"/>` to `app/src/main/res/xml/locales_config.xml` and `app/src/sideload/res/xml/locales_config.xml`.
+
+4. Expose a QA-only locale in sideload only (example: `en-XA`)
+   - Add `en-XA` to `SIDELOAD_ALWAYS_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="en-XA"/>` only in `app/src/sideload/res/xml/locales_config.xml`.
+   - Keep `en-XA` out of `RELEASE_EXPOSED_LOCALES` and out of `app/src/main/res/xml/locales_config.xml`.
+
+5. Promote a sideload-only locale to release (example: `en-XA` for a temporary release experiment)
+   - Add `en-XA` to `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `<locale android:name="en-XA"/>` to `app/src/main/res/xml/locales_config.xml`.
+   - Keep or remove it from `SIDELOAD_ALWAYS_EXPOSED_LOCALES` depending on whether sideload should force it visible even if later removed from release.
+
+Recommended guardrail:
+
+1. Add a drift guard test/check that compares `LocaleExposureConfig` effective lists with locale tags declared in `app/src/main/res/xml/locales_config.xml` and `app/src/sideload/res/xml/locales_config.xml`.
 
 ---
 

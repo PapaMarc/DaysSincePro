@@ -109,6 +109,8 @@ public class PrefActivity extends AppCompatActivity {
             appLanguagePref = (ListPreference) findPreference(AppLocaleManager.PREF_APP_LANGUAGE);
             remindPref = (ListPreference) findPreference("remind_percent");
             tabStylePref = (ListPreference) findPreference("tab_style");
+
+            configureAppLanguagePreference();
         }
 
         @Override
@@ -199,9 +201,33 @@ public class PrefActivity extends AppCompatActivity {
             }
 
             String currentValue = AppLocaleManager.currentPreferenceValue();
+            if (!LocaleExposureConfig.isPickerValueExposed(currentValue, getActivity())) {
+                currentValue = AppLocaleManager.VALUE_SYSTEM;
+                AppLocaleManager.applyLocaleValue(currentValue);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                prefs.edit().putString(AppLocaleManager.PREF_APP_LANGUAGE, currentValue).apply();
+            }
+
             if (!currentValue.equals(appLanguagePref.getValue())) {
                 appLanguagePref.setValue(currentValue);
             }
+        }
+
+        private void configureAppLanguagePreference() {
+            if (appLanguagePref == null) {
+                return;
+            }
+
+            LocaleExposureConfig.PickerOption[] options = LocaleExposureConfig.pickerOptions(getActivity());
+            CharSequence[] entries = new CharSequence[options.length];
+            CharSequence[] values = new CharSequence[options.length];
+            for (int i = 0; i < options.length; i++) {
+                entries[i] = getString(options[i].labelResId);
+                values[i] = options[i].value;
+            }
+
+            appLanguagePref.setEntries(entries);
+            appLanguagePref.setEntryValues(values);
         }
 
         private void showLanguageRestartPrompt() {
