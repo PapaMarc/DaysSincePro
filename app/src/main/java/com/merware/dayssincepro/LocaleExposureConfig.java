@@ -22,7 +22,7 @@ final class LocaleExposureConfig {
             "hi"
     };
 
-    static final String[] SIDELOAD_ALWAYS_EXPOSED_LOCALES = new String[]{
+    static final String[] SIDELOAD_PSEUDO_LOCALES = new String[]{
             "en-XA",
             "ar-XB"
     };
@@ -67,8 +67,8 @@ final class LocaleExposureConfig {
         options.add(new PickerOption(AppLocaleManager.VALUE_SYSTEM, R.string.settings_language_use_device));
 
         Set<String> exposed = new LinkedHashSet<>(Arrays.asList(RELEASE_EXPOSED_LOCALES));
-        if (isSideloadBuild(context)) {
-            exposed.addAll(Arrays.asList(SIDELOAD_ALWAYS_EXPOSED_LOCALES));
+        if (isSideloadBuild(context) && DeveloperToolsSession.isPseudoLangsEnabled()) {
+            exposed.addAll(Arrays.asList(SIDELOAD_PSEUDO_LOCALES));
         }
 
         for (String tag : PICKER_LOCALE_ORDER) {

@@ -107,7 +107,8 @@ Exposure policy for pseudolocales:
 
 - They can be exposed/hidden using the same allow-list mechanism as standard locales.
 - Release builds should default to hiding pseudolocales.
-- Sideload/internal builds may keep pseudolocales always visible in the language picker for ongoing test utility.
+- Sideload/internal builds hide pseudolocales by default at startup and expose them only after Developer Tools is unlocked (triple tap) and **Enable Pseudo Langs** is selected for that app-run session.
+- Pseudolocale exposure is one-way per run session (Enable -> Active/disabled) and resets on app restart, matching Developer Tools session semantics.
 
 ---
 
@@ -158,16 +159,16 @@ app/src/main/java/com/merware/dayssincepro/
 
 No changes to `layout/`, `layout-v14/`, `layout-land/`, or `layout-w820dp/` folders are anticipated for Tier 1 languages (see Section 5's risk notes and Section 8).
 
-Language enable/disable policy (implemented): all locale resource folders can exist in source while only a subset is exposed by a three-file control surface: `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java` (in-app picker policy), `app/src/main/res/xml/locales_config.xml` (release platform App Language list), and `app/src/sideload/res/xml/locales_config.xml` (sideload platform overlay). This applies to both production locales and pseudolocales, with profile-specific defaults (release can hide pseudolocales; sideload/internal can keep them visible).
+Language enable/disable policy (implemented): all locale resource folders can exist in source while only a subset is exposed by a three-file control surface: `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java` (in-app picker policy), `app/src/main/res/xml/locales_config.xml` (release platform App Language list), and `app/src/sideload/res/xml/locales_config.xml` (sideload platform overlay). This applies to both production locales and pseudolocales, with profile-specific defaults (release can hide pseudolocales; sideload/internal can expose pseudolocales only within an unlocked Developer Tools session after an explicit enable action).
 
 ### 6.1 Locale Exposure Operator Guide
 
 Use these concrete edit patterns to expose/hide locales without deleting translation folders.
 
-1. Hide pseudolocales in release, keep visible in sideload (default)
-   - In `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`: keep `en-XA` and `ar-XB` only in `SIDELOAD_ALWAYS_EXPOSED_LOCALES`, not in `RELEASE_EXPOSED_LOCALES`.
+1. Hide pseudolocales in release, gate in sideload behind Developer Tools session enable (default)
+   - In `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`: keep `en-XA` and `ar-XB` only in `SIDELOAD_PSEUDO_LOCALES`, not in `RELEASE_EXPOSED_LOCALES`; ensure picker exposure adds them only when sideload + pseudo-langs session flag is enabled.
    - In `app/src/main/res/xml/locales_config.xml`: omit `<locale android:name="en-XA"/>` and `<locale android:name="ar-XB"/>`.
-   - In `app/src/sideload/res/xml/locales_config.xml`: include both tags.
+   - In `app/src/sideload/res/xml/locales_config.xml`: include both tags (platform App Language availability remains sideload-only).
 
 2. Disable one normal locale in both release and sideload (example: `it`)
    - Remove `it` from `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
@@ -180,14 +181,14 @@ Use these concrete edit patterns to expose/hide locales without deleting transla
    - Add `<locale android:name="it"/>` to both XML files.
 
 4. Add a QA-only locale in sideload (example: `en-XA`)
-   - Add `en-XA` to `SIDELOAD_ALWAYS_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
+   - Add `en-XA` to `SIDELOAD_PSEUDO_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
    - Add `<locale android:name="en-XA"/>` to `app/src/sideload/res/xml/locales_config.xml` only.
    - Keep it absent from `RELEASE_EXPOSED_LOCALES` and from `app/src/main/res/xml/locales_config.xml`.
 
 5. Promote sideload-only locale to release (example: `en-XA`)
    - Add `en-XA` to `RELEASE_EXPOSED_LOCALES` in `app/src/main/java/com/merware/dayssincepro/LocaleExposureConfig.java`.
    - Add `<locale android:name="en-XA"/>` to `app/src/main/res/xml/locales_config.xml`.
-   - Optionally keep it in `SIDELOAD_ALWAYS_EXPOSED_LOCALES` if sideload should continue forcing visibility.
+   - Optionally keep it in `SIDELOAD_PSEUDO_LOCALES` if sideload should continue allowing visibility when Developer Tools session enable is used.
 
 ---
 
@@ -260,7 +261,7 @@ Directional ranking based on common global Android usage/native-speaker populati
 6. **Ownership and intake:** product owner reviews and incorporates localization feedback directly (email and/or GitHub PR), with process formalization deferred until scale requires it.
 7. **No new hardcoded UI strings rule:** no new user-facing string literals are allowed in Java/Kotlin code. All user-facing copy must come from resources.
 8. **No locale-branching in business logic rule:** avoid `if (Locale...)` branches inside domain/business classes for phrasing/grammar. Locale-specific wording must live in string/plural resources and be resolved via Android resource APIs.
-9. **QA baseline:** include `en-XA` in Wave 1 test pass and `ar-XB` in Wave 2 test pass. Pseudolocales may be visible in sideload/internal language lists and hidden in release lists.
+9. **QA baseline:** include `en-XA` in Wave 1 test pass and `ar-XB` in Wave 2 test pass. Pseudolocales are hidden in release lists; in sideload/internal, they are visible only after Developer Tools session unlock + explicit enable.
 10. **Feedback channels in About dialog:** add the paragraph with `mailto:` link for translation feedback and general support as provided in section11.
 11. **Language-change application policy (Phase 1):** apply on app restart for ease/reliability. Dynamic in-place re-render may be evaluated later, but is not required for Phase 1.
 12. **Date-format policy scope:** locale-aware date/number formatting is explicitly not required for Phase 1 (Wave 1 and Wave 2 locales). It is required as a precursor policy gate before launching post-Phase-1 locale expansion.

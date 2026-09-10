@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int MENU_DEVELOPER_TOOLS = Menu.FIRST + 8100;
     private static final int MENU_DEVELOPER_TOGGLE_LOGGING = Menu.FIRST + 8101;
     private static final int MENU_DEVELOPER_EXPORT_DIAGS = Menu.FIRST + 8102;
+    private static final int MENU_DEVELOPER_ENABLE_PSEUDO_LANGS = Menu.FIRST + 8103;
     private static final long DEV_TOOLS_TAP_WINDOW_MS = 850L;
 
     private String appliedThemeValue = "0";
@@ -196,6 +197,15 @@ public class MainActivity extends AppCompatActivity implements
             MenuItem toolsItem = toolsMenu.getItem();
             toolsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
+            boolean pseudoLangsEnabled = DeveloperToolsSession.isPseudoLangsEnabled();
+            MenuItem pseudoLangsItem = toolsMenu.add(0,
+                    MENU_DEVELOPER_ENABLE_PSEUDO_LANGS,
+                    0,
+                    pseudoLangsEnabled
+                            ? R.string.developer_pseudo_langs_active
+                            : R.string.developer_enable_pseudo_langs);
+            pseudoLangsItem.setEnabled(!pseudoLangsEnabled);
+
             int labelRes = DeveloperToolsSession.isLoggingEnabled()
                     ? R.string.disable_logging
                     : R.string.enable_logging;
@@ -203,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
                     MENU_DEVELOPER_TOGGLE_LOGGING,
                     1,
                     labelRes);
-                toolsMenu.add(0,
+            toolsMenu.add(0,
                     MENU_DEVELOPER_EXPORT_DIAGS,
                     2,
                     R.string.export_diagnostics);
@@ -253,6 +263,15 @@ public class MainActivity extends AppCompatActivity implements
                     ? getString(R.string.developer_logging_enabled)
                     : getString(R.string.developer_logging_disabled));
             DeveloperToolsSession.log("MainActivity", "developerLogging=" + enable);
+            return true;
+
+        } else if (itemId == MENU_DEVELOPER_ENABLE_PSEUDO_LANGS) {
+            if (!DeveloperToolsSession.isPseudoLangsEnabled()) {
+                DeveloperToolsSession.enablePseudoLangsForSession();
+                DeveloperToolsSession.logSessionMarker("pseudoLangsEnabled=true");
+                showToast(getString(R.string.developer_pseudo_langs_enabled));
+            }
+            invalidateOptionsMenu();
             return true;
 
         } else if (itemId == MENU_DEVELOPER_EXPORT_DIAGS) {

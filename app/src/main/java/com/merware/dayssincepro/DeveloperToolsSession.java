@@ -18,6 +18,7 @@ public final class DeveloperToolsSession {
 
     private static boolean unlockedForSession = false;
     private static boolean loggingEnabled = false;
+    private static boolean pseudoLangsEnabled = false;
     private static boolean sideloadBuild = false;
     private static final ArrayDeque<String> bufferedLines = new ArrayDeque<String>();
 
@@ -31,6 +32,7 @@ public final class DeveloperToolsSession {
             if (!sideloadBuild) {
                 unlockedForSession = false;
                 loggingEnabled = false;
+                pseudoLangsEnabled = false;
                 bufferedLines.clear();
             }
         }
@@ -69,6 +71,21 @@ public final class DeveloperToolsSession {
                 return;
             }
             loggingEnabled = enabled;
+        }
+    }
+
+    static boolean isPseudoLangsEnabled() {
+        synchronized (LOCK) {
+            return sideloadBuild && pseudoLangsEnabled;
+        }
+    }
+
+    static void enablePseudoLangsForSession() {
+        synchronized (LOCK) {
+            if (!sideloadBuild) {
+                return;
+            }
+            pseudoLangsEnabled = true;
         }
     }
 

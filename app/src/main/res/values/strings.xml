@@ -187,9 +187,12 @@
     <string name="settings_language_hindi">Hindi</string>
     <string name="no_data_entries"> No Data</string>
         <string name="developer_tools">Developer Tools</string>
+        <string name="developer_enable_pseudo_langs">Enable Pseudo Langs</string>
+        <string name="developer_pseudo_langs_active">Pseudo Langs Active</string>
         <string name="enable_logging">Enable Logging</string>
         <string name="disable_logging">Disable Logging</string>
         <string name="developer_tools_unlocked">Developer Tools unlocked for this session.</string>
+        <string name="developer_pseudo_langs_enabled">Pseudo languages enabled for this session.</string>
         <string name="developer_logging_enabled">Developer logging enabled.</string>
         <string name="developer_logging_disabled">Developer logging disabled.</string>
         <string name="export_diagnostics">Export Diagnostics</string>
