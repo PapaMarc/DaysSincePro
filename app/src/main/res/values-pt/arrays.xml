@@ -86,6 +86,8 @@
     <string-array name="app_language_entries">
         <item>@string/settings_language_use_device</item>
         <item>@string/settings_language_english</item>
+        <item>@string/settings_language_pseudo_accented</item>
+        <item>@string/settings_language_pseudo_bidi</item>
         <item>@string/settings_language_french</item>
         <item>@string/settings_language_spanish</item>
         <item>@string/settings_language_german</item>
