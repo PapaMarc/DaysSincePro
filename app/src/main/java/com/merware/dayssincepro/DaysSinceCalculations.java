@@ -62,6 +62,8 @@ public class DaysSinceCalculations {
     String s_is;
     String s_was;
     String s_yearMonthSeparator;
+    String s_relativePastFormat;
+    String s_relativeFutureFormat;
 
     // m is for minutes, M is for month
     // Explicitly proleptic Gregorian (no Julian/Gregorian cutover) via DateFormats - see
@@ -96,6 +98,8 @@ public class DaysSinceCalculations {
         s_infuture = context.getString(R.string.dsc_term_in_future_suffix);
         s_inpast = context.getString(R.string.dsc_term_in_past_suffix);
         s_yearMonthSeparator = context.getString(R.string.dsc_term_year_month_separator);
+        s_relativePastFormat = context.getString(R.string.dsc_term_relative_past_format);
+        s_relativeFutureFormat = context.getString(R.string.dsc_term_relative_future_format);
     }
 
     private void setFallbackEnglishTerms() {
@@ -121,6 +125,8 @@ public class DaysSinceCalculations {
         s_infuture = "from now.";
         s_inpast = "ago.";
         s_yearMonthSeparator = "";
+        s_relativePastFormat = "%1$s%2$s %3$s";
+        s_relativeFutureFormat = "%1$s%2$s %3$s";
     }
 
     public DaysSinceCalculations(Context context, SimpleDate sd) {
@@ -556,12 +562,19 @@ public class DaysSinceCalculations {
 
     public String getExplain(boolean bWasAgo, int styleOption) {
         String toReturn = new String();
+        String tensePrefix = "";
 
         if (bWasAgo) {
             if (isFuture || isToday) {
-                toReturn += s_is + " ";
+                tensePrefix = s_is;
             } else {
-                toReturn += s_was + " ";
+                tensePrefix = s_was;
+            }
+
+            if (tensePrefix != null && tensePrefix.trim().length() > 0) {
+                tensePrefix = tensePrefix + " ";
+            } else {
+                tensePrefix = "";
             }
         }
 
@@ -571,8 +584,7 @@ public class DaysSinceCalculations {
             case 0:
                 toReturn += explanation;
                 if (isTomorrow || isToday || isYesterday) {
-                    // toReturn += ".";
-                    return toReturn;
+                    return tensePrefix + toReturn;
                 }
 
                 break;
@@ -617,11 +629,10 @@ public class DaysSinceCalculations {
         }
 
         if (bWasAgo) {
-            if (isFuture) {
-                toReturn += " " + s_infuture;
-            } else
-                toReturn += " " + s_inpast;
-
+            String format = isFuture ? s_relativeFutureFormat : s_relativePastFormat;
+            String relativeTerm = isFuture ? s_infuture : s_inpast;
+            String assembled = String.format(format, tensePrefix, toReturn, relativeTerm);
+            return assembled.trim().replaceAll("\\s+", " ");
         }
         return toReturn;
     }
