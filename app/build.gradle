@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 51
-        versionName "3.13.239.51"
+        versionName "3.13.241.51"
     }
 
     signingConfigs {
@@ -37,6 +37,7 @@ android {
         sideload {
             initWith release
             applicationIdSuffix ".dev"
+            pseudoLocalesEnabled true
             signingConfig signingConfigs.release
         }
     }
