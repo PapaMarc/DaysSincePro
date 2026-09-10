@@ -157,8 +157,8 @@
   <string name="settings_language_title">Langue</string>
   <string name="settings_language_use_device">Utiliser la langue de l\'appareil</string>
   <string name="settings_language_english">Anglais</string>
-  <string name="settings_language_pseudo_accented">Pseudo (accentué)</string>
-  <string name="settings_language_pseudo_bidi">Pseudo (Bidi)</string>
+  <string name="settings_language_pseudo_accented">Pseudo‑accentué anglais (en‑XA)</string>
+  <string name="settings_language_pseudo_bidi">Pseudo‑bidi arabe (ar‑XB)</string>
   <string name="settings_language_french">Francais</string>
   <string name="settings_language_spanish">Espagnol</string>
   <string name="settings_language_german">Allemand</string>

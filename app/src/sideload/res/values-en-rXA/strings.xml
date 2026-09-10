@@ -157,8 +157,8 @@
   <string name="settings_language_title">[!! Ŀàñğūàğē !!]</string>
   <string name="settings_language_use_device">[!! Ūşē ďēṽīçē ľàñğūàğē !!]</string>
   <string name="settings_language_english">[!! Ēñğľīşĥ !!]</string>
-  <string name="settings_language_pseudo_accented">[!! Ƥşēūďō (Àççēñŧēď) !!]</string>
-  <string name="settings_language_pseudo_bidi">[!! Ƥşēūďō (ßīďī) !!]</string>
+  <string name="settings_language_pseudo_accented">[!! Ƥşēūďō‑Àççēñŧēď Ēñğľīşĥ (ēñ‑ẊÀ) !!]</string>
+  <string name="settings_language_pseudo_bidi">[!! Ƥşēūďō‑ßīďī Àŕàƀīç (àŕ‑Ẋß) !!]</string>
   <string name="settings_language_french">[!! Ƒŕēñçĥ !!]</string>
   <string name="settings_language_spanish">[!! Šƥàñīşĥ !!]</string>
   <string name="settings_language_german">[!! Ğēŕḿàñ !!]</string>
