@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        AppLocaleManager.applyStoredLocale(this);
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         alarmHelp = new AlarmHelper(this);
         DeveloperToolsSession.initialize(getPackageName());

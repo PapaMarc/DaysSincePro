@@ -37,6 +37,15 @@
 			android:dialogTitle="@string/theme" android:title="@string/theme"
 			android:summary="@string/light" android:entries="@array/themes"
 			android:entryValues="@array/theme_values" android:defaultValue="0" />
+
+		<ListPreference
+			android:key="app_language"
+			android:dialogTitle="@string/settings_language_title"
+			android:title="@string/settings_language_title"
+			android:summary="@string/settings_language_use_device"
+			android:entries="@array/app_language_entries"
+			android:entryValues="@array/app_language_values"
+			android:defaultValue="system" />
 		
 		<CheckBoxPreference android:key="noti"
 		    android:title = "@string/daily_notifications"

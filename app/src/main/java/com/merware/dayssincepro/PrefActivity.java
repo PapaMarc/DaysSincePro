@@ -3,12 +3,14 @@ package com.merware.dayssincepro;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PrefActivity extends AppCompatActivity {
@@ -18,6 +20,7 @@ public class PrefActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppLocaleManager.applyStoredLocale(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         applySettingsTheme();
 
@@ -59,6 +62,15 @@ public class PrefActivity extends AppCompatActivity {
         return true;
     }
 
+    void restartAppForLanguageChange() {
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (launchIntent != null) {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchIntent);
+        }
+        finishAffinity();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -78,6 +90,7 @@ public class PrefActivity extends AppCompatActivity {
         private ListPreference displayStylePref;
         private ListPreference dateStylePref;
         private ListPreference themePref;
+        private ListPreference appLanguagePref;
         private ListPreference remindPref;
         private ListPreference tabStylePref;
 
@@ -93,6 +106,7 @@ public class PrefActivity extends AppCompatActivity {
             displayStylePref = (ListPreference) findPreference("disp_style");
             dateStylePref = (ListPreference) findPreference("date_style");
             themePref = (ListPreference) findPreference("theme");
+            appLanguagePref = (ListPreference) findPreference(AppLocaleManager.PREF_APP_LANGUAGE);
             remindPref = (ListPreference) findPreference("remind_percent");
             tabStylePref = (ListPreference) findPreference("tab_style");
         }
@@ -128,6 +142,15 @@ public class PrefActivity extends AppCompatActivity {
                 ((PrefActivity) getActivity()).onThemePreferenceChanged(
                         sharedPreferences.getString("theme", ThemeMode.THEME_LIGHT));
             }
+
+            if (AppLocaleManager.PREF_APP_LANGUAGE.equals(key)) {
+                String localeValue = sharedPreferences.getString(
+                        AppLocaleManager.PREF_APP_LANGUAGE,
+                        AppLocaleManager.VALUE_SYSTEM
+                );
+                AppLocaleManager.applyLocaleValue(localeValue);
+                showLanguageRestartPrompt();
+            }
         }
 
         @Override
@@ -141,6 +164,8 @@ public class PrefActivity extends AppCompatActivity {
             setListSummary(displayStylePref, R.string.years_months_days);
             setListSummary(dateStylePref, R.string.us_date_style);
             setListSummary(themePref, R.string.light);
+            syncLanguagePreferenceValue();
+            setListSummary(appLanguagePref, R.string.settings_language_use_device);
             setListSummary(remindPref, R.string.quarter_till);
             setListSummary(tabStylePref, R.string.show_tab);
 
@@ -166,6 +191,33 @@ public class PrefActivity extends AppCompatActivity {
             } else {
                 pref.setSummary(pref.getEntry());
             }
+        }
+
+        private void syncLanguagePreferenceValue() {
+            if (appLanguagePref == null) {
+                return;
+            }
+
+            String currentValue = AppLocaleManager.currentPreferenceValue();
+            if (!currentValue.equals(appLanguagePref.getValue())) {
+                appLanguagePref.setValue(currentValue);
+            }
+        }
+
+        private void showLanguageRestartPrompt() {
+            if (getActivity() == null || isRemoving()) {
+                return;
+            }
+
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.settings_language_restart_prompt)
+                    .setPositiveButton(R.string.settings_restart_now, (dialog, which) -> {
+                        if (getActivity() instanceof PrefActivity) {
+                            ((PrefActivity) getActivity()).restartAppForLanguageChange();
+                        }
+                    })
+                    .setNegativeButton(R.string.settings_later, null)
+                    .show();
         }
     }
 }

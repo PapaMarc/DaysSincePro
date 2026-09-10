@@ -65,4 +65,11 @@
     <string name="dsc_term_year_month_separator">,</string>
     <string name="dsc_term_relative_past_format">il y a %2$s</string>
     <string name="dsc_term_relative_future_format">dans %2$s</string>
+    <string name="settings_language_title">Langue</string>
+    <string name="settings_language_use_device">Utiliser la langue de l\'appareil</string>
+    <string name="settings_language_english">Anglais</string>
+    <string name="settings_language_french">Francais</string>
+    <string name="settings_language_restart_prompt">Redemarrez l\'application pour appliquer la mise a jour de la langue.</string>
+    <string name="settings_restart_now">Redemarrer maintenant</string>
+    <string name="settings_later">Plus tard</string>
 </resources>
