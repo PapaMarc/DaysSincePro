@@ -166,7 +166,7 @@
     <string name="sort_order">排序方式</string>
     <string name="no_events">没有事件。</string>
 
-    <string name="quarter_till">已过天数达到 75%</string>
+    <string name="quarter_till">已过天数达到 75%%</string>
     <string name="show_tab">默认启动标签</string>
 
 

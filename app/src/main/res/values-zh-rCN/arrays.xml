@@ -31,7 +31,7 @@
         <item>浅色</item><item>深色</item>
     </string-array>
     <string-array name="remind_percent">
-        <item>已过 75% 的天数</item><item>已过 85% 的天数</item><item>已过 95% 的天数</item>
+        <item>已过 75%% 的天数</item><item>已过 85%% 的天数</item><item>已过 95%% 的天数</item>
     </string-array>
     <string-array name="since_until">
         <item>已过天数</item><item>自上次以来</item><item>距离下次</item>
