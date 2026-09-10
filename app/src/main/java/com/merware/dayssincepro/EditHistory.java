@@ -141,7 +141,7 @@ public class EditHistory extends AppCompatActivity {
         else
             dateText.setText(sd.getDate2(DateStyle.MYD));
 
-        DaysSinceCalculations dsc = new DaysSinceCalculations(usDate);
+        DaysSinceCalculations dsc = new DaysSinceCalculations(this, usDate);
         explainText.setText(dsc.getExplain(true, 0));
 
     }

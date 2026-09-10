@@ -605,7 +605,7 @@ public class EditEventActivity extends AppCompatActivity {
             }
         }
 
-        DaysSinceCalculations dsc = new DaysSinceCalculations(usDate);
+        DaysSinceCalculations dsc = new DaysSinceCalculations(this, usDate);
         explainText.setText(dsc.getExplain(true, 0));
 
         // notify time

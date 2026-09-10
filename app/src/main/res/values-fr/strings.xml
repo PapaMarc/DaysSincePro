@@ -62,4 +62,5 @@
     <string name="dsc_term_was"></string>
     <string name="dsc_term_in_future_suffix">dans le futur.</string>
     <string name="dsc_term_in_past_suffix">auparavant.</string>
+    <string name="dsc_term_year_month_separator">,</string>
 </resources>

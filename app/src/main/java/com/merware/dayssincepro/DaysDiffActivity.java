@@ -155,7 +155,7 @@ public class DaysDiffActivity extends AppCompatActivity {
         if ((dateText.getText() != click_choose)
                 && (dateText2.getText() != click_choose)) {
 
-            DaysSinceCalculations dsc = new DaysSinceCalculations(usDate1, usDate2);
+            DaysSinceCalculations dsc = new DaysSinceCalculations(this, usDate1, usDate2);
 
             long daysSince = Math.abs(dsc.getDaysSinceEvent());
 

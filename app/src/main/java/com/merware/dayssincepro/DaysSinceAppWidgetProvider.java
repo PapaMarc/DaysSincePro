@@ -121,7 +121,8 @@ public class DaysSinceAppWidgetProvider extends AppWidgetProvider {
                         dataToShow += formattedDate;
                         
                         DaysSinceCalculations dsc = new DaysSinceCalculations(
-                                cursor.getString(0));
+                            context,
+                            cursor.getString(0));
 
                         int nStyleOption = Preferences.getPreferenceInt(
                                 context, APP_NAME, "widgetStyle" + appWidgetId);

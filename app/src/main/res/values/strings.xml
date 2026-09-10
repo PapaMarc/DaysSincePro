@@ -277,6 +277,7 @@
     <string name="dsc_term_was">was</string>
     <string name="dsc_term_in_future_suffix">in future.</string>
     <string name="dsc_term_in_past_suffix">ago.</string>
+    <string name="dsc_term_year_month_separator"></string>
 
     <!-- Menu bucket & Data I/O strings -->
     <string name="export_to_files">Export to file(s)</string>

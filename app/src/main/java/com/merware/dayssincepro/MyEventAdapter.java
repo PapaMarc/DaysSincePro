@@ -77,7 +77,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
 
         DaysSinceCalculations dsc;
-        DaysSinceCalculations dsc1 = new DaysSinceCalculations(usDate);
+        DaysSinceCalculations dsc1 = new DaysSinceCalculations(context, usDate);
         DaysSinceCalculations dsc2 = dsc1;
         String dayText;
         SimpleDate nextDate = sd;
@@ -97,7 +97,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         nextDate = timeline.nextOccurrence;
 
         if (nEstDays != 0) {
-            dsc2 = new DaysSinceCalculations(nextDate);
+            dsc2 = new DaysSinceCalculations(context, nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }
 
@@ -106,14 +106,14 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             sinceLastDate = new SimpleDate(lastHappenedDate, SimpleDate.DateStyle.US);
         }
 
-        DaysSinceCalculations dsc3 = new DaysSinceCalculations(sinceLastDate);
+        DaysSinceCalculations dsc3 = new DaysSinceCalculations(context, sinceLastDate);
 
         if (kind == TabKind.DaysSince) {
             dsc = dsc1;
         } else if (kind == TabKind.SinceLast) {
             dsc = dsc3;
         } else {
-            dsc = hasPlannedFutureDate ? new DaysSinceCalculations(plannedDate) : dsc2;
+            dsc = hasPlannedFutureDate ? new DaysSinceCalculations(context, plannedDate) : dsc2;
 
             // if event hasn't happened quite yet, use predetermined says till.
 
@@ -190,8 +190,8 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         if (usEndDate != null)
         {
-            dscStartToEnd = new DaysSinceCalculations(usDate, usEndDate);
-            dscEnd = new DaysSinceCalculations(usEndDate);
+            dscStartToEnd = new DaysSinceCalculations(context, usDate, usEndDate);
+            dscEnd = new DaysSinceCalculations(context, usEndDate);
 
             SimpleDate sdEndDate = new SimpleDate(usEndDate, SimpleDate.DateStyle.US);
             String endDateText = sdEndDate.getDate(dateStyle);
@@ -261,7 +261,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
                 DaysSinceCalculations dscForExplain = (kind == TabKind.SinceLast)
                     ? dsc3
-                    : new DaysSinceCalculations(timeline.daysSinceReferenceDate);
+                    : new DaysSinceCalculations(context, timeline.daysSinceReferenceDate);
 
             if (dscStartToEnd == null) {
                 sb.append(dscForExplain.getExplain(false, nStyleOption));  // start date (or last recurrence)
@@ -283,7 +283,8 @@ public class MyEventAdapter extends SimpleCursorAdapter {
                     case DaysSince:
                         // Days Since is always since inception (start date), regardless of end date.
                         sb.append(new DaysSinceCalculations(
-                                timeline.daysSinceReferenceDate).getExplain(false, nStyleOption));
+                            context,
+                            timeline.daysSinceReferenceDate).getExplain(false, nStyleOption));
 
                         sb.append("\n");
                         break;

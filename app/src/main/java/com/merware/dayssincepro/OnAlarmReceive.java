@@ -228,7 +228,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
 
             Calendar nowCal = Calendar.getInstance();
             RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
-            dsc1 = new DaysSinceCalculations(occurrences.lastOccurrence);
+            dsc1 = new DaysSinceCalculations(context, occurrences.lastOccurrence);
 
             if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
                     occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays, today)) {
@@ -264,7 +264,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
 
             Calendar nowCal = Calendar.getInstance();
             RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
-            dsc1 = new DaysSinceCalculations(occurrences.lastOccurrence);
+            dsc1 = new DaysSinceCalculations(context, occurrences.lastOccurrence);
 
             if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
                     occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays, today)) {

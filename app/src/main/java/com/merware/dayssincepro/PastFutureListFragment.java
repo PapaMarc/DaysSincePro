@@ -891,6 +891,7 @@ public class PastFutureListFragment extends ListFragment {
         int nEstDays = 0;
         int timeVal = 1;
         DaysSinceCalculations dsc1 = new DaysSinceCalculations(
+            context,
                 dateLastHappened(eventId));
 
         // get nrecur and see if it's on time.

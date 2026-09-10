@@ -1,5 +1,7 @@
 package com.merware.dayssincepro;
 
+import android.content.Context;
+
 /* ****************************************************
  * DaysSinceCalculations
  *
@@ -18,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 public class DaysSinceCalculations {
 
@@ -60,68 +61,69 @@ public class DaysSinceCalculations {
 
     String s_is;
     String s_was;
+    String s_yearMonthSeparator;
 
     // m is for minutes, M is for month
     // Explicitly proleptic Gregorian (no Julian/Gregorian cutover) via DateFormats - see
     // that class for why the fix must live in the parsing formatter, not in daysBetween().
     SimpleDateFormat formatter = DateFormats.prolepticGregorian("yyyy-MM-dd");
 
-    boolean isFrench = false;
-
-    void setTerms() {
-        String lang = Locale.getDefault().getLanguage();
-
-        if (lang.equals("fr"))
-            isFrench = true;
-
-        if (isFrench) {
-            tomorrow = "demain";
-            today = "aujourd'hui";
-            yesterday = "hier";
-            oneDay = "1 jour";
-            s_days = "jours";
-            s_day = "jour";
-            s_year = "an";
-            s_years = "ans";
-            s_month = "mois";
-            s_months = "mois";
-            s_week = "semaine";
-            s_weeks = "semaines";
-            s_weekday = "jour de la semaine ";
-            s_weekdays = "jours de la semaine";
-            s_is = ""; // "c'est";
-            s_was = ""; // "c'était";
-
-            s_infuture = "dans le futur.";
-            s_inpast = "auparavant.";
+    private void setTerms(Context context) {
+        if (context == null) {
+            setFallbackEnglishTerms();
+            return;
         }
-        else {
-            tomorrow = "Tomorrow";
-            today = "Today";
-            yesterday = "Yesterday";
-            oneDay = "1 day";
-            s_days = "days";
 
-            s_day = "day";
-            s_year = "year";
-            s_years = "years";
-            s_month = "month";
-            s_months = "months";
-            s_week = "week";
-            s_weeks = "weeks";
+        tomorrow = context.getString(R.string.dsc_term_tomorrow);
+        today = context.getString(R.string.dsc_term_today);
+        yesterday = context.getString(R.string.dsc_term_yesterday);
+        oneDay = context.getString(R.string.dsc_term_one_day);
+        s_days = context.getString(R.string.dsc_term_days);
 
-            s_weekday = "weekday";
-            s_weekdays = "weekdays";
+        s_day = context.getString(R.string.dsc_term_day);
+        s_year = context.getString(R.string.dsc_term_year);
+        s_years = context.getString(R.string.dsc_term_years);
+        s_month = context.getString(R.string.dsc_term_month);
+        s_months = context.getString(R.string.dsc_term_months);
+        s_week = context.getString(R.string.dsc_term_week);
+        s_weeks = context.getString(R.string.dsc_term_weeks);
 
-            s_is = "is";
-            s_was = "was";
+        s_weekday = context.getString(R.string.dsc_term_weekday);
+        s_weekdays = context.getString(R.string.dsc_term_weekdays);
 
-            s_infuture = "in future.";
-            s_inpast = "ago.";
-        }
+        s_is = context.getString(R.string.dsc_term_is);
+        s_was = context.getString(R.string.dsc_term_was);
+        s_infuture = context.getString(R.string.dsc_term_in_future_suffix);
+        s_inpast = context.getString(R.string.dsc_term_in_past_suffix);
+        s_yearMonthSeparator = context.getString(R.string.dsc_term_year_month_separator);
     }
 
-    public DaysSinceCalculations(SimpleDate sd) {
+    private void setFallbackEnglishTerms() {
+        tomorrow = "Tomorrow";
+        today = "Today";
+        yesterday = "Yesterday";
+        oneDay = "1 day";
+        s_days = "days";
+
+        s_day = "day";
+        s_year = "year";
+        s_years = "years";
+        s_month = "month";
+        s_months = "months";
+        s_week = "week";
+        s_weeks = "weeks";
+
+        s_weekday = "weekday";
+        s_weekdays = "weekdays";
+
+        s_is = "is";
+        s_was = "was";
+        s_infuture = "in future.";
+        s_inpast = "ago.";
+        s_yearMonthSeparator = "";
+    }
+
+    public DaysSinceCalculations(Context context, SimpleDate sd) {
 
         date = sd.getDate();
         month = sd.getMonth();
@@ -148,13 +150,17 @@ public class DaysSinceCalculations {
             if (nDaysSinceEvent < 0)
                 isFuture = true;
 
-            explain();
+            explain(context);
         } catch (ParseException e) {
 
         }
     }
 
-    public DaysSinceCalculations(String sDate) {
+    public DaysSinceCalculations(SimpleDate sd) {
+        this((Context) null, sd);
+    }
+
+    public DaysSinceCalculations(Context context, String sDate) {
 
         try {
             date = (Date) formatter.parse(sDate);
@@ -187,7 +193,7 @@ public class DaysSinceCalculations {
             if (nDaysSinceEvent < 0)
                 isFuture = true;
 
-            explain();
+            explain(context);
 
         } catch (ParseException e) {
             System.out.println("can't parse: " + e);
@@ -196,10 +202,14 @@ public class DaysSinceCalculations {
 
     }
 
+    public DaysSinceCalculations(String sDate) {
+        this((Context) null, sDate);
+    }
+
     Date date2;
 
     // 2 date constructor, not use today but sDate2
-    public DaysSinceCalculations(String sDate1, String sDate2) {
+    public DaysSinceCalculations(Context context, String sDate1, String sDate2) {
 
         try {
             date = (Date) formatter.parse(sDate1);
@@ -218,11 +228,15 @@ public class DaysSinceCalculations {
             if (nDaysSinceEvent < 0)
                 isFuture = true;
 
-            explain2();
+            explain2(context);
 
         } catch (ParseException e) {
             // well too bad
         }
+    }
+
+    public DaysSinceCalculations(String sDate1, String sDate2) {
+        this((Context) null, sDate1, sDate2);
     }
 
 
@@ -250,11 +264,11 @@ public class DaysSinceCalculations {
 
     }
 
-    private void explain() {
+    private void explain(Context context) {
         StringBuffer sb = new StringBuffer();
         long nDaysBetween = Math.abs(nDaysSinceEvent);
 
-        setTerms();
+        setTerms(context);
 
         if (nDaysBetween <= 31) {
             if (nDaysBetween == 0) {
@@ -352,8 +366,7 @@ public class DaysSinceCalculations {
         }
         if (m > 0) {
             if (y > 0) {
-                if (isFrench)
-                    sb.append(",");
+                sb.append(s_yearMonthSeparator);
                 sb.append(" ");
 
             }
@@ -391,11 +404,11 @@ public class DaysSinceCalculations {
         explanation = sb.toString();
     }
 
-    private void explain2() {
+    private void explain2(Context context) {
         StringBuffer sb = new StringBuffer();
         long nDaysBetween = Math.abs(nDaysSinceEvent);
 
-        setTerms();
+        setTerms(context);
 
         if (nDaysBetween <= 31) {
             if (nDaysBetween == 0) {
@@ -493,8 +506,7 @@ public class DaysSinceCalculations {
         }
         if (m > 0) {
             if (y > 0) {
-                if (isFrench)
-                    sb.append(",");
+                sb.append(s_yearMonthSeparator);
                 sb.append(" ");
 
             }
