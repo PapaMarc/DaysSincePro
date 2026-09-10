@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_entries">
+        <item>इनपुट क्रम</item><item>वर्णानुक्रम</item><item>उल्टा वर्णानुक्रम</item>
+    </string-array>
+    <string-array name="cat_days_between">
+        <item>कालानुक्रमिक क्रम</item><item>वर्णानुक्रम</item><item>उल्टा वर्णानुक्रम</item>
+    </string-array>
+    <string-array name="entries">
+        <item>इनपुट क्रम</item><item>वर्णानुक्रम</item><item>उल्टा वर्णानुक्रम</item><item>सबसे पुराने पहले</item><item>सबसे नए पहले</item>
+    </string-array>
+    <string-array name="sizes">
+        <item>बहुत बड़ा</item><item>बड़ा</item><item>मध्यम</item><item>छोटा</item><item>बहुत छोटा</item>
+    </string-array>
+    <string-array name="styles">
+        <item>वर्ष माह दिन</item><item>दिन</item><item>कार्यदिवस</item><item>सप्ताह</item>
+    </string-array>
+    <string-array name="date_values">
+        <item>वर्ष-माह-दिन</item><item>दिन-माह-वर्ष</item><item>माह-दिन-वर्ष</item>
+    </string-array>
+    <string-array name="colors">
+        <item>साफ़ करें</item><item>नीला</item><item>लाल</item><item>गुलाबी</item><item>नारंगी</item><item>हरा</item>
+    </string-array>
+    <string-array name="background">
+        <item>पारदर्शी</item><item>ठोस </item>
+    </string-array>
+    <string-array name="recur">
+        <item>एक बार का इवेंट</item><item>साप्ताहिक</item><item>पाक्षिक</item><item>मासिक</item><item>त्रैमासिक</item><item>अर्धवार्षिक</item><item>वार्षिक</item><item>दिनों की संख्या</item>
+    </string-array>
+    <string-array name="themes">
+        <item>हल्का</item><item>गहरा</item>
+    </string-array>
+    <string-array name="remind_percent">
+        <item>75 प्रतिशत दिन बीत गए</item><item>85 प्रतिशत दिन बीत गए</item><item>95 प्रतिशत दिन बीत गए</item>
+    </string-array>
+    <string-array name="since_until">
+        <item>बीते दिन</item><item>पिछली बार से</item><item>अगले तक</item>
+    </string-array>
+    <string-array name="app_language_entries">
+        <item>@string/settings_language_use_device</item><item>@string/settings_language_english</item><item>@string/settings_language_french</item><item>@string/settings_language_spanish</item><item>@string/settings_language_german</item><item>@string/settings_language_portuguese</item><item>@string/settings_language_portuguese_brazil</item><item>@string/settings_language_italian</item><item>@string/settings_language_chinese_simplified</item><item>@string/settings_language_hindi</item>
+    </string-array>
+</resources>

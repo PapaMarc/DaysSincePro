@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_entries">
+        <item>输入顺序</item><item>按字母排序</item><item>按字母倒序</item>
+    </string-array>
+    <string-array name="cat_days_between">
+        <item>按时间顺序</item><item>按字母排序</item><item>按字母倒序</item>
+    </string-array>
+    <string-array name="entries">
+        <item>输入顺序</item><item>按字母排序</item><item>按字母倒序</item><item>最早优先</item><item>最新优先</item>
+    </string-array>
+    <string-array name="sizes">
+        <item>特大</item><item>大</item><item>中</item><item>小</item><item>特小</item>
+    </string-array>
+    <string-array name="styles">
+        <item>年 月 日</item><item>天</item><item>工作日</item><item>周</item>
+    </string-array>
+    <string-array name="date_values">
+        <item>年-月-日</item><item>日-月-年</item><item>月-日-年</item>
+    </string-array>
+    <string-array name="colors">
+        <item>清除</item><item>蓝色</item><item>红色</item><item>粉色</item><item>橙色</item><item>绿色</item>
+    </string-array>
+    <string-array name="background">
+        <item>透明</item><item>纯色 </item>
+    </string-array>
+    <string-array name="recur">
+        <item>一次性事件</item><item>每周</item><item>每两周</item><item>每月</item><item>每季度</item><item>每半年</item><item>每年</item><item>天数</item>
+    </string-array>
+    <string-array name="themes">
+        <item>浅色</item><item>深色</item>
+    </string-array>
+    <string-array name="remind_percent">
+        <item>已过 75% 的天数</item><item>已过 85% 的天数</item><item>已过 95% 的天数</item>
+    </string-array>
+    <string-array name="since_until">
+        <item>已过天数</item><item>自上次以来</item><item>距离下次</item>
+    </string-array>
+    <string-array name="app_language_entries">
+        <item>@string/settings_language_use_device</item><item>@string/settings_language_english</item><item>@string/settings_language_french</item><item>@string/settings_language_spanish</item><item>@string/settings_language_german</item><item>@string/settings_language_portuguese</item><item>@string/settings_language_portuguese_brazil</item><item>@string/settings_language_italian</item><item>@string/settings_language_chinese_simplified</item><item>@string/settings_language_hindi</item>
+    </string-array>
+</resources>
