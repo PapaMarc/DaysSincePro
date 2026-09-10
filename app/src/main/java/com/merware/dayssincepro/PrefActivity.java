@@ -8,6 +8,8 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -147,6 +149,8 @@ public class PrefActivity extends AppCompatActivity {
         public void onResume() {
             super.onResume();
 
+            applyPersistentScrollIndicator();
+
             // Keep summary behavior identical to legacy Settings defaults.
             setListSummary(categorySortOrderPref, R.string.input_order);
             setListSummary(eventsSortOrderPref, R.string.input_order);
@@ -169,6 +173,21 @@ public class PrefActivity extends AppCompatActivity {
 
             getPreferenceScreen().getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        private void applyPersistentScrollIndicator() {
+            View root = getView();
+            if (root == null) {
+                return;
+            }
+
+            ListView listView = root.findViewById(android.R.id.list);
+            if (listView == null) {
+                return;
+            }
+
+            listView.setVerticalScrollBarEnabled(true);
+            listView.setScrollbarFadingEnabled(false);
         }
 
         private void setListSummary(ListPreference pref, int fallbackResId) {
