@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_entries">
+        <item>Eingabereihenfolge</item><item>Alphabetisch</item><item>Umgekehrt alphabetisch</item>
+    </string-array>
+    <string-array name="cat_days_between">
+        <item>Chronologische Reihenfolge</item><item>Alphabetisch</item><item>Umgekehrt alphabetisch</item>
+    </string-array>
+    <string-array name="entries">
+        <item>Eingabereihenfolge</item><item>Alphabetisch</item><item>Umgekehrt alphabetisch</item><item>Aelteste zuerst</item><item>Neueste zuerst</item>
+    </string-array>
+    <string-array name="sizes">
+        <item>Sehr gross</item><item>Gross</item><item>Mittel</item><item>Klein</item><item>Sehr klein</item>
+    </string-array>
+    <string-array name="styles">
+        <item>Jahre Monate Tage</item><item>Tage</item><item>Werktage</item><item>Wochen</item>
+    </string-array>
+    <string-array name="date_values">
+        <item>Jahr-Monat-Tag</item><item>Tag-Monat-Jahr</item><item>Monat-Tag-Jahr</item>
+    </string-array>
+    <string-array name="colors">
+        <item>Leeren</item><item>Blau</item><item>Rot</item><item>Rosa</item><item>Orange</item><item>Gruen</item>
+    </string-array>
+    <string-array name="background">
+        <item>Transparent</item><item>Deckend </item>
+    </string-array>
+    <string-array name="recur">
+        <item>Einmaliges Ereignis</item><item>Woechentlich</item><item>Alle zwei Wochen</item><item>Monatlich</item><item>Vierteljaehrlich</item><item>Halbjaehrlich</item><item>Jaehrlich</item><item>Anzahl Tage</item>
+    </string-array>
+    <string-array name="themes">
+        <item>Hell</item><item>Dunkel</item>
+    </string-array>
+    <string-array name="remind_percent">
+        <item>75 Prozent der Tage vergangen</item><item>85 Prozent der Tage vergangen</item><item>95 Prozent der Tage vergangen</item>
+    </string-array>
+    <string-array name="since_until">
+        <item>Seit</item><item>Seit dem letzten</item><item>Bis zum naechsten</item>
+    </string-array>
+    <string-array name="app_language_entries">
+        <item>@string/settings_language_use_device</item><item>@string/settings_language_english</item><item>@string/settings_language_french</item><item>@string/settings_language_spanish</item><item>@string/settings_language_german</item><item>@string/settings_language_portuguese</item><item>@string/settings_language_portuguese_brazil</item><item>@string/settings_language_italian</item><item>@string/settings_language_chinese_simplified</item><item>@string/settings_language_hindi</item>
+    </string-array>
+</resources>

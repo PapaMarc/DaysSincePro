@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_entries">
+        <item>Orden de entrada</item><item>Alfabetico</item><item>Alfabetico inverso</item>
+    </string-array>
+    <string-array name="cat_days_between">
+        <item>Orden cronologico</item><item>Alfabetico</item><item>Alfabetico inverso</item>
+    </string-array>
+    <string-array name="entries">
+        <item>Orden de entrada</item><item>Alfabetico</item><item>Alfabetico inverso</item><item>Mas antiguos primero</item><item>Mas nuevos primero</item>
+    </string-array>
+    <string-array name="sizes">
+        <item>Muy grande</item><item>Grande</item><item>Medio</item><item>Pequeno</item><item>Muy pequeno</item>
+    </string-array>
+    <string-array name="styles">
+        <item>Anos Meses Dias</item><item>Dias</item><item>Dias habiles</item><item>Semanas</item>
+    </string-array>
+    <string-array name="date_values">
+        <item>Ano-Mes-Dia</item><item>Dia-Mes-Ano</item><item>Mes-Dia-Ano</item>
+    </string-array>
+    <string-array name="colors">
+        <item>Limpiar</item><item>Azul</item><item>Rojo</item><item>Rosa</item><item>Naranja</item><item>Verde</item>
+    </string-array>
+    <string-array name="background">
+        <item>Transparente</item><item>Solido </item>
+    </string-array>
+    <string-array name="recur">
+        <item>Evento unico</item><item>Semanal</item><item>Quincenal</item><item>Mensual</item><item>Trimestral</item><item>Semestral</item><item>Anual</item><item>Numero de dias</item>
+    </string-array>
+    <string-array name="themes">
+        <item>Claro</item><item>Oscuro</item>
+    </string-array>
+    <string-array name="remind_percent">
+        <item>75 por ciento de dias transcurridos</item><item>85 por ciento de dias transcurridos</item><item>95 por ciento de dias transcurridos</item>
+    </string-array>
+    <string-array name="since_until">
+        <item>Desde</item><item>Desde la ultima</item><item>Hasta el proximo</item>
+    </string-array>
+    <string-array name="app_language_entries">
+        <item>@string/settings_language_use_device</item><item>@string/settings_language_english</item><item>@string/settings_language_french</item><item>@string/settings_language_spanish</item><item>@string/settings_language_german</item><item>@string/settings_language_portuguese</item><item>@string/settings_language_portuguese_brazil</item><item>@string/settings_language_italian</item><item>@string/settings_language_chinese_simplified</item><item>@string/settings_language_hindi</item>
+    </string-array>
+</resources>

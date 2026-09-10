@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_entries">
+        <item>Ordine di inserimento</item><item>Alfabetico</item><item>Alfabetico inverso</item>
+    </string-array>
+    <string-array name="cat_days_between">
+        <item>Ordine cronologico</item><item>Alfabetico</item><item>Alfabetico inverso</item>
+    </string-array>
+    <string-array name="entries">
+        <item>Ordine di inserimento</item><item>Alfabetico</item><item>Alfabetico inverso</item><item>Piu vecchi prima</item><item>Piu recenti prima</item>
+    </string-array>
+    <string-array name="sizes">
+        <item>Molto grande</item><item>Grande</item><item>Medio</item><item>Piccolo</item><item>Molto piccolo</item>
+    </string-array>
+    <string-array name="styles">
+        <item>Anni Mesi Giorni</item><item>Giorni</item><item>Giorni feriali</item><item>Settimane</item>
+    </string-array>
+    <string-array name="date_values">
+        <item>Anno-Mese-Giorno</item><item>Giorno-Mese-Anno</item><item>Mese-Giorno-Anno</item>
+    </string-array>
+    <string-array name="colors">
+        <item>Pulisci</item><item>Blu</item><item>Rosso</item><item>Rosa</item><item>Arancione</item><item>Verde</item>
+    </string-array>
+    <string-array name="background">
+        <item>Trasparente</item><item>Solido </item>
+    </string-array>
+    <string-array name="recur">
+        <item>Evento singolo</item><item>Settimanale</item><item>Bisettimanale</item><item>Mensile</item><item>Trimestrale</item><item>Semestrale</item><item>Annuale</item><item>Numero di giorni</item>
+    </string-array>
+    <string-array name="themes">
+        <item>Chiaro</item><item>Scuro</item>
+    </string-array>
+    <string-array name="remind_percent">
+        <item>75 per cento dei giorni trascorsi</item><item>85 per cento dei giorni trascorsi</item><item>95 per cento dei giorni trascorsi</item>
+    </string-array>
+    <string-array name="since_until">
+        <item>Da</item><item>Dall ultimo</item><item>Fino al prossimo</item>
+    </string-array>
+    <string-array name="app_language_entries">
+        <item>@string/settings_language_use_device</item><item>@string/settings_language_english</item><item>@string/settings_language_french</item><item>@string/settings_language_spanish</item><item>@string/settings_language_german</item><item>@string/settings_language_portuguese</item><item>@string/settings_language_portuguese_brazil</item><item>@string/settings_language_italian</item><item>@string/settings_language_chinese_simplified</item><item>@string/settings_language_hindi</item>
+    </string-array>
+</resources>
