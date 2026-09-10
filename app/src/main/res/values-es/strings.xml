@@ -177,9 +177,6 @@
     <string name="settings_language_italian">Italiano</string>
     <string name="settings_language_chinese_simplified">Chino (simplificado)</string>
     <string name="settings_language_hindi">Hindi</string>
-    <string name="settings_language_restart_prompt">Reinicia la aplicacion para aplicar la actualizacion de idioma.</string>
-    <string name="settings_restart_now">Reiniciar ahora</string>
-    <string name="settings_later">Mas tarde</string>
     <string name="no_data_entries"> Sin datos</string>
     <string name="developer_tools">Herramientas de desarrollador</string>
     <string name="enable_logging">Activar registro</string>

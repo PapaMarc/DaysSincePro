@@ -183,9 +183,6 @@
     <string name="settings_language_italian">意大利语</string>
     <string name="settings_language_chinese_simplified">简体中文</string>
     <string name="settings_language_hindi">印地语</string>
-    <string name="settings_language_restart_prompt">重启应用以应用语言更新。</string>
-    <string name="settings_restart_now">立即重启</string>
-    <string name="settings_later">稍后</string>
     <string name="no_data_entries"> 无数据</string>
     <string name="developer_tools">开发者工具</string>
     <string name="enable_logging">启用日志</string>

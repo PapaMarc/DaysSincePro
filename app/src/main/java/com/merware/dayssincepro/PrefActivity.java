@@ -3,14 +3,12 @@ package com.merware.dayssincepro;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PrefActivity extends AppCompatActivity {
@@ -60,15 +58,6 @@ public class PrefActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
-    }
-
-    void restartAppForLanguageChange() {
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-        if (launchIntent != null) {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(launchIntent);
-        }
-        finishAffinity();
     }
 
     @Override
@@ -151,7 +140,6 @@ public class PrefActivity extends AppCompatActivity {
                         AppLocaleManager.VALUE_SYSTEM
                 );
                 AppLocaleManager.applyLocaleValue(localeValue);
-                showLanguageRestartPrompt();
             }
         }
 
@@ -230,20 +218,5 @@ public class PrefActivity extends AppCompatActivity {
             appLanguagePref.setEntryValues(values);
         }
 
-        private void showLanguageRestartPrompt() {
-            if (getActivity() == null || isRemoving()) {
-                return;
-            }
-
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.settings_language_restart_prompt)
-                    .setPositiveButton(R.string.settings_restart_now, (dialog, which) -> {
-                        if (getActivity() instanceof PrefActivity) {
-                            ((PrefActivity) getActivity()).restartAppForLanguageChange();
-                        }
-                    })
-                    .setNegativeButton(R.string.settings_later, null)
-                    .show();
-        }
     }
 }

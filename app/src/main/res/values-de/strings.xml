@@ -177,9 +177,6 @@
     <string name="settings_language_italian">Italienisch</string>
     <string name="settings_language_chinese_simplified">Chinesisch (vereinfacht)</string>
     <string name="settings_language_hindi">Hindi</string>
-    <string name="settings_language_restart_prompt">App neu starten, um die Sprachaktualisierung anzuwenden.</string>
-    <string name="settings_restart_now">Jetzt neu starten</string>
-    <string name="settings_later">Spaeter</string>
     <string name="no_data_entries"> Keine Daten</string>
     <string name="developer_tools">Entwicklertools</string>
     <string name="enable_logging">Logging aktivieren</string>

@@ -76,7 +76,4 @@
     <string name="settings_language_italian">Italien</string>
     <string name="settings_language_chinese_simplified">Chinois (simplifie)</string>
     <string name="settings_language_hindi">Hindi</string>
-    <string name="settings_language_restart_prompt">Redemarrez l\'application pour appliquer la mise a jour de la langue.</string>
-    <string name="settings_restart_now">Redemarrer maintenant</string>
-    <string name="settings_later">Plus tard</string>
 </resources>

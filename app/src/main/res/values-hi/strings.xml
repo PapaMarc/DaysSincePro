@@ -183,9 +183,6 @@
     <string name="settings_language_italian">इटालियन</string>
     <string name="settings_language_chinese_simplified">चीनी (सरलीकृत)</string>
     <string name="settings_language_hindi">हिंदी</string>
-    <string name="settings_language_restart_prompt">भाषा अद्यतन लागू करने के लिए ऐप पुनः प्रारंभ करें।</string>
-    <string name="settings_restart_now">अभी पुनः प्रारंभ करें</string>
-    <string name="settings_later">बाद में</string>
     <string name="no_data_entries"> कोई डेटा नहीं</string>
     <string name="developer_tools">डेवलपर टूल्स</string>
     <string name="enable_logging">लॉगिंग सक्षम करें</string>
