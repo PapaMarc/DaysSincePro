@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 51
-        versionName "3.13.202.51"
+        versionName "3.13.203.51"
     }
 
     signingConfigs {
@@ -76,4 +76,8 @@ tasks.register("updateNoHardcodedUiStringsBaseline", Exec) {
             "${rootProject.projectDir}/scripts/check_no_hardcoded_ui_strings.ps1",
             "-RepoRoot", "${rootProject.projectDir}",
             "-UpdateBaseline"
+}
+
+tasks.named("check") {
+    dependsOn("checkNoHardcodedUiStrings")
 }

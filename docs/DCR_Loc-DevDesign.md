@@ -214,3 +214,51 @@ Goal: preserve currently working French wording behavior while moving from code-
 1. Keep changes small and reviewable by grouping extraction logically (About, category, import/export, Main toast) rather than one giant mixed commit.
 2. Avoid touching date-format behavior in Phase 1; that remains deferred by policy.
 3. Preserve current behavior while changing only string sourcing mechanics.
+
+---
+
+## 13. Phase 3A Definition of Done (Stabilization + Guards)
+
+Phase 3A is complete only when all criteria below are satisfied:
+
+1. `DaysSinceCalculations` localization behavior remains resource-driven with no locale-branching reintroduction.
+2. Hardcoded UI string guard runs as a required verification gate (not ad hoc/manual-only).
+3. Compile/resource verification passes.
+4. Targeted JVM tests for date-calculation cutover and recurrence urgency pass.
+5. Guard baseline remains intentional and unchanged unless explicitly reviewed and approved.
+
+Required commands (or equivalent CI wiring):
+
+1. `./gradlew :app:compileDebugJavaWithJavac :app:processDebugResources`
+2. `./gradlew :app:testDebugUnitTest --tests com.merware.dayssincepro.DaysSinceCalculationsCutoverTest --tests com.merware.dayssincepro.SimpleDateProlepticGregorianTest --tests com.merware.dayssincepro.OnAlarmReceiveUrgencyTest`
+3. `./gradlew :app:checkNoHardcodedUiStrings`
+
+---
+
+## 14. Deferred Constructor Hardening Policy (Indefinite)
+
+Work definition:
+
+1. Remove legacy no-context `DaysSinceCalculations` constructors.
+2. Require Context-aware construction in all production call paths.
+3. Update test helpers/callers to explicit context-safe construction strategy.
+
+Current decision:
+
+1. Deferred with no fixed delivery date.
+
+Implications while deferred:
+
+1. API surface remains broader than ideal.
+2. Fallback no-context behavior remains available for compatibility.
+3. Localization correctness is still preserved in migrated production paths.
+
+When to revisit:
+
+1. Dedicated technical-debt hardening pass.
+2. Any future broad call-site refactor that already touches constructor usage.
+3. If defects are traced to legacy constructor fallback behavior.
+
+Can this remain deferred indefinitely?
+
+1. Yes, provided compatibility overloads stay stable, tests remain green, and no regressions are attributed to the legacy path.

@@ -51,6 +51,18 @@ Do **not** build a custom language-list/strings-section mechanism (e.g. a hand-r
 | 4                     | Populate real `values-<lang>/strings.xml` translations for Tier 1 languages (Section 5) using machine translation as baseline plus community/volunteer feedback loops for iterative correction                                                                                                                                                                                                                                                                                                                                        | Not a code risk — translation content/accuracy risk only                                                                                       |
 | 5 (deferred/optional) | Locale-aware date formatting (replace manual US/UK/M-D-Y picker with a "System Default" option using `java.time`/`DateFormat.getDateInstance(Locale)`); widget localization (feature currently disabled, may be rewritten before re-enable); RTL layout audit if an RTL language is added later; Traditional Chinese (`zh-TW`) variant if needed                                                                                                                                                                                      | Low priority — only needed if scope expands beyond this plan                                                                                   |
 
+### 4.1 Phase 3 Execution Split (Current)
+
+Phase 3 is executed in two slices to keep risk low and scope explicit:
+
+1. **Phase 3A (current milestone):** stabilization and enforcement gates.
+   - Confirm no new hardcoded UI strings policy regressions.
+   - Keep guard checks as required verification for local/CI workflows.
+   - Run compile + targeted JVM tests for `DaysSinceCalculations` and recurrence/notification behavior.
+2. **Phase 3B (feature wiring):** in-app language picker + `AppCompatDelegate.setApplicationLocales(...)` + `locales_config` integration.
+   - This remains planned work for broader locale rollout.
+   - It can be scheduled independently once non-EN/FR release exposure is imminent.
+
 **Biggest risk concentration:** Phase 2, because `DaysSinceCalculations` mixes localization with the app's core day-count business logic. Keep the string-resolution refactor isolated from any date-math changes, and extend JVM tests before touching it (see repo memory conventions: `DaysSinceCalculationsCutoverTest`, etc.).
 
 ---
@@ -195,6 +207,12 @@ Directional ranking based on common global Android usage/native-speaker populati
 5. CSV import/export format strings (headers, column names) — these are data-interchange identifiers, not user-facing UI copy, and must remain stable/unlocalized to avoid breaking round-trip compatibility.
 6. Widget localization (feature currently disabled; defer indefinitely pending any future re-enable/redesign).
 7. Formalized translation workflow tooling/process automation (labels, templates, structured triage) beyond owner-managed intake.
+8. **Strict constructor/API hardening in `DaysSinceCalculations` (Context-only constructors): deferred at present, with no fixed deadline.**
+   - Current decision: keep no-context constructor overloads as compatibility shims.
+   - Rationale: these overloads support existing tests and low-risk call patterns while localization behavior is already resource-driven in production paths.
+   - Implications: API surface remains larger than ideal and allows non-Context fallback usage where not needed.
+   - Trigger to revisit: when preparing a dedicated technical-debt hardening pass, or when future work already requires broad call-site edits.
+   - Deferability: may be deferred indefinitely as long as shims remain stable, tests pass, and no defects are attributed to legacy overload usage.
 
 ---
 
@@ -212,6 +230,8 @@ Directional ranking based on common global Android usage/native-speaker populati
 10. **Feedback channels in About dialog:** add the paragraph with `mailto:` link for translation feedback and general support as provided in section11.
 11. **Language-change application policy (Phase 1):** apply on app restart for ease/reliability. Dynamic in-place re-render may be evaluated later, but is not required for Phase 1.
 12. **Date-format policy scope:** locale-aware date/number formatting is explicitly not required for Phase 1 (Wave 1 and Wave 2 locales). It is required as a precursor policy gate before launching post-Phase-1 locale expansion.
+13. **Constructor hardening policy:** strict Context-only constructor enforcement for `DaysSinceCalculations` is explicitly deferred with no fixed date; retain compatibility overloads unless/until a dedicated hardening change is scheduled.
+14. **Phase 3A guard policy:** no-hardcoded-UI-string checks are mandatory milestone gates (local and CI-oriented), not optional spot checks.
 
 ## 11. Localization Feedback Template (Operational)
 
