@@ -119,6 +119,12 @@
         <item>95 percent of days passed</item>
     </string-array>
 
+    <string-array name="remind_percent_values">
+        <item>75</item>
+        <item>85</item>
+        <item>95</item>
+    </string-array>
+
 
     <string-array name="since_until">
         <item>Days Since</item>
@@ -136,12 +142,26 @@
         <item>@string/settings_language_use_device</item>
         <item>@string/settings_language_english</item>
         <item>@string/settings_language_french</item>
+        <item>@string/settings_language_spanish</item>
+        <item>@string/settings_language_german</item>
+        <item>@string/settings_language_portuguese</item>
+        <item>@string/settings_language_portuguese_brazil</item>
+        <item>@string/settings_language_italian</item>
+        <item>@string/settings_language_chinese_simplified</item>
+        <item>@string/settings_language_hindi</item>
     </string-array>
 
     <string-array name="app_language_values">
         <item>system</item>
         <item>en</item>
         <item>fr</item>
+        <item>es</item>
+        <item>de</item>
+        <item>pt</item>
+        <item>pt-BR</item>
+        <item>it</item>
+        <item>zh-CN</item>
+        <item>hi</item>
     </string-array>
 
 

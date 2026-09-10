@@ -32,19 +32,30 @@ public class OnAlarmReceive extends BroadcastReceiver {
     {
         double percent = .75;
 
+        if (percentOption == null) {
+            return percent;
+        }
+
         switch (percentOption)
         {
+            case "75":
             case "75 percent of days passed":  // better way to get array item?
                 percent = .75;
                 break;
+            case "85":
             case "85 percent of days passed":
                 percent = .85;
                 break;
+            case "95":
             case "95 percent of days passed":
                 percent = .95;
                 break;
             default:
-                percent = 0.75;
+                try {
+                    percent = Double.parseDouble(percentOption) / 100.0;
+                } catch (NumberFormatException ignored) {
+                    percent = 0.75;
+                }
                 break;
         }
 

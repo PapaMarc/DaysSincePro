@@ -176,6 +176,13 @@
     <string name="settings_language_use_device">Use device language</string>
     <string name="settings_language_english">English</string>
     <string name="settings_language_french">French</string>
+    <string name="settings_language_spanish">Spanish</string>
+    <string name="settings_language_german">German</string>
+    <string name="settings_language_portuguese">Portuguese</string>
+    <string name="settings_language_portuguese_brazil">Portuguese (Brazil)</string>
+    <string name="settings_language_italian">Italian</string>
+    <string name="settings_language_chinese_simplified">Chinese (Simplified)</string>
+    <string name="settings_language_hindi">Hindi</string>
     <string name="settings_language_restart_prompt">Restart app to apply language update.</string>
     <string name="settings_restart_now">Restart now</string>
     <string name="settings_later">Later</string>
