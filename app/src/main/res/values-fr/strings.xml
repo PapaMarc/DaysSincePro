@@ -43,7 +43,7 @@
         <item quantity="other">, %1$d ignorés</item>
     </plurals>
 
-    <!-- Phase 1 bridge keys from legacy hardcoded setTerms() French copy. -->
+    <!-- DaysSinceCalculations localization term keys. -->
     <string name="dsc_term_tomorrow">demain</string>
     <string name="dsc_term_today">aujourd\'hui</string>
     <string name="dsc_term_yesterday">hier</string>
@@ -60,7 +60,7 @@
     <string name="dsc_term_weekdays">jours de la semaine</string>
     <string name="dsc_term_is"></string>
     <string name="dsc_term_was"></string>
-    <string name="dsc_term_in_future_suffix">dans le futur.</string>
-    <string name="dsc_term_in_past_suffix">auparavant.</string>
+    <string name="dsc_term_in_future_suffix">a venir.</string>
+    <string name="dsc_term_in_past_suffix">il y a.</string>
     <string name="dsc_term_year_month_separator">,</string>
 </resources>

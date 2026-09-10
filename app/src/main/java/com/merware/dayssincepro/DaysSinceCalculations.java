@@ -118,7 +118,7 @@ public class DaysSinceCalculations {
 
         s_is = "is";
         s_was = "was";
-        s_infuture = "in future.";
+        s_infuture = "from now.";
         s_inpast = "ago.";
         s_yearMonthSeparator = "";
     }
@@ -352,9 +352,6 @@ public class DaysSinceCalculations {
         y = y1 - y0;
 
         if (y > 0) {
-            //	if (isFrench)
-            //		sb.append("ll y a "); // there are
-
             sb.append(y);
             sb.append(" ");
 
@@ -492,9 +489,6 @@ public class DaysSinceCalculations {
         y = y1 - y0;
 
         if (y > 0) {
-            //	if (isFrench)
-            //		sb.append("ll y a "); // there are
-
             sb.append(y);
             sb.append(" ");
 

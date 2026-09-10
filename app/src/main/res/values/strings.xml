@@ -258,7 +258,7 @@
     <string name="csv_import_failure_file_not_found">File does not exist: %1$s</string>
     <string name="csv_import_failure_content_string_null">CSV content string is null</string>
 
-    <!-- Phase 1 bridge: preserve currently shipped French terminology from DaysSinceCalculations.setTerms(). -->
+    <!-- DaysSinceCalculations localization term keys. -->
     <string name="dsc_term_tomorrow">Tomorrow</string>
     <string name="dsc_term_today">Today</string>
     <string name="dsc_term_yesterday">Yesterday</string>
@@ -275,7 +275,7 @@
     <string name="dsc_term_weekdays">weekdays</string>
     <string name="dsc_term_is">is</string>
     <string name="dsc_term_was">was</string>
-    <string name="dsc_term_in_future_suffix">in future.</string>
+    <string name="dsc_term_in_future_suffix">from now.</string>
     <string name="dsc_term_in_past_suffix">ago.</string>
     <string name="dsc_term_year_month_separator"></string>
 
