@@ -1,9 +1,17 @@
 # Design Change Request (DCR): Event Reminder Threshold Rework
 
 **Document ID:** DCR-2026-09-13-EventReminderRework
-**Status:** Draft
+**Status:** Completed
 **Author:** DaysSincePro Architecture
-**Target release:** TBD
+**Target release:** Implemented (PR1-PR4 complete)
+
+**Implementation completed on:** 2026-09-13
+
+Implementation status note:
+
+1. All planned phases are complete, including schema/migration, shared reminder logic, UI/settings changes, CSV warning expansion, and localization hard-fail gate.
+2. Localization contract is enforced by build task and validated.
+3. No open product-design items remain for this DCR.
 
 ---
 
