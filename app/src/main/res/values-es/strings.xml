@@ -43,7 +43,6 @@
 
     <string name="show_whats_new">Mostrar novedades</string>
     <string name="do_not_show">No mostrar</string>
-    <string name="remind_repeat_events">Cambio de color de evento recurrente</string>
 
     <string name="add_occur">Agregar ocurrencia : </string>
     <string name="untilToSince">Evento movido a la pestana Desde</string>
@@ -161,7 +160,6 @@
     <string name="sort_order">Orden</string>
     <string name="no_events">No hay eventos.</string>
 
-    <string name="quarter_till">75 por ciento de dias transcurridos</string>
     <string name="show_tab">Pestana inicial predeterminada</string>
 
     <string name="action_settings"> Configuracion</string>
@@ -305,9 +303,22 @@
     <string name="action_not_available_for_one_time">Esta accion solo esta disponible para eventos recurrentes.</string>
     <string name="planned_date_cleared_info">La fecha futura planificada se borro porque ya no esta en el futuro.</string>
     <string name="csv_history_warning_title">La exportacion CSV no incluye historial</string>
-    <string name="csv_history_warning_message">Entradas de historial: %1$d\nEventos con historial: %2$d\n\nLa exportacion/importacion CSV no conserva el historial. Usa la exportacion de base de datos para respaldo y restauracion completos.</string>
+    <string name="csv_history_warning_message">Entradas de historial: %1$d\nEventos con historial: %2$d\nEventos con dias de notificacion personalizados: %3$d\nEventos con notificaciones deshabilitadas: %4$d\n\nLa exportacion/importacion CSV no conserva historial, dias de notificacion personalizados ni el estado de notificaciones por evento. Usa la exportacion de base de datos para respaldo y restauracion completos.</string>
     <string name="csv_history_warning_continue">Continuar exportacion CSV</string>
     <string name="csv_history_warning_export_db">Exportar .db en su lugar</string>
+    <string name="notify_lead_days_heading">Dias de anticipacion del recordatorio</string>
+    <string name="notify_lead_days_title">Dias de anticipacion del recordatorio</string>
+    <string name="notify_lead_days_prompt">Ingresa dias personalizados (0 a 30), o usa el valor predeterminado de recurrencia.</string>
+    <string name="notify_lead_days_set_custom">Establecer personalizado</string>
+    <string name="notify_lead_days_use_default">Usar predeterminado</string>
+    <string name="notify_lead_days_invalid">Ingresa un numero entero de 0 a 30.</string>
+    <string name="notify_lead_days_effective_placeholder">Dias efectivos de anticipacion: 3</string>
+    <string name="notify_lead_days_effective_value">Dias efectivos de anticipacion: %1$d</string>
+    <string name="notify_lead_days_edit_button">Editar dias de anticipacion</string>
+    <string name="lead_days_source_default_from_recurrence">Predeterminado (segun recurrencia)</string>
+    <string name="lead_days_source_custom">Personalizado</string>
+    <string name="event_notifications_enabled">Notificaciones: Habilitadas</string>
+    <string name="event_notifications_disabled">Notificaciones: Deshabilitadas</string>
     <string name="history_anchor_header">Fecha del evento (ancla): %1$s</string>
     <string name="history_anchor_header_missing">Fecha ancla no disponible</string>
     <string name="history_empty_placeholder">No se ha agregado historial adicional.</string>

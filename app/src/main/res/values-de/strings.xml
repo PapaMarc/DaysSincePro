@@ -43,7 +43,6 @@
 
     <string name="show_whats_new">Neuigkeiten anzeigen</string>
     <string name="do_not_show">Nicht anzeigen</string>
-    <string name="remind_repeat_events">Farbwechsel fuer wiederkehrende Ereignisse</string>
 
     <string name="add_occur">Vorkommen hinzufuegen : </string>
     <string name="untilToSince">Ereignis in den Tab Seit verschoben</string>
@@ -161,7 +160,6 @@
     <string name="sort_order">Sortierreihenfolge</string>
     <string name="no_events">Es gibt keine Ereignisse.</string>
 
-    <string name="quarter_till">75 Prozent der Tage vergangen</string>
     <string name="show_tab">Standard-Starttab</string>
 
     <string name="action_settings"> Einstellungen</string>
@@ -305,9 +303,22 @@
     <string name="action_not_available_for_one_time">Diese Aktion ist nur fuer wiederkehrende Ereignisse verfuegbar.</string>
     <string name="planned_date_cleared_info">Geplantes Zukunftsdatum wurde entfernt, da es nicht mehr in der Zukunft liegt.</string>
     <string name="csv_history_warning_title">CSV-Export enthaelt keinen Verlauf</string>
-    <string name="csv_history_warning_message">Verlaufseintraege: %1$d\nEreignisse mit Verlauf: %2$d\n\nCSV-Export/-Import bewahrt den Verlauf nicht. Verwende Datenbankexport fuer vollstaendige Sicherung und Wiederherstellung.</string>
+    <string name="csv_history_warning_message">Verlaufseintraege: %1$d\nEreignisse mit Verlauf: %2$d\nEreignisse mit benutzerdefinierten Benachrichtigungstagen: %3$d\nEreignisse mit deaktivierten Benachrichtigungen: %4$d\n\nCSV-Export/-Import bewahrt Verlauf, benutzerdefinierte Benachrichtigungstage und den Benachrichtigungsstatus pro Ereignis nicht. Verwende Datenbankexport fuer vollstaendige Sicherung und Wiederherstellung.</string>
     <string name="csv_history_warning_continue">CSV-Export fortsetzen</string>
     <string name="csv_history_warning_export_db">Stattdessen .db exportieren</string>
+    <string name="notify_lead_days_heading">Erinnerungsvorlauf in Tagen</string>
+    <string name="notify_lead_days_title">Erinnerungsvorlauf in Tagen</string>
+    <string name="notify_lead_days_prompt">Benutzerdefinierte Vorlauftage eingeben (0 bis 30) oder Wiederholungsstandard verwenden.</string>
+    <string name="notify_lead_days_set_custom">Benutzerdefiniert setzen</string>
+    <string name="notify_lead_days_use_default">Standard verwenden</string>
+    <string name="notify_lead_days_invalid">Bitte eine ganze Zahl von 0 bis 30 eingeben.</string>
+    <string name="notify_lead_days_effective_placeholder">Effektive Vorlauftage: 3</string>
+    <string name="notify_lead_days_effective_value">Effektive Vorlauftage: %1$d</string>
+    <string name="notify_lead_days_edit_button">Vorlauftage bearbeiten</string>
+    <string name="lead_days_source_default_from_recurrence">Standard (aus Wiederholung)</string>
+    <string name="lead_days_source_custom">Benutzerdefiniert</string>
+    <string name="event_notifications_enabled">Benachrichtigungen: Aktiviert</string>
+    <string name="event_notifications_disabled">Benachrichtigungen: Deaktiviert</string>
     <string name="history_anchor_header">Ereignisdatum (Anker): %1$s</string>
     <string name="history_anchor_header_missing">Ankerdatum nicht verfuegbar</string>
     <string name="history_empty_placeholder">Kein zusaetzlicher Verlauf hinzugefuegt.</string>

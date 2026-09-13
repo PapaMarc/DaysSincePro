@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 52
-        versionName "3.15.263.52"
+        versionName "3.15.268.52"
     }
 
     signingConfigs {
@@ -79,6 +79,64 @@ tasks.register("updateNoHardcodedUiStringsBaseline", Exec) {
             "-UpdateBaseline"
 }
 
+tasks.register("checkReminderLocalizationKeys") {
+    group = "verification"
+    description = "Fails build if required reminder warning/state localization keys are missing from supported locales."
+
+    doLast {
+        def requiredLocales = [
+                "values",
+                "values-de",
+                "values-es",
+                "values-fr",
+                "values-hi",
+                "values-it",
+                "values-pt",
+                "values-pt-rBR",
+                "values-zh-rCN"
+        ]
+
+        def requiredKeys = [
+                "csv_history_warning_title",
+                "csv_history_warning_message",
+                "csv_history_warning_continue",
+                "csv_history_warning_export_db",
+                "lead_days_source_default_from_recurrence",
+                "lead_days_source_custom",
+                "event_notifications_enabled",
+                "event_notifications_disabled"
+        ]
+
+        def missing = []
+        requiredLocales.each { localeDir ->
+            File stringsFile = file("${projectDir}/src/main/res/${localeDir}/strings.xml")
+            if (!stringsFile.exists()) {
+                missing.add("${localeDir}: missing strings.xml")
+                return
+            }
+
+            def xmlText = stringsFile.getText("UTF-8")
+
+            requiredKeys.each { key ->
+                def keyPattern = ~/(<string\s+name=\"${java.util.regex.Pattern.quote(key)}\")/
+                if (!(xmlText =~ keyPattern).find()) {
+                    missing.add("${localeDir}: missing key '${key}'")
+                }
+            }
+        }
+
+        if (!missing.isEmpty()) {
+            throw new GradleException(
+                    "Reminder localization gate failed:\n" + missing.join("\n"))
+        }
+    }
+}
+
 tasks.named("check") {
     dependsOn("checkNoHardcodedUiStrings")
+    dependsOn("checkReminderLocalizationKeys")
+}
+
+tasks.named("preBuild") {
+    dependsOn("checkReminderLocalizationKeys")
 }

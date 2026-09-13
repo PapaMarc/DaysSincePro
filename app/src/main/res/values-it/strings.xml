@@ -43,7 +43,6 @@
 
     <string name="show_whats_new">Mostra novita</string>
     <string name="do_not_show">Non mostrare</string>
-    <string name="remind_repeat_events">Cambio colore evento ricorrente</string>
 
     <string name="add_occur">Aggiungi occorrenza : </string>
     <string name="untilToSince">Evento spostato nella scheda Da</string>
@@ -161,7 +160,6 @@
     <string name="sort_order">Ordine</string>
     <string name="no_events">Non ci sono eventi.</string>
 
-    <string name="quarter_till">75 per cento dei giorni trascorsi</string>
     <string name="show_tab">Scheda iniziale predefinita</string>
 
     <string name="action_settings"> Impostazioni</string>
@@ -305,9 +303,22 @@
     <string name="action_not_available_for_one_time">Questa azione e disponibile solo per eventi ricorrenti.</string>
     <string name="planned_date_cleared_info">La data futura pianificata e stata cancellata perche non e piu nel futuro.</string>
     <string name="csv_history_warning_title">L export CSV non include la cronologia</string>
-    <string name="csv_history_warning_message">Voci cronologia: %1$d\nEventi con cronologia: %2$d\n\nL export/import CSV non preserva la cronologia. Usa export database per backup e ripristino completi.</string>
+    <string name="csv_history_warning_message">Voci cronologia: %1$d\nEventi con cronologia: %2$d\nEventi con giorni di notifica personalizzati: %3$d\nEventi con notifiche disabilitate: %4$d\n\nL export/import CSV non preserva cronologia, giorni di notifica personalizzati o lo stato notifiche per evento. Usa export database per backup e ripristino completi.</string>
     <string name="csv_history_warning_continue">Continua export CSV</string>
     <string name="csv_history_warning_export_db">Esporta invece .db</string>
+    <string name="notify_lead_days_heading">Giorni di anticipo promemoria</string>
+    <string name="notify_lead_days_title">Giorni di anticipo promemoria</string>
+    <string name="notify_lead_days_prompt">Inserisci giorni personalizzati (da 0 a 30), oppure usa il predefinito della ricorrenza.</string>
+    <string name="notify_lead_days_set_custom">Imposta personalizzato</string>
+    <string name="notify_lead_days_use_default">Usa predefinito</string>
+    <string name="notify_lead_days_invalid">Inserisci un numero intero da 0 a 30.</string>
+    <string name="notify_lead_days_effective_placeholder">Giorni effettivi di anticipo: 3</string>
+    <string name="notify_lead_days_effective_value">Giorni effettivi di anticipo: %1$d</string>
+    <string name="notify_lead_days_edit_button">Modifica giorni di anticipo</string>
+    <string name="lead_days_source_default_from_recurrence">Predefinito (dalla ricorrenza)</string>
+    <string name="lead_days_source_custom">Personalizzato</string>
+    <string name="event_notifications_enabled">Notifiche: Abilitate</string>
+    <string name="event_notifications_disabled">Notifiche: Disabilitate</string>
     <string name="history_anchor_header">Data evento (ancora): %1$s</string>
     <string name="history_anchor_header_missing">Data ancora non disponibile</string>
     <string name="history_empty_placeholder">Nessuna cronologia aggiuntiva inserita.</string>

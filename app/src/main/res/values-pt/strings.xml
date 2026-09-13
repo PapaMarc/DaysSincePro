@@ -43,7 +43,6 @@
 
     <string name="show_whats_new">Mostrar novidades</string>
     <string name="do_not_show">Nao mostrar</string>
-    <string name="remind_repeat_events">Mudanca de cor de evento recorrente</string>
 
     <string name="add_occur">Adicionar ocorrencia : </string>
     <string name="untilToSince">Evento movido para o separador Desde</string>
@@ -161,7 +160,6 @@
     <string name="sort_order">Ordem</string>
     <string name="no_events">Nao existem eventos.</string>
 
-    <string name="quarter_till">75 por cento dos dias passados</string>
     <string name="show_tab">Separador inicial predefinido</string>
 
     <string name="action_settings"> Definicoes</string>
@@ -305,9 +303,22 @@
     <string name="action_not_available_for_one_time">Esta acao so esta disponivel para eventos recorrentes.</string>
     <string name="planned_date_cleared_info">A data futura planeada foi limpa porque ja nao esta no futuro.</string>
     <string name="csv_history_warning_title">A exportacao CSV nao inclui historico</string>
-    <string name="csv_history_warning_message">Entradas de historico: %1$d\nEventos com historico: %2$d\n\nA exportacao/importacao CSV nao preserva o historico. Use exportacao de base de dados para copia e restauro completos.</string>
+    <string name="csv_history_warning_message">Entradas de historico: %1$d\nEventos com historico: %2$d\nEventos com dias de notificacao personalizados: %3$d\nEventos com notificacoes desativadas: %4$d\n\nA exportacao/importacao CSV nao preserva historico, dias de notificacao personalizados nem o estado de notificacoes por evento. Use exportacao de base de dados para copia e restauro completos.</string>
     <string name="csv_history_warning_continue">Continuar exportacao CSV</string>
     <string name="csv_history_warning_export_db">Exportar .db em vez disso</string>
+    <string name="notify_lead_days_heading">Dias de antecedencia do lembrete</string>
+    <string name="notify_lead_days_title">Dias de antecedencia do lembrete</string>
+    <string name="notify_lead_days_prompt">Introduza dias personalizados (0 a 30), ou use o predefinido da recorrencia.</string>
+    <string name="notify_lead_days_set_custom">Definir personalizado</string>
+    <string name="notify_lead_days_use_default">Usar predefinido</string>
+    <string name="notify_lead_days_invalid">Introduza um numero inteiro de 0 a 30.</string>
+    <string name="notify_lead_days_effective_placeholder">Dias efetivos de antecedencia: 3</string>
+    <string name="notify_lead_days_effective_value">Dias efetivos de antecedencia: %1$d</string>
+    <string name="notify_lead_days_edit_button">Editar dias de antecedencia</string>
+    <string name="lead_days_source_default_from_recurrence">Predefinido (da recorrencia)</string>
+    <string name="lead_days_source_custom">Personalizado</string>
+    <string name="event_notifications_enabled">Notificacoes: Ativadas</string>
+    <string name="event_notifications_disabled">Notificacoes: Desativadas</string>
     <string name="history_anchor_header">Data do evento (ancora): %1$s</string>
     <string name="history_anchor_header_missing">Data ancora indisponivel</string>
     <string name="history_empty_placeholder">Nao foi adicionado historico adicional.</string>

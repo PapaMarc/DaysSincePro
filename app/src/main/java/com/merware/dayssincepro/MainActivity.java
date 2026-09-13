@@ -387,8 +387,13 @@ public class MainActivity extends AppCompatActivity implements
         long[] counts = getHistoryCounts();
         long historyEntries = counts[0];
         long eventsWithHistory = counts[1];
+        long customNotifyDays = counts[2];
+        long notificationsDisabled = counts[3];
 
-        if (historyEntries <= 0) {
+        if (historyEntries <= 0
+            && eventsWithHistory <= 0
+            && customNotifyDays <= 0
+            && notificationsDisabled <= 0) {
             launchExportCsvPicker();
             return;
         }
@@ -396,7 +401,9 @@ public class MainActivity extends AppCompatActivity implements
         String message = getString(
                 R.string.csv_history_warning_message,
                 historyEntries,
-                eventsWithHistory
+            eventsWithHistory,
+            customNotifyDays,
+            notificationsDisabled
         );
 
         AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(this);
@@ -423,11 +430,15 @@ public class MainActivity extends AppCompatActivity implements
         try {
             SQLiteDatabase db = DatabaseHelper.getInstance(getApplicationContext()).getWritableDatabase();
             c = db.rawQuery(
-                    "SELECT COUNT(*), COUNT(DISTINCT eventId) FROM history",
+                    "SELECT "
+                            + "(SELECT COUNT(*) FROM history) AS history_count, "
+                            + "(SELECT COUNT(DISTINCT eventId) FROM history) AS events_with_history_count, "
+                            + "(SELECT COUNT(*) FROM event WHERE notify_lead_days IS NOT NULL) AS custom_notify_days_count, "
+                            + "(SELECT COUNT(*) FROM event WHERE notify_enabled = 0) AS notify_disabled_count",
                     null
             );
             if (c.moveToFirst()) {
-                return new long[]{c.getLong(0), c.getLong(1)};
+                return new long[]{c.getLong(0), c.getLong(1), c.getLong(2), c.getLong(3)};
             }
         } catch (Exception e) {
             Log.e("DSP_EXPORT_CSV", "Failed to count history before CSV export", e);
@@ -436,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements
                 c.close();
             }
         }
-        return new long[]{0L, 0L};
+        return new long[]{0L, 0L, 0L, 0L};
     }
 
     private void launchRestoreDbPicker() {
