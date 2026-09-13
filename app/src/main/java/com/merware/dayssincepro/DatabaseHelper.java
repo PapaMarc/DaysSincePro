@@ -11,7 +11,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "alex_db";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     // Single shared instance so the whole app uses one connection to alex_db,
     // instead of every Activity/Fragment opening its own.
@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 3 add end date column
         // 4 add details + last_notified_date columns
         // 5 add planned_date + one-time orphan history cleanup for upgraded installs
+        // 6 add notify_lead_days + notify_enabled columns
     }
 
     @Override
@@ -59,7 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String sql2 = "CREATE TABLE IF NOT EXISTS event ("
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "catId INTEGER, "
             + "event TEXT, " + "date DATE, " + "recur INTEGER, "
-            + "end_date DATE, details TEXT, last_notified_date DATE, planned_date DATE)";
+            + "end_date DATE, details TEXT, last_notified_date DATE, planned_date DATE, "
+            + "notify_lead_days INTEGER, notify_enabled INTEGER NOT NULL DEFAULT 1)";
 
         db.execSQL(sql2);
 
@@ -110,6 +112,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     static final String CLEAN_ORPHAN_HISTORY_SQL =
             "DELETE FROM history WHERE eventId NOT IN (SELECT _id FROM event)";
 
+        // event.notify_lead_days + event.notify_enabled columns, new for version 6.
+        static final String ADD_NOTIFY_LEAD_DAYS_COLUMN_SQL =
+            "ALTER TABLE event ADD COLUMN notify_lead_days INTEGER";
+        static final String ADD_NOTIFY_ENABLED_COLUMN_SQL =
+            "ALTER TABLE event ADD COLUMN notify_enabled INTEGER NOT NULL DEFAULT 1";
+
     /**
      * Returns the ordered SQL statements needed to migrate a database from oldVersion to
      * newVersion, by applying each intermediate version step in sequence - rather than
@@ -155,6 +163,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             List<String> step = new ArrayList<>();
             step.add(ADD_PLANNED_DATE_COLUMN_SQL);
             step.add(CLEAN_ORPHAN_HISTORY_SQL);
+            return step;
+        }
+        if (fromVersion == 5 && toVersion == 6) {
+            List<String> step = new ArrayList<>();
+            step.add(ADD_NOTIFY_LEAD_DAYS_COLUMN_SQL);
+            step.add(ADD_NOTIFY_ENABLED_COLUMN_SQL);
             return step;
         }
         return null;

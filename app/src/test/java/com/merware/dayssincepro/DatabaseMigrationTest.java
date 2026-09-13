@@ -113,23 +113,45 @@ public class DatabaseMigrationTest {
     }
 
     @Test
+    public void v5ToV6_addsNotifyLeadDaysAndNotifyEnabledColumns() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(5, 6);
+        assertEquals(2, statements.size());
+        assertTrue(statements.get(0).contains("notify_lead_days"));
+        assertTrue(statements.get(1).contains("notify_enabled"));
+    }
+
+    @Test
+    public void v1ToV6_appliesAllStepsInOrder() {
+        List<String> statements = DatabaseHelper.getMigrationStatements(1, 6);
+        assertEquals(8, statements.size());
+        assertTrue(statements.get(0).contains("history"));
+        assertTrue(statements.get(1).contains("end_date"));
+        assertTrue(statements.get(2).contains("details"));
+        assertTrue(statements.get(3).contains("last_notified_date"));
+        assertTrue(statements.get(4).contains("planned_date"));
+        assertTrue(statements.get(5).contains("DELETE FROM history"));
+        assertTrue(statements.get(6).contains("notify_lead_days"));
+        assertTrue(statements.get(7).contains("notify_enabled"));
+    }
+
+    @Test
     public void sameVersion_returnsEmptyList() {
-        List<String> statements = DatabaseHelper.getMigrationStatements(5, 5);
+        List<String> statements = DatabaseHelper.getMigrationStatements(6, 6);
         assertEquals(0, statements.size());
     }
 
     @Test
     public void unknownFutureVersion_returnsNullInsteadOfDroppingData() {
-        // No step is defined yet from v5 to v6 - must return null (refuse), not silently
+        // No step is defined yet from v6 to v7 - must return null (refuse), not silently
         // fabricate/execute a destructive migration.
-        assertNull(DatabaseHelper.getMigrationStatements(5, 6));
-        assertNull(DatabaseHelper.getMigrationStatements(1, 6));
+        assertNull(DatabaseHelper.getMigrationStatements(6, 7));
+        assertNull(DatabaseHelper.getMigrationStatements(1, 7));
     }
 
     @Test
     public void invalidVersions_returnNull() {
         assertNull(DatabaseHelper.getMigrationStatements(0, 1));
-        assertNull(DatabaseHelper.getMigrationStatements(5, 2));
+        assertNull(DatabaseHelper.getMigrationStatements(6, 2));
     }
 
     // ---- real-SQLite integration coverage: no data loss across every known upgrade path ----
@@ -183,41 +205,59 @@ public class DatabaseMigrationTest {
     }
 
     @Test
-    public void upgradeFromV1_preservesDataAndReachesV5Schema() throws SQLException, IOException {
+    public void upgradeFromV1_preservesDataAndReachesV6Schema() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV1Schema(conn);
-            applyMigration(conn, 1, 5);
+            applyMigration(conn, 1, 6);
 
-            assertTrue("history table should exist after v1->v5", tableExists(conn, "history"));
-            assertTrue("event.end_date should exist after v1->v5", columnExists(conn, "event", "end_date"));
-            assertTrue("event.details should exist after v1->v5", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v1->v5", columnExists(conn, "event", "last_notified_date"));
-            assertTrue("event.planned_date should exist after v1->v5", columnExists(conn, "event", "planned_date"));
+            assertTrue("history table should exist after v1->v6", tableExists(conn, "history"));
+            assertTrue("event.end_date should exist after v1->v6", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v1->v6", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v1->v6", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v1->v6", columnExists(conn, "event", "planned_date"));
+            assertTrue("event.notify_lead_days should exist after v1->v6", columnExists(conn, "event", "notify_lead_days"));
+            assertTrue("event.notify_enabled should exist after v1->v6", columnExists(conn, "event", "notify_enabled"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
+
+            try (Statement st = conn.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT notify_lead_days, notify_enabled FROM event WHERE _id = 1")) {
+                rs.next();
+                assertNull("notify_lead_days should remain NULL for migrated rows", rs.getObject(1));
+                assertEquals("notify_enabled should default to enabled for migrated rows", 1, rs.getInt(2));
+            }
         }
     }
 
     @Test
-    public void upgradeFromV2_preservesDataAndReachesV5Schema() throws SQLException, IOException {
+    public void upgradeFromV2_preservesDataAndReachesV6Schema() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV2Schema(conn);
-            applyMigration(conn, 2, 5);
+            applyMigration(conn, 2, 6);
 
-            assertTrue("event.end_date should exist after v2->v5", columnExists(conn, "event", "end_date"));
-            assertTrue("event.details should exist after v2->v5", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v2->v5", columnExists(conn, "event", "last_notified_date"));
-            assertTrue("event.planned_date should exist after v2->v5", columnExists(conn, "event", "planned_date"));
+            assertTrue("event.end_date should exist after v2->v6", columnExists(conn, "event", "end_date"));
+            assertTrue("event.details should exist after v2->v6", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v2->v6", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v2->v6", columnExists(conn, "event", "planned_date"));
+            assertTrue("event.notify_lead_days should exist after v2->v6", columnExists(conn, "event", "notify_lead_days"));
+            assertTrue("event.notify_enabled should exist after v2->v6", columnExists(conn, "event", "notify_enabled"));
             assertEquals("category rows must survive migration", 1, rowCount(conn, "category"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
             assertEquals("history rows must survive migration", 1, rowCount(conn, "history"));
+
+            try (Statement st = conn.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT notify_lead_days, notify_enabled FROM event WHERE _id = 1")) {
+                rs.next();
+                assertNull("notify_lead_days should remain NULL for migrated rows", rs.getObject(1));
+                assertEquals("notify_enabled should default to enabled for migrated rows", 1, rs.getInt(2));
+            }
         }
     }
 
     @Test
-    public void upgradeFromV3_preservesDataAndAddsV5Columns() throws SQLException, IOException {
+    public void upgradeFromV3_preservesDataAndAddsV6Columns() throws SQLException, IOException {
         File dbFile = newTempDbPath();
         try (Connection conn = open(dbFile)) {
             createV2Schema(conn);
@@ -227,12 +267,21 @@ public class DatabaseMigrationTest {
                 st.execute("UPDATE event SET end_date = '2020-12-31' WHERE _id = 1");
             }
 
-            applyMigration(conn, 3, 5);
+            applyMigration(conn, 3, 6);
 
-            assertTrue("event.details should exist after v3->v5", columnExists(conn, "event", "details"));
-            assertTrue("event.last_notified_date should exist after v3->v5", columnExists(conn, "event", "last_notified_date"));
-            assertTrue("event.planned_date should exist after v3->v5", columnExists(conn, "event", "planned_date"));
+            assertTrue("event.details should exist after v3->v6", columnExists(conn, "event", "details"));
+            assertTrue("event.last_notified_date should exist after v3->v6", columnExists(conn, "event", "last_notified_date"));
+            assertTrue("event.planned_date should exist after v3->v6", columnExists(conn, "event", "planned_date"));
+            assertTrue("event.notify_lead_days should exist after v3->v6", columnExists(conn, "event", "notify_lead_days"));
+            assertTrue("event.notify_enabled should exist after v3->v6", columnExists(conn, "event", "notify_enabled"));
             assertEquals("event rows must survive migration", 1, rowCount(conn, "event"));
+
+            try (Statement st = conn.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT notify_lead_days, notify_enabled FROM event WHERE _id = 1")) {
+                rs.next();
+                assertNull("notify_lead_days should remain NULL for migrated rows", rs.getObject(1));
+                assertEquals("notify_enabled should default to enabled for migrated rows", 1, rs.getInt(2));
+            }
         }
     }
 
