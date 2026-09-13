@@ -1,5 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="cat_entries">
+        <item>Ordre de saisie</item>
+        <item>Ordre alphabétique</item>
+        <item>Ordre alphabétique inversé</item>
+    </string-array>
+
+    <string-array name="cat_days_between">
+        <item>Ordre chronologique</item>
+        <item>Ordre alphabétique</item>
+        <item>Ordre alphabétique inversé</item>
+    </string-array>
+
+    <string-array name="cat_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="entries">
+        <item>Ordre de saisie</item>
+        <item>Ordre alphabétique</item>
+        <item>Ordre alphabétique inversé</item>
+        <item>Les plus anciens d’abord</item>
+        <item>Les plus récents d’abord</item>
+    </string-array>
+
+    <string-array name="values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="sizes">
+        <item>Très grand</item>
+        <item>Grand</item>
+        <item>Moyen</item>
+        <item>Petit</item>
+        <item>Très petit</item>
+    </string-array>
+
+    <string-array name="font_values">
+        <item>20</item>
+        <item>18</item>
+        <item>16</item>
+        <item>14</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="styles">
+        <item>Années Mois Jours</item>
+        <item>Jours</item>
+        <item>Jours de la semaine</item>
+        <item>Semaines</item>
+    </string-array>
+
+    <string-array name="style_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="date_values">
+        <item>Année-Mois-Jour</item>
+        <item>Jour-Mois-Année</item>
+        <item>Mois-Jour-Année</item>
+    </string-array>
+
+    <string-array name="view_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="colors">
+        <item>Effacer</item>
+        <item>Bleu</item>
+        <item>Rouge</item>
+        <item>Rose</item>
+        <item>Orange</item>
+        <item>Vert</item>
+    </string-array>
+
+    <string-array name="background">
+        <item>Transparent</item>
+        <item>Solide</item>
+    </string-array>
+
+    <string-array name="recur">
+        <item>Événement ponctuel</item>
+        <item>Hebdomadaire</item>
+        <item>Toutes les deux semaines</item>
+        <item>Mensuel</item>
+        <item>Trimestriel</item>
+        <item>Semestriel</item>
+        <item>Annuel</item>
+        <item>Nombre de jours</item>
+    </string-array>
+
     <string-array name="app_language_entries">
         <item>@string/settings_language_use_device</item>
         <item>@string/settings_language_english</item>
@@ -13,5 +114,54 @@
         <item>@string/settings_language_italian</item>
         <item>@string/settings_language_chinese_simplified</item>
         <item>@string/settings_language_hindi</item>
+    </string-array>
+
+    <string-array name="app_language_values">
+        <item>system</item>
+        <item>en</item>
+        <item>en-XA</item>
+        <item>ar-XB</item>
+        <item>fr</item>
+        <item>es</item>
+        <item>de</item>
+        <item>pt</item>
+        <item>pt-BR</item>
+        <item>it</item>
+        <item>zh-CN</item>
+        <item>hi</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>Clair</item>
+        <item>Sombre</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="remind_percent">
+        <item>75 pour cent des jours écoulés</item>
+        <item>85 pour cent des jours écoulés</item>
+        <item>95 pour cent des jours écoulés</item>
+    </string-array>
+
+    <string-array name="remind_percent_values">
+        <item>75</item>
+        <item>85</item>
+        <item>95</item>
+    </string-array>
+
+    <string-array name="since_until">
+        <item>Jours depuis</item>
+        <item>Depuis le dernier</item>
+        <item>Jusqu’au prochain</item>
+    </string-array>
+
+    <string-array name="since_until_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>
