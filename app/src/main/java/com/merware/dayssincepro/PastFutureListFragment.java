@@ -157,7 +157,7 @@ public class PastFutureListFragment extends ListFragment {
 
             Cursor cursor;
 
-                sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, "
+                sql = "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, notify_lead_days, notify_enabled, "
                     + "(select max(h.date) from history h where h.eventId = event._id and h.date <= '" + today + "') as last_happened_date "
                     + "from event ";
 
@@ -328,10 +328,20 @@ public class PastFutureListFragment extends ListFragment {
     }
 
     static String buildSearchSql(String orderBy) {
-        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, "
+        return "select _id, catID, event, date, recur, end_date, date(date, '+' || recur || ' day') as nextdate, details, planned_date, notify_lead_days, notify_enabled, "
             + "(select max(h.date) from history h where h.eventId = event._id and h.date <= date('now', 'localtime')) as last_happened_date "
             + "from event "
                 + "where UPPER(event) like UPPER(?) order by " + orderBy;
+    }
+
+    static boolean shouldResetLastNotifiedDate(String existingDate,
+                                               long existingRecur,
+                                               String updatedDate,
+                                               long updatedRecur) {
+        if (existingDate == null || updatedDate == null) {
+            return false;
+        }
+        return !existingDate.equals(updatedDate) || existingRecur != updatedRecur;
     }
 
     private String firstRowProbe(Cursor cursor) {
@@ -975,6 +985,18 @@ public class PastFutureListFragment extends ListFragment {
                         args.put("catId", catId);
                         args.put("end_date", endDate);
                         args.put("details", details);
+
+                        Cursor existing = db.query("event", new String[] { "date", "recur" },
+                                "_id = ?", new String[] { String.valueOf(id) },
+                                null, null, null);
+                        if (existing.moveToFirst()) {
+                            String existingDate = existing.getString(0);
+                            long existingRecur = existing.getLong(1);
+                            if (shouldResetLastNotifiedDate(existingDate, existingRecur, date, nRecur)) {
+                                args.putNull("last_notified_date");
+                            }
+                        }
+                        existing.close();
 
                         db.update("event", args, "_id = " + id, null);
 

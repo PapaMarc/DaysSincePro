@@ -209,41 +209,44 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 //        Log.wtf("3rd","dsc1 is " + dsc1);
 //        Log.wtf("3rd","dsc2 is " + dsc2);
 
-        String percentOption = preferences.getString("remind_percent",  context.getString(R.string.quarter_till));
+        int notifyLeadDaysCol = c.getColumnIndex("notify_lead_days");
+        Integer customLeadDays = (notifyLeadDaysCol >= 0 && !c.isNull(notifyLeadDaysCol))
+                ? c.getInt(notifyLeadDaysCol)
+                : null;
 
-        // Log.wtf("remind percent", percentOption);
+        ReminderLeadDaysResolver.Resolution leadResolution =
+                ReminderLeadDaysResolver.resolve(nEstDays, customLeadDays);
 
-        double percent = .75;
-
-        switch (percentOption)
-        {
-            case "75 percent of days passed":  // better way to get array item?
-                percent = .75;
-                break;
-            case "85 percent of days passed":
-                percent = .85;
-                break;
-            case "95 percent of days passed":
-                percent = .95;
-                break;
-            default:
-                percent = 0.75;
-                break;
+        long daysSinceReference;
+        long daysUntilNextOccurrence;
+        if (nEstDays == 0) {
+            daysSinceReference = dsc1.getDaysSinceEvent();
+            daysUntilNextOccurrence = Math.max(0, -daysSinceReference);
+        } else {
+            daysSinceReference = new DaysSinceCalculations(context, timeline.lastOccurrence).getDaysSinceEvent();
+            long nextDateDaysSince = new DaysSinceCalculations(context, timeline.nextOccurrence).getDaysSinceEvent();
+            daysUntilNextOccurrence = Math.max(0, -nextDateDaysSince);
         }
 
-        // Log.wtf("remind percent", "percent is :" + percent);
+        ReminderUrgencyEvaluator.ReminderUrgency urgency = ReminderUrgencyEvaluator.evaluate(
+                nEstDays,
+                daysSinceReference,
+                daysUntilNextOccurrence,
+                leadResolution.effectiveLeadDays);
 
-        if (nEstDays != 0) {
-            if (dsc.getDaysSinceEvent() > nEstDays * percent) {
-                explainView.setTextColor(Color.parseColor("#FF9C00")); // Color.YELLOW
-            }
-            if (dsc.getDaysSinceEvent() > nEstDays) {
-                explainView.setTextColor(Color.RED);
-            }
-
-            if (dsc.getDaysSinceEvent() == 0) {
+        switch (urgency) {
+            case DUE:
                 explainView.setTextColor(context.getResources().getColor(R.color.ui_accent_primary));
-            }
+                break;
+            case NEAR_DUE:
+                explainView.setTextColor(Color.parseColor("#FF9C00"));
+                break;
+            case OVERDUE:
+                explainView.setTextColor(Color.RED);
+                break;
+            case NONE:
+            default:
+                break;
         }
 
         String styleOption = preferences.getString("disp_style", "0");

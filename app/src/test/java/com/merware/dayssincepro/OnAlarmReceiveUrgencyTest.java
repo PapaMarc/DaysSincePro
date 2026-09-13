@@ -5,69 +5,61 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Regression coverage for the perpetual-overdue notification bug: OnAlarmReceive's
- * urgency is computed from days elapsed since an event's most recent recurrence, not its
- * original stored date, so a years-old recurring event isn't red/overdue forever.
+ * Regression coverage for fixed-day reminder urgency and cycle-aware recurrence math in
+ * OnAlarmReceive.
  */
 public class OnAlarmReceiveUrgencyTest {
-
-    private static final double PERCENT = 0.75;
 
     @Test
     public void nonRecurringEvent_dueToday_isGreen() {
         assertEquals(OnAlarmReceive.Urgency.GREEN,
-                OnAlarmReceive.computeUrgency(0, 0, PERCENT));
+        OnAlarmReceive.computeUrgency(0, 0, 0, 3));
     }
 
     @Test
-    public void nonRecurringEvent_notToday_isNone() {
-        assertEquals(OnAlarmReceive.Urgency.NONE,
-                OnAlarmReceive.computeUrgency(5, 0, PERCENT));
+    public void nonRecurringEvent_nearDueWithinLeadWindow_isYellow() {
+    assertEquals(OnAlarmReceive.Urgency.YELLOW,
+        OnAlarmReceive.computeUrgency(0, -2, 2, 3));
+    }
+
+    @Test
+    public void nonRecurringEvent_futureOutsideLeadWindow_isNone() {
+    assertEquals(OnAlarmReceive.Urgency.NONE,
+        OnAlarmReceive.computeUrgency(0, -10, 10, 3));
+    }
+
+    @Test
+    public void nonRecurringEvent_afterEventDay_isRed() {
+    assertEquals(OnAlarmReceive.Urgency.RED,
+        OnAlarmReceive.computeUrgency(0, 5, 0, 3));
     }
 
     @Test
     public void recurringEvent_onAnniversary_isGreen() {
         assertEquals(OnAlarmReceive.Urgency.GREEN,
-                OnAlarmReceive.computeUrgency(0, 365, PERCENT));
+        OnAlarmReceive.computeUrgency(365, 0, 365, 21));
     }
 
     @Test
-    public void recurringEvent_wellWithinCycle_isNone() {
-        // 30 days into a 365-day cycle - nowhere near due, well below the 75% mark.
+    public void recurringEvent_withinLeadWindow_isYellow() {
+    // 6 days before the next annual occurrence with 21-day lead window.
+    assertEquals(OnAlarmReceive.Urgency.YELLOW,
+        OnAlarmReceive.computeUrgency(365, 359, 6, 21));
+    }
+
+    @Test
+    public void recurringEvent_outsideLeadWindow_isNone() {
         assertEquals(OnAlarmReceive.Urgency.NONE,
-                OnAlarmReceive.computeUrgency(30, 365, PERCENT));
-    }
-
-    @Test
-    public void recurringEvent_pastPercentThresholdAndWithinAWeekOfDue_isYellow() {
-        // 75% of 365 = 273.75; 280 days in is ~6.25 days past that threshold, still <= 7.
-        assertEquals(OnAlarmReceive.Urgency.YELLOW,
-                OnAlarmReceive.computeUrgency(280, 365, PERCENT));
-    }
-
-    @Test
-    public void recurringEvent_pastPercentThresholdButMoreThanAWeekOut_isNone() {
-        // ~16.25 days past the 75% threshold - past the "within a week" window.
-        assertEquals(OnAlarmReceive.Urgency.NONE,
-                OnAlarmReceive.computeUrgency(290, 365, PERCENT));
-    }
-
-    @Test
-    public void recurringEvent_pastFullInterval_isRed() {
-        assertEquals(OnAlarmReceive.Urgency.RED,
-                OnAlarmReceive.computeUrgency(370, 365, PERCENT));
+        OnAlarmReceive.computeUrgency(365, 30, 335, 21));
     }
 
     @Test
     public void yearsOldAnnualEvent_evaluatedRelativeToLastOccurrence_isNoLongerPerpetuallyRed() {
-        // The actual regression case: prior to this fix, urgency was computed from raw
-        // days-since-ORIGINAL-date (e.g. 10 years = ~3650 days), which always exceeded
-        // nEstDays and was permanently RED. Computed relative to the most recent
-        // occurrence (as OnAlarmReceive now does via RecurrenceCycle.computeOccurrences),
-        // an event 40 days into its current annual cycle is correctly NONE, not RED.
+    // The actual regression case: urgency is computed relative to current cycle math,
+    // not raw days-since-original-date.
         long daysSinceLastOccurrence = 40;
         assertEquals(OnAlarmReceive.Urgency.NONE,
-                OnAlarmReceive.computeUrgency(daysSinceLastOccurrence, 365, PERCENT));
+        OnAlarmReceive.computeUrgency(365, daysSinceLastOccurrence, 325, 21));
     }
 
     @Test

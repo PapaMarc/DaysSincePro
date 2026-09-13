@@ -33,12 +33,12 @@ public class SearchFilterSqlParityTest {
     public void searchSql_caseInsensitiveTitleMatch_returnsSameEventSetRegardlessOfDateType() throws Exception {
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
             try (Statement st = conn.createStatement()) {
-                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, catID INTEGER, event TEXT, date DATE, recur INTEGER, end_date DATE, details TEXT, planned_date DATE)");
+                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, catID INTEGER, event TEXT, date DATE, recur INTEGER, end_date DATE, details TEXT, planned_date DATE, notify_lead_days INTEGER, notify_enabled INTEGER NOT NULL DEFAULT 1)");
                 st.execute("CREATE TABLE history (_id INTEGER PRIMARY KEY AUTOINCREMENT, eventId INTEGER, catID INTEGER, date DATE, onTime INTEGER, note TEXT)");
 
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (1, 'Jill BDay', '1961-04-11', 0, NULL, '', NULL)");
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (2, 'Naturalis Ji Chronicle', '2045-06-15', 0, NULL, '', NULL)");
-                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date) VALUES (3, 'No Match Item', '2020-01-01', 365, '2022-01-01', '', NULL)");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date, notify_lead_days, notify_enabled) VALUES (1, 'Jill BDay', '1961-04-11', 0, NULL, '', NULL, NULL, 1)");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date, notify_lead_days, notify_enabled) VALUES (2, 'Naturalis Ji Chronicle', '2045-06-15', 0, NULL, '', NULL, NULL, 1)");
+                st.execute("INSERT INTO event (catID, event, date, recur, end_date, details, planned_date, notify_lead_days, notify_enabled) VALUES (3, 'No Match Item', '2020-01-01', 365, '2022-01-01', '', NULL, NULL, 1)");
             }
 
             String sql = PastFutureListFragment.buildSearchSql("event ASC");
