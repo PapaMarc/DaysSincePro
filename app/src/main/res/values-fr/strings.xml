@@ -297,11 +297,11 @@
   <string name="notify_lead_days_effective_placeholder">Rappel : 3 jours avant</string>
   <string name="notify_lead_days_effective_value">Jours d’anticipation effectifs : %1$d</string>
   <string name="notify_lead_days_edit_button">Modifier les jours d’anticipation</string>
-  <string name="lead_days_source_default_from_recurrence">Par défaut (par type de récurrence)</string>
-  <string name="lead_days_source_custom">Personnalisé</string>
+  <string name="lead_days_source_default_from_recurrence">Source : Par défaut (par type de récurrence)</string>
+  <string name="lead_days_source_custom">Source : Personnalisé</string>
   <string name="event_notifications_enabled">Notifications : Activées</string>
   <string name="event_notifications_disabled">Notifications : Désactivées</string>
-  <string name="notify_global_disabled_hint">Les notifications globales sont désactivées. Les paramètres de rappel par événement sont conservés mais inactifs.</string>
+  <string name="notify_global_disabled_hint">Les notifications globales sont désactivées dans les paramètres. Les réglages de rappel par événement sont enregistrés, mais actuellement inactifs.</string>
   <string name="history_anchor_header">Date de l’événement (ancre) : %1$s</string>
   <string name="history_anchor_header_missing">Date d’ancrage indisponible</string>
   <string name="history_empty_placeholder">Aucun historique supplémentaire n’a été ajouté.</string>

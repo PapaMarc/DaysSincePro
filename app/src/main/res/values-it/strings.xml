@@ -315,11 +315,11 @@
     <string name="notify_lead_days_effective_placeholder">Promemoria: 3 giorni prima</string>
     <string name="notify_lead_days_effective_value">Giorni effettivi di anticipo: %1$d</string>
     <string name="notify_lead_days_edit_button">Modifica giorni di anticipo</string>
-    <string name="lead_days_source_default_from_recurrence">Predefinito (per tipo di ricorrenza)</string>
-    <string name="lead_days_source_custom">Personalizzato</string>
+    <string name="lead_days_source_default_from_recurrence">Origine: Predefinito (per tipo di ricorrenza)</string>
+    <string name="lead_days_source_custom">Origine: Personalizzato</string>
     <string name="event_notifications_enabled">Notifiche: Abilitate</string>
     <string name="event_notifications_disabled">Notifiche: Disabilitate</string>
-    <string name="notify_global_disabled_hint">Le notifiche globali sono disattivate. Le impostazioni promemoria per evento restano salvate, ma ora sono inattive.</string>
+    <string name="notify_global_disabled_hint">Le notifiche globali sono disabilitate nelle Impostazioni. Le impostazioni promemoria per evento sono salvate, ma attualmente inattive.</string>
     <string name="history_anchor_header">Data evento (ancora): %1$s</string>
     <string name="history_anchor_header_missing">Data ancora non disponibile</string>
     <string name="history_empty_placeholder">Nessuna cronologia aggiuntiva inserita.</string>

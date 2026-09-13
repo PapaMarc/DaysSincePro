@@ -212,11 +212,11 @@
     <string name="notify_lead_days_effective_placeholder">Reminder: 3 days prior</string>
     <string name="notify_lead_days_effective_value">Effective lead days: %1$d</string>
     <string name="notify_lead_days_edit_button">Edit lead days</string>
-    <string name="lead_days_source_default_from_recurrence">Default (per recurrence type)</string>
-    <string name="lead_days_source_custom">Custom</string>
+    <string name="lead_days_source_default_from_recurrence">Source: Default (per recurrence type)</string>
+    <string name="lead_days_source_custom">Source: Custom</string>
     <string name="event_notifications_enabled">Notifications: Enabled</string>
     <string name="event_notifications_disabled">Notifications: Disabled</string>
-    <string name="notify_global_disabled_hint">Global notifications are off. Event reminder settings are saved but inactive.</string>
+    <string name="notify_global_disabled_hint">Global notifications are disabled in Settings. Event-specific reminder settings are saved, but currently inactive.</string>
     <string name="details">Details</string>
     <string name="enter_details_optional">&lt;Enter Details (Optional)&gt;</string>
     <string name="touch_here">Touch Here</string>

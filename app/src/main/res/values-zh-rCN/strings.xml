@@ -323,11 +323,11 @@
     <string name="notify_lead_days_effective_placeholder">提醒：提前 3 天</string>
     <string name="notify_lead_days_effective_value">生效提前天数：%1$d</string>
     <string name="notify_lead_days_edit_button">编辑提前天数</string>
-    <string name="lead_days_source_default_from_recurrence">默认值（按重复类型）</string>
-    <string name="lead_days_source_custom">自定义</string>
+    <string name="lead_days_source_default_from_recurrence">来源：默认值（按重复类型）</string>
+    <string name="lead_days_source_custom">来源：自定义</string>
     <string name="event_notifications_enabled">通知：已启用</string>
     <string name="event_notifications_disabled">通知：已禁用</string>
-    <string name="notify_global_disabled_hint">全局通知已关闭。事件提醒设置会保留，但当前不生效。</string>
+    <string name="notify_global_disabled_hint">全局通知已在设置中禁用。事件级提醒设置会保留，但当前不生效。</string>
     <string name="history_anchor_header">事件（锚点）日期：%1$s</string>
     <string name="history_anchor_header_missing">锚点日期不可用</string>
     <string name="history_empty_placeholder">尚未添加额外历史。</string>

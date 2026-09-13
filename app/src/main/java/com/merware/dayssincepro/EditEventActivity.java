@@ -56,6 +56,7 @@ public class EditEventActivity extends AppCompatActivity {
     TextView leadDaysEffectiveView;
     TextView leadDaysSourceView;
     TextView globalReminderDisabledHintView;
+    View reminderSettingsGroup;
     SelectAgainSpinner catSpinner;
     CheckBox cbEndDay;
     CheckBox eventNotifyEnabledCheckbox;
@@ -135,6 +136,7 @@ public class EditEventActivity extends AppCompatActivity {
         leadDaysEffectiveView = (TextView) findViewById(R.id.notify_lead_days_effective);
         leadDaysSourceView = (TextView) findViewById(R.id.notify_lead_days_source);
         globalReminderDisabledHintView = (TextView) findViewById(R.id.notify_global_disabled_hint);
+        reminderSettingsGroup = findViewById(R.id.reminderSettingsGroup);
         eventNotifyEnabledCheckbox = (CheckBox) findViewById(R.id.eventNotifyEnabledCheckbox);
         buttonEditNotifyLeadDays = (Button) findViewById(R.id.buttonEditNotifyLeadDays);
         buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
@@ -734,6 +736,8 @@ public class EditEventActivity extends AppCompatActivity {
             leadDaysSourceView.setText(resolution.custom
                     ? getString(R.string.lead_days_source_custom)
                     : getString(R.string.lead_days_source_default_from_recurrence));
+            leadDaysSourceView.setEnabled(globalNotificationsEnabled);
+            leadDaysSourceView.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
         }
 
         if (eventNotifyEnabledCheckbox != null) {
@@ -741,16 +745,28 @@ public class EditEventActivity extends AppCompatActivity {
                     ? getString(R.string.event_notifications_enabled)
                     : getString(R.string.event_notifications_disabled));
             eventNotifyEnabledCheckbox.setEnabled(globalNotificationsEnabled);
+            eventNotifyEnabledCheckbox.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
         }
 
         if (buttonEditNotifyLeadDays != null) {
             buttonEditNotifyLeadDays.setEnabled(globalNotificationsEnabled);
+            buttonEditNotifyLeadDays.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
+        }
+
+        if (leadDaysEffectiveView != null) {
+            leadDaysEffectiveView.setEnabled(globalNotificationsEnabled);
+            leadDaysEffectiveView.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
         }
 
         if (globalReminderDisabledHintView != null) {
             globalReminderDisabledHintView.setVisibility(globalNotificationsEnabled
                     ? View.GONE
                     : View.VISIBLE);
+            globalReminderDisabledHintView.setAlpha(0.85f);
+        }
+
+        if (reminderSettingsGroup != null) {
+            reminderSettingsGroup.setAlpha(globalNotificationsEnabled ? 1.0f : 0.92f);
         }
     }
 

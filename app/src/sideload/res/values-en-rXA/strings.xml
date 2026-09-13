@@ -299,11 +299,11 @@
   <string name="notify_lead_days_effective_placeholder">[!! Ŕēḿīñďēŕ: 3 ďàŷş ƥŕīōŕ !!]</string>
   <string name="notify_lead_days_effective_value">[!! Ēƒƒēçŧīṽē ľēàď ďàŷş: %1$d !!]</string>
   <string name="notify_lead_days_edit_button">[!! Ēďīŧ ľēàď ďàŷş !!]</string>
-  <string name="lead_days_source_default_from_recurrence">[!! Ďēƒàūľŧ (ƥēŕ ŕēçūŕŕēñçē ŧŷƥē) !!]</string>
-  <string name="lead_days_source_custom">[!! Çūşŧōḿ !!]</string>
+  <string name="lead_days_source_default_from_recurrence">[!! Šōūŕçē: Ďēƒàūľŧ (ƥēŕ ŕēçūŕŕēñçē ŧŷƥē) !!]</string>
+  <string name="lead_days_source_custom">[!! Šōūŕçē: Çūşŧōḿ !!]</string>
   <string name="event_notifications_enabled">[!! Ñōŧīƒīçàŧīōñş: Ēñàƀľēď !!]</string>
   <string name="event_notifications_disabled">[!! Ñōŧīƒīçàŧīōñş: Ďīşàƀľēď !!]</string>
-  <string name="notify_global_disabled_hint">[!! Ğľōƀàľ ñōŧīƒīçàŧīōñş àŕē ōƒƒ. Ēṽēñŧ ŕēḿīñďēŕ şēŧŧīñğş àŕē şàṽēď ƀūŧ īñàçŧīṽē. !!]</string>
+  <string name="notify_global_disabled_hint">[!! Ğľōƀàľ ñōŧīƒīçàŧīōñş àŕē ďīşàƀľēď īñ Šēŧŧīñğş. Ēṽēñŧ-şƥēçīƒīç ŕēḿīñďēŕ şēŧŧīñğş àŕē şàṽēď, ƀūŧ çūŕŕēñŧľŷ īñàçŧīṽē. !!]</string>
   <string name="history_anchor_header">[!! Ēṽēñŧ (Àñçĥōŕ) ďàŧē: %1$s !!]</string>
   <string name="history_anchor_header_missing">[!! Àñçĥōŕ ďàŧē ūñàṽàīľàƀľē !!]</string>
   <string name="history_empty_placeholder">[!! Ñō àďďīŧīōñàľ ĥīşŧōŕŷ ĥàş ƀēēñ àďďēď. !!]</string>

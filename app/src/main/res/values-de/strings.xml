@@ -315,11 +315,11 @@
     <string name="notify_lead_days_effective_placeholder">Erinnerung: 3 Tage vorher</string>
     <string name="notify_lead_days_effective_value">Effektive Vorlauftage: %1$d</string>
     <string name="notify_lead_days_edit_button">Vorlauftage bearbeiten</string>
-    <string name="lead_days_source_default_from_recurrence">Standard (nach Wiederholungstyp)</string>
-    <string name="lead_days_source_custom">Benutzerdefiniert</string>
+    <string name="lead_days_source_default_from_recurrence">Quelle: Standard (nach Wiederholungstyp)</string>
+    <string name="lead_days_source_custom">Quelle: Benutzerdefiniert</string>
     <string name="event_notifications_enabled">Benachrichtigungen: Aktiviert</string>
     <string name="event_notifications_disabled">Benachrichtigungen: Deaktiviert</string>
-    <string name="notify_global_disabled_hint">Globale Benachrichtigungen sind aus. Ereignis-Erinnerungseinstellungen bleiben gespeichert, sind aber derzeit inaktiv.</string>
+    <string name="notify_global_disabled_hint">Globale Benachrichtigungen sind in den Einstellungen deaktiviert. Ereignisspezifische Erinnerungseinstellungen bleiben gespeichert, sind aber derzeit inaktiv.</string>
     <string name="history_anchor_header">Ereignisdatum (Anker): %1$s</string>
     <string name="history_anchor_header_missing">Ankerdatum nicht verfuegbar</string>
     <string name="history_empty_placeholder">Kein zusaetzlicher Verlauf hinzugefuegt.</string>
