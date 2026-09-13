@@ -110,6 +110,7 @@
                     style="@style/MiniBActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
                     android:text="@string/notify_lead_days_edit_button" />
 
                 <CheckBox
