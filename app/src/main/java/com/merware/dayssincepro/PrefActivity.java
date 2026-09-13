@@ -82,7 +82,6 @@ public class PrefActivity extends AppCompatActivity {
         private ListPreference dateStylePref;
         private ListPreference themePref;
         private ListPreference appLanguagePref;
-        private ListPreference remindPref;
         private ListPreference tabStylePref;
 
         @Override
@@ -98,7 +97,6 @@ public class PrefActivity extends AppCompatActivity {
             dateStylePref = (ListPreference) findPreference("date_style");
             themePref = (ListPreference) findPreference("theme");
             appLanguagePref = (ListPreference) findPreference(AppLocaleManager.PREF_APP_LANGUAGE);
-            remindPref = (ListPreference) findPreference("remind_percent");
             tabStylePref = (ListPreference) findPreference("tab_style");
 
             configureAppLanguagePreference();
@@ -160,7 +158,6 @@ public class PrefActivity extends AppCompatActivity {
             setListSummary(themePref, R.string.light);
             syncLanguagePreferenceValue();
             setListSummary(appLanguagePref, R.string.settings_language_use_device);
-            setListSummary(remindPref, R.string.quarter_till);
             setListSummary(tabStylePref, R.string.show_tab);
 
             getPreferenceScreen().getSharedPreferences()

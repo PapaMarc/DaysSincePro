@@ -141,18 +141,6 @@
         <item>1</item>
     </string-array>
 
-    <string-array name="remind_percent">
-        <item>75 pour cent des jours écoulés</item>
-        <item>85 pour cent des jours écoulés</item>
-        <item>95 pour cent des jours écoulés</item>
-    </string-array>
-
-    <string-array name="remind_percent_values">
-        <item>75</item>
-        <item>85</item>
-        <item>95</item>
-    </string-array>
-
     <string-array name="since_until">
         <item>Jours depuis</item>
         <item>Depuis le dernier</item>

@@ -82,6 +82,39 @@
                 android:layout_height="wrap_content"
                 android:text="" />
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/notify_lead_days_heading"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notify_lead_days_effective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notify_lead_days_effective_placeholder" />
+
+            <TextView
+                android:id="@+id/notify_lead_days_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lead_days_source_default_from_recurrence" />
+
+            <Button
+                android:id="@+id/buttonEditNotifyLeadDays"
+                style="@style/MiniBActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notify_lead_days_edit_button" />
+
+            <CheckBox
+                android:id="@+id/eventNotifyEnabledCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/event_notifications_enabled" />
+
             <CheckBox
                 android:id="@+id/checkBoxEndDate"
                 android:layout_width="wrap_content"

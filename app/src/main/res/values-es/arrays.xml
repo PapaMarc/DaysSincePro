@@ -30,9 +30,6 @@
     <string-array name="themes">
         <item>Claro</item><item>Oscuro</item>
     </string-array>
-    <string-array name="remind_percent">
-        <item>75 por ciento de dias transcurridos</item><item>85 por ciento de dias transcurridos</item><item>95 por ciento de dias transcurridos</item>
-    </string-array>
     <string-array name="since_until">
         <item>Desde</item><item>Desde la ultima</item><item>Hasta el proximo</item>
     </string-array>

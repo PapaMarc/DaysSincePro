@@ -53,12 +53,16 @@ public class EditEventActivity extends AppCompatActivity {
     TextView endDateText;
     TextView recurTextView;
     TextView notifyAtView;
+    TextView leadDaysEffectiveView;
+    TextView leadDaysSourceView;
     SelectAgainSpinner catSpinner;
     CheckBox cbEndDay;
+    CheckBox eventNotifyEnabledCheckbox;
     TextView explainText;
     TextView categoryNudgeText;
     SelectAgainSpinner recurSpinner;
     Button btnPickEndDate;
+    Button buttonEditNotifyLeadDays;
 
     private long categoryID;
     private long eventID;
@@ -82,6 +86,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     private int notifyHour;
     private int notifyMinute;
+    private Integer customNotifyLeadDays;
+    private boolean eventNotifyEnabled = true;
 
     SharedPreferences preferences;
 
@@ -124,6 +130,11 @@ public class EditEventActivity extends AppCompatActivity {
         notifyAtView = (TextView) findViewById(R.id.notify_at);
         Button btnPickNotify = (Button) findViewById(R.id.buttonPickRecur);
         btnPickNotify.setOnClickListener(timeDialogListener);
+        leadDaysEffectiveView = (TextView) findViewById(R.id.notify_lead_days_effective);
+        leadDaysSourceView = (TextView) findViewById(R.id.notify_lead_days_source);
+        eventNotifyEnabledCheckbox = (CheckBox) findViewById(R.id.eventNotifyEnabledCheckbox);
+        buttonEditNotifyLeadDays = (Button) findViewById(R.id.buttonEditNotifyLeadDays);
+        buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
 
         // if notify not specified, don't even show option.
 
@@ -133,6 +144,11 @@ public class EditEventActivity extends AppCompatActivity {
             notifyAtView.setVisibility(View.GONE);
             btnPickNotify.setVisibility(View.GONE);
         }
+
+        eventNotifyEnabledCheckbox.setOnClickListener(v -> {
+            eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
+            updateReminderStateViews();
+        });
 
         Button okButton = (Button) findViewById(R.id.eventOK);
         okButton.setOnClickListener(eventOK);
@@ -177,6 +193,8 @@ public class EditEventActivity extends AppCompatActivity {
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
             mDay = c.get(Calendar.DAY_OF_MONTH);
+            customNotifyLeadDays = null;
+            eventNotifyEnabled = true;
 
             notifyHour = 8;
             notifyMinute = 0;
@@ -230,6 +248,13 @@ public class EditEventActivity extends AppCompatActivity {
             }
 
             eventID = intent.getLongExtra("id", 0);
+            if (intent.hasExtra("notify_lead_days")) {
+                int extraLeadDays = intent.getIntExtra("notify_lead_days", -1);
+                customNotifyLeadDays = extraLeadDays >= 0 ? extraLeadDays : null;
+            } else {
+                customNotifyLeadDays = null;
+            }
+            eventNotifyEnabled = intent.getBooleanExtra("notify_enabled", true);
 
             String endDate= intent.getStringExtra("end_date");
             if (endDate == null)
@@ -260,6 +285,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         listCategories();
         updateCategoryNudgeVisibility();
+        eventNotifyEnabledCheckbox.setChecked(eventNotifyEnabled);
         updateDisplay();
 
         eventText.setHint(R.string.enter_text);
@@ -298,6 +324,13 @@ public class EditEventActivity extends AppCompatActivity {
             values.put("event", sEvent);
             values.put("details", sDetails);
             values.put("recur", nRecur);
+            values.put("notify_enabled", eventNotifyEnabled ? 1 : 0);
+
+            if (customNotifyLeadDays == null) {
+                values.putNull("notify_lead_days");
+            } else {
+                values.put("notify_lead_days", customNotifyLeadDays);
+            }
 
             categoryID = 0;
 
@@ -382,6 +415,9 @@ public class EditEventActivity extends AppCompatActivity {
             intent.putExtra("catId", categoryID);
             intent.putExtra("notifyHour", notifyHour);
             intent.putExtra("notifyMinute", notifyMinute);
+            intent.putExtra("notify_enabled", eventNotifyEnabled);
+            intent.putExtra("notify_lead_days",
+                    customNotifyLeadDays == null ? -1 : customNotifyLeadDays);
                 boolean usedInlineCreatedCategory = "Add".equals(mode)
                     && inlineCreatedCategoryIdDuringAddFlow > 0
                     && inlineCreatedCategoryIdDuringAddFlow == categoryID;
@@ -516,6 +552,48 @@ public class EditEventActivity extends AppCompatActivity {
         }
     };
 
+    private OnClickListener notifyLeadDaysDialogListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showNotifyLeadDaysDialog();
+        }
+    };
+
+    private void showNotifyLeadDaysDialog() {
+        AlertDialog.Builder alert = DialogThemeHelper.themedBuilder(this);
+        alert.setTitle(R.string.notify_lead_days_title);
+        alert.setMessage(getString(R.string.notify_lead_days_prompt));
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        if (customNotifyLeadDays != null) {
+            input.setText(String.valueOf(customNotifyLeadDays));
+            input.setSelection(input.getText().length());
+        }
+        alert.setView(input);
+
+        alert.setPositiveButton(R.string.notify_lead_days_set_custom, (dialog, whichButton) -> {
+            Integer parsed = parseNotifyLeadDaysOrNull(input.getText().toString());
+            if (parsed == null) {
+                showToast(getString(R.string.notify_lead_days_invalid));
+                return;
+            }
+            customNotifyLeadDays = parsed;
+            updateReminderStateViews();
+        });
+
+        alert.setNeutralButton(R.string.notify_lead_days_use_default, (dialog, whichButton) -> {
+            customNotifyLeadDays = null;
+            updateReminderStateViews();
+        });
+
+        alert.setNegativeButton(R.string.Cancel, (dialog, whichButton) -> {
+            // no-op; dialog open/cancel must not mutate persisted or in-memory lead days
+        });
+
+        alert.show();
+    }
+
     public void setRecurText(String value) {
 
         try {
@@ -625,6 +703,54 @@ public class EditEventActivity extends AppCompatActivity {
         String text = "Notify at " + formatHourMinute(notifyHour, notifyMinute);
         notifyAtView.setText(text);
 
+        updateReminderStateViews();
+
+    }
+
+    private void updateReminderStateViews() {
+        if (eventNotifyEnabledCheckbox != null) {
+            eventNotifyEnabledCheckbox.setChecked(eventNotifyEnabled);
+        }
+
+        ReminderLeadDaysResolver.Resolution resolution =
+                ReminderLeadDaysResolver.resolve(nRecur, customNotifyLeadDays);
+
+        if (leadDaysEffectiveView != null) {
+            leadDaysEffectiveView.setText(getString(
+                    R.string.notify_lead_days_effective_value,
+                    resolution.effectiveLeadDays));
+        }
+
+        if (leadDaysSourceView != null) {
+            leadDaysSourceView.setText(resolution.custom
+                    ? getString(R.string.lead_days_source_custom)
+                    : getString(R.string.lead_days_source_default_from_recurrence));
+        }
+
+        if (eventNotifyEnabledCheckbox != null) {
+            eventNotifyEnabledCheckbox.setText(eventNotifyEnabled
+                    ? getString(R.string.event_notifications_enabled)
+                    : getString(R.string.event_notifications_disabled));
+        }
+    }
+
+    static Integer parseNotifyLeadDaysOrNull(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String trimmed = raw.trim();
+        if (trimmed.length() == 0) {
+            return null;
+        }
+        try {
+            int parsed = Integer.parseInt(trimmed);
+            if (parsed < 0 || parsed > 30) {
+                return null;
+            }
+            return parsed;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     // the call-back received when the user "sets" the date in the dialog
@@ -1011,6 +1137,8 @@ public class EditEventActivity extends AppCompatActivity {
                     setRecurText(Integer.toString(iRecur));
                     break;
             }
+
+            updateReminderStateViews();
         }
 
         @Override

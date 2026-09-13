@@ -30,9 +30,6 @@
     <string-array name="themes">
         <item>Hell</item><item>Dunkel</item>
     </string-array>
-    <string-array name="remind_percent">
-        <item>75 Prozent der Tage vergangen</item><item>85 Prozent der Tage vergangen</item><item>95 Prozent der Tage vergangen</item>
-    </string-array>
     <string-array name="since_until">
         <item>Seit</item><item>Seit dem letzten</item><item>Bis zum naechsten</item>
     </string-array>

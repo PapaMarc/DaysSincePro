@@ -30,9 +30,6 @@
     <string-array name="themes">
         <item>हल्का</item><item>गहरा</item>
     </string-array>
-    <string-array name="remind_percent">
-        <item>75 प्रतिशत दिन बीत गए</item><item>85 प्रतिशत दिन बीत गए</item><item>95 प्रतिशत दिन बीत गए</item>
-    </string-array>
     <string-array name="since_until">
         <item>बीते दिन</item><item>पिछली बार से</item><item>अगले तक</item>
     </string-array>

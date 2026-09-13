@@ -15,9 +15,6 @@
     <string-array name="styles">
         <item>Anni Mesi Giorni</item><item>Giorni</item><item>Giorni feriali</item><item>Settimane</item>
     </string-array>
-    <string-array name="date_values">
-        <item>Anno-Mese-Giorno</item><item>Giorno-Mese-Anno</item><item>Mese-Giorno-Anno</item>
-    </string-array>
     <string-array name="colors">
         <item>Pulisci</item><item>Blu</item><item>Rosso</item><item>Rosa</item><item>Arancione</item><item>Verde</item>
     </string-array>
@@ -29,9 +26,6 @@
     </string-array>
     <string-array name="themes">
         <item>Chiaro</item><item>Scuro</item>
-    </string-array>
-    <string-array name="remind_percent">
-        <item>75 per cento dei giorni trascorsi</item><item>85 per cento dei giorni trascorsi</item><item>95 per cento dei giorni trascorsi</item>
     </string-array>
     <string-array name="since_until">
         <item>Da</item><item>Dall ultimo</item><item>Fino al prossimo</item>

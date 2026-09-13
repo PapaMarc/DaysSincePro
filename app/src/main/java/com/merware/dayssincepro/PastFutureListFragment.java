@@ -422,6 +422,18 @@ public class PastFutureListFragment extends ListFragment {
         intent.putExtra("mode", "Edit");
         intent.putExtra("end_date", c.getString(5));
         intent.putExtra("details", c.getString(7));
+        int notifyLeadDaysCol = c.getColumnIndex("notify_lead_days");
+        int notifyEnabledCol = c.getColumnIndex("notify_enabled");
+        if (notifyLeadDaysCol >= 0 && !c.isNull(notifyLeadDaysCol)) {
+            intent.putExtra("notify_lead_days", c.getInt(notifyLeadDaysCol));
+        } else {
+            intent.putExtra("notify_lead_days", -1);
+        }
+        if (notifyEnabledCol >= 0 && !c.isNull(notifyEnabledCol)) {
+            intent.putExtra("notify_enabled", c.getInt(notifyEnabledCol) != 0);
+        } else {
+            intent.putExtra("notify_enabled", true);
+        }
 
        // showToast("Call Edit Activity!");
 
@@ -976,6 +988,8 @@ public class PastFutureListFragment extends ListFragment {
 
                         String endDate = data.getStringExtra("end_date");
                         String details = data.getStringExtra("details");
+                        int notifyLeadDays = data.getIntExtra("notify_lead_days", -1);
+                        boolean notifyEnabled = data.getBooleanExtra("notify_enabled", true);
 
                         // update db
                         ContentValues args = new ContentValues();
@@ -985,6 +999,12 @@ public class PastFutureListFragment extends ListFragment {
                         args.put("catId", catId);
                         args.put("end_date", endDate);
                         args.put("details", details);
+                        args.put("notify_enabled", notifyEnabled ? 1 : 0);
+                        if (notifyLeadDays < 0) {
+                            args.putNull("notify_lead_days");
+                        } else {
+                            args.put("notify_lead_days", notifyLeadDays);
+                        }
 
                         Cursor existing = db.query("event", new String[] { "date", "recur" },
                                 "_id = ?", new String[] { String.valueOf(id) },
