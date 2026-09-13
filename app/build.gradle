@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 52
-        versionName "3.15.268.52"
+        versionName "3.15.271.52"
     }
 
     signingConfigs {
@@ -104,7 +104,12 @@ tasks.register("checkReminderLocalizationKeys") {
                 "lead_days_source_default_from_recurrence",
                 "lead_days_source_custom",
                 "event_notifications_enabled",
-                "event_notifications_disabled"
+            "event_notifications_disabled",
+            "notify_global_disabled_hint"
+        ]
+
+        def requiredPlurals = [
+            "notify_lead_days_prior_summary"
         ]
 
         def missing = []
@@ -121,6 +126,13 @@ tasks.register("checkReminderLocalizationKeys") {
                 def keyPattern = ~/(<string\s+name=\"${java.util.regex.Pattern.quote(key)}\")/
                 if (!(xmlText =~ keyPattern).find()) {
                     missing.add("${localeDir}: missing key '${key}'")
+                }
+            }
+
+            requiredPlurals.each { pluralName ->
+                def pluralPattern = ~/(<plurals\s+name=\"${java.util.regex.Pattern.quote(pluralName)}\")/
+                if (!(xmlText =~ pluralPattern).find()) {
+                    missing.add("${localeDir}: missing plural '${pluralName}'")
                 }
             }
         }

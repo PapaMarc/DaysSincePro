@@ -115,6 +115,13 @@
                 android:checked="true"
                 android:text="@string/event_notifications_enabled" />
 
+            <TextView
+                android:id="@+id/notify_global_disabled_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="@string/notify_global_disabled_hint" />
+
             <CheckBox
                 android:id="@+id/checkBoxEndDate"
                 android:layout_width="wrap_content"

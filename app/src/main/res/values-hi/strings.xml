@@ -325,15 +325,20 @@
     <string name="notify_lead_days_set_custom">कस्टम सेट करें</string>
     <string name="notify_lead_days_use_default">डिफ़ॉल्ट उपयोग करें</string>
     <string name="notify_lead_days_invalid">0 से 30 के बीच पूर्णांक दर्ज करें।</string>
-    <string name="notify_lead_days_effective_placeholder">प्रभावी अग्रिम दिन: 3</string>
+    <string name="notify_lead_days_effective_placeholder">रिमाइंडर: 3 दिन पहले</string>
     <string name="notify_lead_days_effective_value">प्रभावी अग्रिम दिन: %1$d</string>
     <string name="notify_lead_days_edit_button">अग्रिम दिन संपादित करें</string>
-    <string name="lead_days_source_default_from_recurrence">डिफ़ॉल्ट (recurrence से)</string>
+    <string name="lead_days_source_default_from_recurrence">डिफ़ॉल्ट (recurrence प्रकार के अनुसार)</string>
     <string name="lead_days_source_custom">कस्टम</string>
     <string name="event_notifications_enabled">सूचनाएं: सक्षम</string>
     <string name="event_notifications_disabled">सूचनाएं: अक्षम</string>
+    <string name="notify_global_disabled_hint">वैश्विक सूचनाएं बंद हैं। प्रति-इवेंट रिमाइंडर सेटिंग्स सहेजी रहती हैं, लेकिन अभी निष्क्रिय हैं।</string>
     <string name="history_anchor_header">इवेंट (एंकर) तिथि: %1$s</string>
     <string name="history_anchor_header_missing">एंकर तिथि उपलब्ध नहीं</string>
     <string name="history_empty_placeholder">कोई अतिरिक्त history नहीं जोड़ा गया है।</string>
     <string name="history_additions_only_header">केवल क्रमिक History जोड़</string>
+    <plurals name="notify_lead_days_prior_summary">
+        <item quantity="one">रिमाइंडर: %1$d दिन पहले</item>
+        <item quantity="other">रिमाइंडर: %1$d दिन पहले</item>
+    </plurals>
 </resources>

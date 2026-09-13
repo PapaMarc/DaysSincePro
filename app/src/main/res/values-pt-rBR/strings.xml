@@ -312,15 +312,20 @@
     <string name="notify_lead_days_set_custom">Definir personalizado</string>
     <string name="notify_lead_days_use_default">Usar padrao</string>
     <string name="notify_lead_days_invalid">Informe um numero inteiro de 0 a 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Dias efetivos de antecedencia: 3</string>
+    <string name="notify_lead_days_effective_placeholder">Lembrete: 3 dias antes</string>
     <string name="notify_lead_days_effective_value">Dias efetivos de antecedencia: %1$d</string>
     <string name="notify_lead_days_edit_button">Editar dias de antecedencia</string>
-    <string name="lead_days_source_default_from_recurrence">Padrao (da recorrencia)</string>
+    <string name="lead_days_source_default_from_recurrence">Padrao (por tipo de recorrencia)</string>
     <string name="lead_days_source_custom">Personalizado</string>
     <string name="event_notifications_enabled">Notificacoes: Ativadas</string>
     <string name="event_notifications_disabled">Notificacoes: Desativadas</string>
+    <string name="notify_global_disabled_hint">As notificacoes globais estao desativadas. As configuracoes de lembrete por evento permanecem salvas, mas estao inativas.</string>
     <string name="history_anchor_header">Data do evento (ancora): %1$s</string>
     <string name="history_anchor_header_missing">Data ancora indisponivel</string>
     <string name="history_empty_placeholder">Nenhum historico adicional foi adicionado.</string>
     <string name="history_additions_only_header">Adicoes incrementais de historico (somente)</string>
+    <plurals name="notify_lead_days_prior_summary">
+        <item quantity="one">Lembrete: %1$d dia antes</item>
+        <item quantity="other">Lembrete: %1$d dias antes</item>
+    </plurals>
 </resources>

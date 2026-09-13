@@ -312,15 +312,20 @@
     <string name="notify_lead_days_set_custom">Establecer personalizado</string>
     <string name="notify_lead_days_use_default">Usar predeterminado</string>
     <string name="notify_lead_days_invalid">Ingresa un numero entero de 0 a 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Dias efectivos de anticipacion: 3</string>
+    <string name="notify_lead_days_effective_placeholder">Recordatorio: 3 dias antes</string>
     <string name="notify_lead_days_effective_value">Dias efectivos de anticipacion: %1$d</string>
     <string name="notify_lead_days_edit_button">Editar dias de anticipacion</string>
-    <string name="lead_days_source_default_from_recurrence">Predeterminado (segun recurrencia)</string>
+    <string name="lead_days_source_default_from_recurrence">Predeterminado (por tipo de recurrencia)</string>
     <string name="lead_days_source_custom">Personalizado</string>
     <string name="event_notifications_enabled">Notificaciones: Habilitadas</string>
     <string name="event_notifications_disabled">Notificaciones: Deshabilitadas</string>
+    <string name="notify_global_disabled_hint">Las notificaciones globales estan desactivadas. La configuracion de recordatorios por evento se guarda, pero ahora esta inactiva.</string>
     <string name="history_anchor_header">Fecha del evento (ancla): %1$s</string>
     <string name="history_anchor_header_missing">Fecha ancla no disponible</string>
     <string name="history_empty_placeholder">No se ha agregado historial adicional.</string>
     <string name="history_additions_only_header">Adiciones incrementales de historial (solo)</string>
+    <plurals name="notify_lead_days_prior_summary">
+        <item quantity="one">Recordatorio: %1$d dia antes</item>
+        <item quantity="other">Recordatorio: %1$d dias antes</item>
+    </plurals>
 </resources>

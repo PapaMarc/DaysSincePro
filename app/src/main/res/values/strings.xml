@@ -209,13 +209,14 @@
     <string name="notify_lead_days_set_custom">Set Custom</string>
     <string name="notify_lead_days_use_default">Use Default</string>
     <string name="notify_lead_days_invalid">Enter a whole number from 0 to 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Effective lead days: 3</string>
+    <string name="notify_lead_days_effective_placeholder">Reminder: 3 days prior</string>
     <string name="notify_lead_days_effective_value">Effective lead days: %1$d</string>
     <string name="notify_lead_days_edit_button">Edit lead days</string>
-    <string name="lead_days_source_default_from_recurrence">Default (from recurrence)</string>
+    <string name="lead_days_source_default_from_recurrence">Default (per recurrence type)</string>
     <string name="lead_days_source_custom">Custom</string>
     <string name="event_notifications_enabled">Notifications: Enabled</string>
     <string name="event_notifications_disabled">Notifications: Disabled</string>
+    <string name="notify_global_disabled_hint">Global notifications are off. Event reminder settings are saved but inactive.</string>
     <string name="details">Details</string>
     <string name="enter_details_optional">&lt;Enter Details (Optional)&gt;</string>
     <string name="touch_here">Touch Here</string>
@@ -268,6 +269,10 @@
     <plurals name="csv_import_skipped">
         <item quantity="one">, %1$d skipped</item>
         <item quantity="other">, %1$d skipped</item>
+    </plurals>
+    <plurals name="notify_lead_days_prior_summary">
+        <item quantity="one">Reminder: %1$d day prior</item>
+        <item quantity="other">Reminder: %1$d days prior</item>
     </plurals>
 
     <string name="csv_import_failure_db_or_reader_null">Database or reader is null</string>

@@ -55,6 +55,7 @@ public class EditEventActivity extends AppCompatActivity {
     TextView notifyAtView;
     TextView leadDaysEffectiveView;
     TextView leadDaysSourceView;
+    TextView globalReminderDisabledHintView;
     SelectAgainSpinner catSpinner;
     CheckBox cbEndDay;
     CheckBox eventNotifyEnabledCheckbox;
@@ -88,6 +89,7 @@ public class EditEventActivity extends AppCompatActivity {
     private int notifyMinute;
     private Integer customNotifyLeadDays;
     private boolean eventNotifyEnabled = true;
+    private boolean globalNotificationsEnabled = false;
 
     SharedPreferences preferences;
 
@@ -132,6 +134,7 @@ public class EditEventActivity extends AppCompatActivity {
         btnPickNotify.setOnClickListener(timeDialogListener);
         leadDaysEffectiveView = (TextView) findViewById(R.id.notify_lead_days_effective);
         leadDaysSourceView = (TextView) findViewById(R.id.notify_lead_days_source);
+        globalReminderDisabledHintView = (TextView) findViewById(R.id.notify_global_disabled_hint);
         eventNotifyEnabledCheckbox = (CheckBox) findViewById(R.id.eventNotifyEnabledCheckbox);
         buttonEditNotifyLeadDays = (Button) findViewById(R.id.buttonEditNotifyLeadDays);
         buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
@@ -139,6 +142,7 @@ public class EditEventActivity extends AppCompatActivity {
         // if notify not specified, don't even show option.
 
         boolean optionNotify = preferences.getBoolean("noti", false);
+        globalNotificationsEnabled = optionNotify;
 
         if (!optionNotify) {
             notifyAtView.setVisibility(View.GONE);
@@ -560,6 +564,10 @@ public class EditEventActivity extends AppCompatActivity {
     };
 
     private void showNotifyLeadDaysDialog() {
+        if (!globalNotificationsEnabled) {
+            return;
+        }
+
         AlertDialog.Builder alert = DialogThemeHelper.themedBuilder(this);
         alert.setTitle(R.string.notify_lead_days_title);
         alert.setMessage(getString(R.string.notify_lead_days_prompt));
@@ -716,9 +724,10 @@ public class EditEventActivity extends AppCompatActivity {
                 ReminderLeadDaysResolver.resolve(nRecur, customNotifyLeadDays);
 
         if (leadDaysEffectiveView != null) {
-            leadDaysEffectiveView.setText(getString(
-                    R.string.notify_lead_days_effective_value,
-                    resolution.effectiveLeadDays));
+            leadDaysEffectiveView.setText(getResources().getQuantityString(
+                R.plurals.notify_lead_days_prior_summary,
+                resolution.effectiveLeadDays,
+                resolution.effectiveLeadDays));
         }
 
         if (leadDaysSourceView != null) {
@@ -731,6 +740,17 @@ public class EditEventActivity extends AppCompatActivity {
             eventNotifyEnabledCheckbox.setText(eventNotifyEnabled
                     ? getString(R.string.event_notifications_enabled)
                     : getString(R.string.event_notifications_disabled));
+            eventNotifyEnabledCheckbox.setEnabled(globalNotificationsEnabled);
+        }
+
+        if (buttonEditNotifyLeadDays != null) {
+            buttonEditNotifyLeadDays.setEnabled(globalNotificationsEnabled);
+        }
+
+        if (globalReminderDisabledHintView != null) {
+            globalReminderDisabledHintView.setVisibility(globalNotificationsEnabled
+                    ? View.GONE
+                    : View.VISIBLE);
         }
     }
 
