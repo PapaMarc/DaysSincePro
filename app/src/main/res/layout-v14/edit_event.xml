@@ -39,8 +39,10 @@
 
                 <LinearLayout
                     android:id="@+id/vlayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_marginEnd="8dp"
                     android:layout_toLeftOf="@id/buttonPickDate"
                     android:layout_toStartOf="@id/buttonPickDate"
