@@ -48,7 +48,7 @@
   <string name="daysTillTitle">[!! Ƒūŧūŕē Ēṽēñŧş !!]</string>
   <string name="no_entries">[!! Ñō Ēñŧŕīēş !!]</string>
   <string name="no_categories">[!! Ñō Çàŧēğōŕīēş !!]</string>
-  <string name="choose">[!!  Ēďīŧ Ēṽēñŧ Ñōŧīƒīçàŧīōñ Ŧīḿē !!]</string>
+  <string name="choose">[!! Ēďīŧ Ñōŧīƒīçàŧīōñ Ŧīḿē !!]</string>
   <string name="change">[!!  Çĥàñğē !!]</string>
   <string name="prompt">[!! Ƥīçķ à Çàŧēğōŕŷ !!]</string>
   <string name="export">[!! Ēẋƥōŕŧ ďàŧàƀàşē ƒīľē !!]</string>
@@ -143,6 +143,7 @@
   <string name="not_found">[!! ñōŧ ƒōūñď. !!]</string>
   <string name="opaque">[!! Ōƥàʠūē !!]</string>
   <string name="notify_midnight">[!! Ñōŧīƒŷ àŧ 8:00 ÀṀ !!]</string>
+  <string name="notify_at_time_format">[!! Ñōŧīƒŷ àŧ %1$s !!]</string>
   <string name="days_diff">[!! Ďàŷş ßēŧŵēēñ Çàľçūľàŧōŕ !!]</string>
   <string name="days_events_diff">[!! Ďàŷş ßēŧŵēēñ Ēṽēñŧş !!]</string>
   <string name="click_choose">[!! Ďàŧē ōŕ Ēṽēñŧ !!]</string>

@@ -56,7 +56,7 @@
     <string name="daysTillTitle">भविष्य के इवेंट</string>
     <string name="no_entries">कोई प्रविष्टि नहीं</string>
     <string name="no_categories">कोई श्रेणी नहीं</string>
-    <string name="choose"> इवेंट सूचना समय संपादित करें</string>
+    <string name="choose"> सूचना समय संपादित करें</string>
     <string name="change"> बदलें</string>
     <string name="prompt">एक श्रेणी चुनें</string>
     <string name="export">डेटाबेस फ़ाइल निर्यात करें</string>
@@ -158,6 +158,7 @@
     <string name="not_found">नहीं मिला।</string>
     <string name="opaque">अपारदर्शी</string>
     <string name="notify_midnight">सुबह 8:00 बजे सूचित करें</string>
+    <string name="notify_at_time_format">%1$s पर सूचित करें</string>
     <string name="days_diff">दिन अंतर कैलकुलेटर</string>
     <string name="days_events_diff">इवेंटों के बीच दिन</string>
     <string name="click_choose">तारीख या इवेंट</string>

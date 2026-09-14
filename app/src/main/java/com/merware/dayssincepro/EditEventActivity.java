@@ -64,6 +64,7 @@ public class EditEventActivity extends AppCompatActivity {
     TextView categoryNudgeText;
     SelectAgainSpinner recurSpinner;
     Button btnPickEndDate;
+    Button btnPickNotify;
     Button buttonEditNotifyLeadDays;
 
     private long categoryID;
@@ -131,7 +132,7 @@ public class EditEventActivity extends AppCompatActivity {
         endDateText = (TextView) findViewById(R.id.endDateText);
 
         notifyAtView = (TextView) findViewById(R.id.notify_at);
-        Button btnPickNotify = (Button) findViewById(R.id.buttonPickRecur);
+        btnPickNotify = (Button) findViewById(R.id.buttonPickRecur);
         btnPickNotify.setOnClickListener(timeDialogListener);
         leadDaysEffectiveView = (TextView) findViewById(R.id.notify_lead_days_effective);
         leadDaysSourceView = (TextView) findViewById(R.id.notify_lead_days_source);
@@ -145,11 +146,6 @@ public class EditEventActivity extends AppCompatActivity {
 
         boolean optionNotify = preferences.getBoolean("noti", false);
         globalNotificationsEnabled = optionNotify;
-
-        if (!optionNotify) {
-            notifyAtView.setVisibility(View.GONE);
-            btnPickNotify.setVisibility(View.GONE);
-        }
 
         eventNotifyEnabledCheckbox.setOnClickListener(v -> {
             eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
@@ -554,6 +550,9 @@ public class EditEventActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            if (!globalNotificationsEnabled) {
+                return;
+            }
             showDialog(TIME_DIALOG_ID);
         }
     };
@@ -710,7 +709,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         // showToast("updateDisplay: from pref hour " + notifyHour + " minute " + notifyMinute + " for ID " + eventID);
 
-        String text = "Notify at " + formatHourMinute(notifyHour, notifyMinute);
+        String text = formatNotifyAtText(notifyHour, notifyMinute);
         notifyAtView.setText(text);
 
         updateReminderStateViews();
@@ -751,6 +750,16 @@ public class EditEventActivity extends AppCompatActivity {
         if (buttonEditNotifyLeadDays != null) {
             buttonEditNotifyLeadDays.setEnabled(globalNotificationsEnabled);
             buttonEditNotifyLeadDays.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
+        }
+
+        if (notifyAtView != null) {
+            notifyAtView.setEnabled(globalNotificationsEnabled);
+            notifyAtView.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
+        }
+
+        if (btnPickNotify != null) {
+            btnPickNotify.setEnabled(globalNotificationsEnabled);
+            btnPickNotify.setAlpha(globalNotificationsEnabled ? 1.0f : 0.60f);
         }
 
         if (leadDaysEffectiveView != null) {
@@ -815,6 +824,10 @@ public class EditEventActivity extends AppCompatActivity {
         return hour + ":" + min + " " + am_pm;
     }
 
+    private String formatNotifyAtText(int hour, int minute) {
+        return getString(R.string.notify_at_time_format, formatHourMinute(hour, minute));
+    }
+
     private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
         @Override
@@ -829,7 +842,7 @@ public class EditEventActivity extends AppCompatActivity {
             Preferences.storePreferenceInt(EditEventActivity.this, APP_NAME,
                     "notify_minute_" + eventID, minute);
 
-            String text = "Notify at " + formatHourMinute(hourOfDay, minute);
+            String text = formatNotifyAtText(hourOfDay, minute);
             notifyAtView.setText(text);
 
             notifyHour = hourOfDay;

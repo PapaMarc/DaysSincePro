@@ -52,7 +52,7 @@
     <string name="daysTillTitle">Zukuenftige Ereignisse</string>
     <string name="no_entries">Keine Eintraege</string>
     <string name="no_categories">Keine Kategorien</string>
-    <string name="choose"> Benachrichtigungszeit bearbeiten</string>
+    <string name="choose"> Benachrichtigungszeit aendern</string>
     <string name="change"> Aendern</string>
     <string name="prompt">Kategorie waehlen</string>
     <string name="export">Datenbankdatei exportieren</string>
@@ -153,6 +153,7 @@
     <string name="not_found">nicht gefunden.</string>
     <string name="opaque">Deckend</string>
     <string name="notify_midnight">Um 8:00 benachrichtigen</string>
+    <string name="notify_at_time_format">Um %1$s benachrichtigen</string>
     <string name="days_diff">Rechner fuer Tage zwischen Daten</string>
     <string name="days_events_diff">Tage zwischen Ereignissen</string>
     <string name="click_choose">Datum oder Ereignis</string>

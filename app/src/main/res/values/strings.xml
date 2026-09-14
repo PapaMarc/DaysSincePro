@@ -56,7 +56,7 @@
     <string name="daysTillTitle">Future Events</string>
     <string name="no_entries">No Entries</string>
     <string name="no_categories">No Categories</string>
-    <string name="choose"> Edit Event Notification Time</string>
+    <string name="choose"> Edit Notification Time</string>
     <string name="change"> Change</string>
     <string name="prompt">Pick a Category</string>
     <string name="export">Export database file</string>
@@ -158,6 +158,7 @@
     <string name="not_found">not found.</string>
     <string name="opaque">Opaque</string>
     <string name="notify_midnight">Notify at 8:00 AM</string>
+    <string name="notify_at_time_format">Notify at %1$s</string>
     <string name="days_diff">Days Between Calculator</string>
     <string name="days_events_diff">Days Between Events</string>
     <string name="click_choose">Date or Event</string>

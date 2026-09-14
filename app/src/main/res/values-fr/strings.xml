@@ -48,7 +48,7 @@
   <string name="daysTillTitle">Événements futurs</string>
   <string name="no_entries">Aucune entrée</string>
   <string name="no_categories">Aucune catégorie</string>
-  <string name="choose">Modifier l’heure de notification d’un événement</string>
+  <string name="choose">Modifier l’heure de notification</string>
   <string name="change">Changement</string>
   <string name="prompt">Choisissez une catégorie</string>
   <string name="export">Exporter le fichier de base de données</string>
@@ -143,6 +143,7 @@
   <string name="not_found">pas trouvé.</string>
   <string name="opaque">Opaque</string>
   <string name="notify_midnight">Notifier à 8h00</string>
+  <string name="notify_at_time_format">Notifier à %1$s</string>
   <string name="days_diff">Calculateur de jours entre les jours</string>
   <string name="days_events_diff">Jours entre les événements</string>
   <string name="click_choose">Date ou événement</string>

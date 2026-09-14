@@ -56,7 +56,7 @@
     <string name="daysTillTitle">未来事件</string>
     <string name="no_entries">无条目</string>
     <string name="no_categories">无类别</string>
-    <string name="choose"> 编辑事件提醒时间</string>
+    <string name="choose"> 编辑提醒时间</string>
     <string name="change"> 更改</string>
     <string name="prompt">选择一个类别</string>
     <string name="export">导出数据库文件</string>
@@ -158,6 +158,7 @@
     <string name="not_found">未找到。</string>
     <string name="opaque">不透明</string>
     <string name="notify_midnight">上午 8:00 通知</string>
+    <string name="notify_at_time_format">在 %1$s 通知</string>
     <string name="days_diff">日期间隔计算器</string>
     <string name="days_events_diff">事件间隔天数</string>
     <string name="click_choose">日期或事件</string>

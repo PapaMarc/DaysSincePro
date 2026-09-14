@@ -13,7 +13,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 52
-        versionName "3.15.277.52"
+        versionName "3.15.282.52"
     }
 
     signingConfigs {
@@ -105,7 +105,8 @@ tasks.register("checkReminderLocalizationKeys") {
                 "lead_days_source_custom",
                 "event_notifications_enabled",
             "event_notifications_disabled",
-            "notify_global_disabled_hint"
+                "notify_global_disabled_hint",
+                "notify_at_time_format"
         ]
 
         def requiredPlurals = [
