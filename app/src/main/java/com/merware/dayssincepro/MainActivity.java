@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements
         {
             if (notifyOptionJustNow) {
                 //showToast("on first create");
-                alarmHelp.setAlarm(1);
+                alarmHelp.setAlarm(0);
             }
         }
 

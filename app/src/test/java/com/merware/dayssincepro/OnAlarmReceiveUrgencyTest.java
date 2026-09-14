@@ -29,8 +29,8 @@ public class OnAlarmReceiveUrgencyTest {
     }
 
     @Test
-    public void nonRecurringEvent_afterEventDay_isRed() {
-    assertEquals(OnAlarmReceive.Urgency.RED,
+    public void nonRecurringEvent_afterEventDay_isNone() {
+    assertEquals(OnAlarmReceive.Urgency.NONE,
         OnAlarmReceive.computeUrgency(0, 5, 0, 3));
     }
 

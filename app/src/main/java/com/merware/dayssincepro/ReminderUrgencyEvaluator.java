@@ -16,7 +16,8 @@ final class ReminderUrgencyEvaluator {
                 return ReminderUrgency.DUE;
             }
             if (daysSinceReference > 0) {
-                return ReminderUrgency.OVERDUE;
+                // One-time events should not keep producing overdue reminders forever.
+                return ReminderUrgency.NONE;
             }
 
             long daysUntilEvent = Math.abs(daysSinceReference);

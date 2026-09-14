@@ -77,19 +77,49 @@ public class OnAlarmReceive extends BroadcastReceiver {
     static boolean alreadyNotifiedInCurrentCycle(String lastNotifiedDate,
                                                  SimpleDate lastOccurrence,
                                                  SimpleDate nextOccurrence,
-                                                 long nEstDays) {
+                                                 long nEstDays,
+                                                 long daysSinceReference) {
         if (lastNotifiedDate == null || lastNotifiedDate.trim().length() == 0) {
             return false;
         }
 
         if (nEstDays == 0) {
-            return true;
+            return alreadyNotifiedForOneTimeMilestone(lastNotifiedDate, lastOccurrence,
+                    daysSinceReference);
         }
 
         try {
             SimpleDate notified = new SimpleDate(lastNotifiedDate, SimpleDate.DateStyle.US);
             return !notified.getDate().before(lastOccurrence.getDate())
                     && notified.getDate().before(nextOccurrence.getDate());
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private static boolean sameDate(SimpleDate left, SimpleDate right) {
+        return !left.getDate().before(right.getDate())
+                && !left.getDate().after(right.getDate());
+    }
+
+    private static boolean alreadyNotifiedForOneTimeMilestone(String lastNotifiedDate,
+                                                               SimpleDate eventDate,
+                                                               long daysSinceReference) {
+        try {
+            SimpleDate notified = new SimpleDate(lastNotifiedDate, SimpleDate.DateStyle.US);
+
+            if (daysSinceReference < 0) {
+                // Pre-event window: one near-due reminder is enough.
+                return notified.getDate().before(eventDate.getDate());
+            }
+
+            if (daysSinceReference == 0) {
+                // Event day: allow this even if pre-event reminder already happened.
+                return sameDate(notified, eventDate);
+            }
+
+            // Overdue reminders for one-time events are disabled by urgency policy.
+            return true;
         } catch (Exception ignored) {
             return false;
         }
@@ -229,7 +259,8 @@ public class OnAlarmReceive extends BroadcastReceiver {
                 long daysUntilNextOccurrence = Math.max(0, -dscToNext.getDaysSinceEvent());
 
             if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
-                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays)) {
+                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays,
+                    daysSinceReference)) {
                 return;
             }
 
@@ -282,7 +313,8 @@ public class OnAlarmReceive extends BroadcastReceiver {
                 long daysUntilNextOccurrence = Math.max(0, -dscToNext.getDaysSinceEvent());
 
             if (!isManualReview && alreadyNotifiedInCurrentCycle(lastNotifiedDate,
-                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays)) {
+                    occurrences.lastOccurrence, occurrences.nextOccurrence, nEstDays,
+                    daysSinceReference)) {
                 cursor.moveToNext();
                 continue;
             }

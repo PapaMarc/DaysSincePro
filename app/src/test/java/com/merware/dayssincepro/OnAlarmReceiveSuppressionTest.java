@@ -22,7 +22,8 @@ public class OnAlarmReceiveSuppressionTest {
                 "2026-08-29",
                 occurrences.lastOccurrence,
                 occurrences.nextOccurrence,
-                14));
+                14,
+                3));
     }
 
     @Test
@@ -38,24 +39,37 @@ public class OnAlarmReceiveSuppressionTest {
                 "2026-08-15",
                 occurrences.lastOccurrence,
                 occurrences.nextOccurrence,
-                14));
+                14,
+                3));
     }
 
     @Test
-    public void oneTimeEvent_notifiedToday_isSuppressed() {
+        public void oneTimeEvent_notifiedOnEventDay_isSuppressed() {
         assertTrue(OnAlarmReceive.alreadyNotifiedInCurrentCycle(
                 "2026-09-01",
                 new SimpleDate("2026-09-01"),
                 new SimpleDate("2026-09-01"),
-                0));
+                                0,
+                                0));
     }
 
     @Test
-    public void oneTimeEvent_notifiedOnDifferentDay_isStillSuppressed() {
-        assertTrue(OnAlarmReceive.alreadyNotifiedInCurrentCycle(
+        public void oneTimeEvent_preEventReminder_doesNotSuppressEventDayReminder() {
+                assertFalse(OnAlarmReceive.alreadyNotifiedInCurrentCycle(
                 "2026-08-31",
                 new SimpleDate("2026-09-01"),
                 new SimpleDate("2026-09-01"),
-                0));
+                                0,
+                                0));
+        }
+
+        @Test
+        public void oneTimeEvent_preEventReminder_suppressesAdditionalPreEventReminders() {
+                assertTrue(OnAlarmReceive.alreadyNotifiedInCurrentCycle(
+                                "2026-08-31",
+                                new SimpleDate("2026-09-01"),
+                                new SimpleDate("2026-09-01"),
+                                0,
+                                -1));
     }
 }
