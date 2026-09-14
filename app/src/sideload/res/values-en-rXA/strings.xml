@@ -48,7 +48,7 @@
   <string name="daysTillTitle">[!! Ƒūŧūŕē Ēṽēñŧş !!]</string>
   <string name="no_entries">[!! Ñō Ēñŧŕīēş !!]</string>
   <string name="no_categories">[!! Ñō Çàŧēğōŕīēş !!]</string>
-  <string name="choose">[!! Ēďīŧ Ñōŧīƒīçàŧīōñ Ŧīḿē !!]</string>
+  <string name="choose">[!!  Ēďīŧ Ñōŧīƒīçàŧīōñ Ŧīḿē !!]</string>
   <string name="change">[!!  Çĥàñğē !!]</string>
   <string name="prompt">[!! Ƥīçķ à Çàŧēğōŕŷ !!]</string>
   <string name="export">[!! Ēẋƥōŕŧ ďàŧàƀàşē ƒīľē !!]</string>
@@ -168,9 +168,12 @@
   <string name="settings_language_hindi">[!! Ĥīñďī !!]</string>
   <string name="no_data_entries">[!!  Ñō Ďàŧà !!]</string>
   <string name="developer_tools">[!! Ďēṽēľōƥēŕ Ŧōōľş !!]</string>
+  <string name="developer_enable_pseudo_langs">[!! Ēñàƀľē Ƥşēūďō Ŀàñğş !!]</string>
+  <string name="developer_pseudo_langs_active">[!! Ƥşēūďō Ŀàñğş Àçŧīṽē !!]</string>
   <string name="enable_logging">[!! Ēñàƀľē Ŀōğğīñğ !!]</string>
   <string name="disable_logging">[!! Ďīşàƀľē Ŀōğğīñğ !!]</string>
   <string name="developer_tools_unlocked">[!! Ďēṽēľōƥēŕ Ŧōōľş ūñľōçķēď ƒōŕ ŧĥīş şēşşīōñ. !!]</string>
+  <string name="developer_pseudo_langs_enabled">[!! Ƥşēūďō ľàñğūàğēş ēñàƀľēď ƒōŕ ŧĥīş şēşşīōñ. !!]</string>
   <string name="developer_logging_enabled">[!! Ďēṽēľōƥēŕ ľōğğīñğ ēñàƀľēď. !!]</string>
   <string name="developer_logging_disabled">[!! Ďēṽēľōƥēŕ ľōğğīñğ ďīşàƀľēď. !!]</string>
   <string name="export_diagnostics">[!! Ēẋƥōŕŧ Ďīàğñōşŧīçş !!]</string>
@@ -182,6 +185,20 @@
   <string name="select_date">[!! Šēľēçŧ Ďàŧē !!]</string>
   <string name="choose_time">[!! Ŧīḿē !!]</string>
   <string name="end_day">[!! Ēñď Ďàŷ !!]</string>
+  <string name="notify_lead_days_heading">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
+  <string name="notify_lead_days_title">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
+  <string name="notify_lead_days_prompt">[!! Ēñŧēŕ çūşŧōḿ ľēàď ďàŷş (0 ŧō 30), ōŕ ūşē ŕēçūŕŕēñçē ďēƒàūľŧ. !!]</string>
+  <string name="notify_lead_days_set_custom">[!! Šēŧ Çūşŧōḿ !!]</string>
+  <string name="notify_lead_days_use_default">[!! Ūşē Ďēƒàūľŧ !!]</string>
+  <string name="notify_lead_days_invalid">[!! Ēñŧēŕ à ŵĥōľē ñūḿƀēŕ ƒŕōḿ 0 ŧō 30. !!]</string>
+  <string name="notify_lead_days_effective_placeholder">[!! Ŕēḿīñďēŕ: 3 ďàŷş ƥŕīōŕ !!]</string>
+  <string name="notify_lead_days_effective_value">[!! Ēƒƒēçŧīṽē ľēàď ďàŷş: %1$d !!]</string>
+  <string name="notify_lead_days_edit_button">[!! Ēďīŧ ľēàď ďàŷş !!]</string>
+  <string name="lead_days_source_default_from_recurrence">[!! Šōūŕçē: Ďēƒàūľŧ (ƥēŕ ŕēçūŕŕēñçē ŧŷƥē) !!]</string>
+  <string name="lead_days_source_custom">[!! Šōūŕçē: Çūşŧōḿ !!]</string>
+  <string name="event_notifications_enabled">[!! Ñōŧīƒīçàŧīōñş: Ēñàƀľēď !!]</string>
+  <string name="event_notifications_disabled">[!! Ñōŧīƒīçàŧīōñş: Ďīşàƀľēď !!]</string>
+  <string name="notify_global_disabled_hint">[!! Ğľōƀàľ ñōŧīƒīçàŧīōñş àŕē ďīşàƀľēď īñ Šēŧŧīñğş. Ēṽēñŧ-şƥēçīƒīç ŕēḿīñďēŕ şēŧŧīñğş àŕē şàṽēď, ƀūŧ çūŕŕēñŧľŷ īñàçŧīṽē. !!]</string>
   <string name="details">[!! Ďēŧàīľş !!]</string>
   <string name="enter_details_optional">[!! &lt;Ēñŧēŕ Ďēŧàīľş (Ōƥŧīōñàľ)&gt; !!]</string>
   <string name="touch_here">[!! Ŧōūçĥ Ĥēŕē !!]</string>
@@ -232,6 +249,10 @@
     <item quantity="one">[!! , %1$d şķīƥƥēď !!]</item>
     <item quantity="other">[!! , %1$d şķīƥƥēď !!]</item>
   </plurals>
+  <plurals name="notify_lead_days_prior_summary">
+    <item quantity="one">[!! Ŕēḿīñďēŕ: %1$d ďàŷ ƥŕīōŕ !!]</item>
+    <item quantity="other">[!! Ŕēḿīñďēŕ: %1$d ďàŷş ƥŕīōŕ !!]</item>
+  </plurals>
   <string name="csv_import_failure_db_or_reader_null">[!! Ďàŧàƀàşē ōŕ ŕēàďēŕ īş ñūľľ !!]</string>
   <string name="csv_import_failure_read_csv">[!! Ƒàīľēď ŧō ŕēàď ÇŠṼ: %1$s !!]</string>
   <string name="csv_import_failure_db_null">[!! Ďàŧàƀàşē īş ñūľľ !!]</string>
@@ -280,37 +301,19 @@
   <string name="review_notifications_created">[!! Ŕēṽīēŵ çōḿƥľēŧē: Ñōŧīƒīçàŧīōñş àďďēď ŧō Àñďŕōīď ñōŧīƒīçàŧīōñ ďŕàŵēŕ. !!]</string>
   <string name="review_notifications_blocked">[!! Ŕēṽīēŵ çōḿƥľēŧē: Ñōŧīƒīçàŧīōñş ğēñēŕàŧēď ƀūŧ ƀľōçķēď ƀŷ Àñďŕōīď şēŧŧīñğş. !!]</string>
   <string name="enable_notifications_title">[!! Ēñàƀľē Ñōŧīƒīçàŧīōñş !!]</string>
-  <string name="enable_notifications_msg">[!! Ŧō ŕēçēīṽē àľēŕŧş ƒōŕ ďūē ōŕ ūƥçōḿīñğ ēṽēñŧş, ƥľēàşē ēñàƀľē ñōŧīƒīçàŧīōñş ƒōŕ ĎàŷşŠīñçēƤŕō īñ Àñďŕōīď Šēŧŧīñğş. !!]</string>
-  <string name="notification_permission_rationale">[!! Ñōŧīƒīçàŧīōñş àŕē ŕēʠūīŕēď ŧō àľēŕŧ ŷōū ŵĥēñ ēṽēñŧş àŕē ďūē ōŕ àƥƥŕōàçĥīñğ ŕēçūŕŕēñçē. !!]</string>
+  <string name="enable_notifications_msg">[!! Ñōŧīƒīçàŧīōñş àŕē ďīşàƀľēď īñ Šēŧŧīñğş. Ēñàƀľē ŧĥēḿ ŧĥēŕē ŧō ŕēçēīṽē ďūē ōŕ ūƥçōḿīñğ àľēŕŧş. !!]</string>
+  <string name="notification_permission_rationale">[!! Ēñàƀľē ñōŧīƒīçàŧīōñş īñ Šēŧŧīñğş şō ĎàŷşŠīñçēƤŕō çàñ àľēŕŧ ŷōū ŵĥēñ ēṽēñŧş àŕē ďūē ōŕ ūƥçōḿīñğ. !!]</string>
   <string name="open_settings">[!! Ōƥēñ Šēŧŧīñğş !!]</string>
   <string name="mini_b_ok">[!! Ōķ !!]</string>
   <string name="history_future_date_not_allowed">[!! Ĥàƥƥēñēď ďàŧē çàññōŧ ƀē īñ ŧĥē ƒūŧūŕē. !!]</string>
   <string name="action_not_available_for_one_time">[!! Ŧĥīş àçŧīōñ īş ōñľŷ àṽàīľàƀľē ƒōŕ ŕēçūŕŕīñğ ēṽēñŧş. !!]</string>
   <string name="planned_date_cleared_info">[!! Ƥľàññēď ƒūŧūŕē ďàŧē çľēàŕēď ƀēçàūşē īŧ īş ñō ľōñğēŕ īñ ŧĥē ƒūŧūŕē. !!]</string>
   <string name="csv_history_warning_title">[!! ÇŠṼ ēẋƥōŕŧ ďōēş ñōŧ īñçľūďē Ĥīşŧōŕŷ !!]</string>
-  <string name="csv_history_warning_message">[!! Ĥīşŧōŕŷ ēñŧŕīēş: %1$d\ñĒṽēñŧş ŵīŧĥ ĥīşŧōŕŷ: %2$d\ñĒṽēñŧş ŵīŧĥ çūşŧōḿ ñōŧīƒŷ ďàŷş: %3$d\ñĒṽēñŧş ŵīŧĥ ñōŧīƒīçàŧīōñş ďīşàƀľēď: %4$d\ñ\ñÇŠṼ ēẋƥōŕŧ/īḿƥōŕŧ ďōēş ñōŧ ƥŕēşēŕṽē Ĥīşŧōŕŷ, çūşŧōḿ ñōŧīƒŷ ďàŷş, ōŕ ƥēŕ-ēṽēñŧ ñōŧīƒīçàŧīōñ ēñàƀľēď şŧàŧē. Ūşē ďàŧàƀàşē ēẋƥōŕŧ ƒōŕ ƒūľľ-ƒīďēľīŧŷ ƀàçķūƥ àñď ŕēşŧōŕē. !!]</string>
+  <string name="csv_history_warning_message">[!! Ĥīşŧōŕŷ ēñŧŕīēş: %4$d\ñĒṽēñŧş ŵīŧĥ ĥīşŧōŕŷ: %4$d\ñĒṽēñŧş ŵīŧĥ çūşŧōḿ ñōŧīƒŷ ďàŷş: %4$d\ñĒṽēñŧş ŵīŧĥ ñōŧīƒīçàŧīōñş ďīşàƀľēď: %4$d\ñ\ñÇŠṼ ēẋƥōŕŧ/īḿƥōŕŧ ďōēş ñōŧ ƥŕēşēŕṽē Ĥīşŧōŕŷ, çūşŧōḿ ñōŧīƒŷ ďàŷş, ōŕ ƥēŕ-ēṽēñŧ ñōŧīƒīçàŧīōñ ēñàƀľēď şŧàŧē. Ūşē ďàŧàƀàşē ēẋƥōŕŧ ƒōŕ ƒūľľ-ƒīďēľīŧŷ ƀàçķūƥ àñď ŕēşŧōŕē. !!]</string>
   <string name="csv_history_warning_continue">[!! Çōñŧīñūē ÇŠṼ Ēẋƥōŕŧ !!]</string>
   <string name="csv_history_warning_export_db">[!! Ēẋƥōŕŧ .ďƀ Īñşŧēàď !!]</string>
-  <string name="notify_lead_days_heading">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
-  <string name="notify_lead_days_title">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
-  <string name="notify_lead_days_prompt">[!! Ēñŧēŕ çūşŧōḿ ľēàď ďàŷş (0 ŧō 30), ōŕ ūşē ŕēçūŕŕēñçē ďēƒàūľŧ. !!]</string>
-  <string name="notify_lead_days_set_custom">[!! Šēŧ Çūşŧōḿ !!]</string>
-  <string name="notify_lead_days_use_default">[!! Ūşē Ďēƒàūľŧ !!]</string>
-  <string name="notify_lead_days_invalid">[!! Ēñŧēŕ à ŵĥōľē ñūḿƀēŕ ƒŕōḿ 0 ŧō 30. !!]</string>
-  <string name="notify_lead_days_effective_placeholder">[!! Ŕēḿīñďēŕ: 3 ďàŷş ƥŕīōŕ !!]</string>
-  <string name="notify_lead_days_effective_value">[!! Ēƒƒēçŧīṽē ľēàď ďàŷş: %1$d !!]</string>
-  <string name="notify_lead_days_edit_button">[!! Ēďīŧ ľēàď ďàŷş !!]</string>
-  <string name="lead_days_source_default_from_recurrence">[!! Šōūŕçē: Ďēƒàūľŧ (ƥēŕ ŕēçūŕŕēñçē ŧŷƥē) !!]</string>
-  <string name="lead_days_source_custom">[!! Šōūŕçē: Çūşŧōḿ !!]</string>
-  <string name="event_notifications_enabled">[!! Ñōŧīƒīçàŧīōñş: Ēñàƀľēď !!]</string>
-  <string name="event_notifications_disabled">[!! Ñōŧīƒīçàŧīōñş: Ďīşàƀľēď !!]</string>
-  <string name="notify_global_disabled_hint">[!! Ğľōƀàľ ñōŧīƒīçàŧīōñş àŕē ďīşàƀľēď īñ Šēŧŧīñğş. Ēṽēñŧ-şƥēçīƒīç ŕēḿīñďēŕ şēŧŧīñğş àŕē şàṽēď, ƀūŧ çūŕŕēñŧľŷ īñàçŧīṽē. !!]</string>
   <string name="history_anchor_header">[!! Ēṽēñŧ (Àñçĥōŕ) ďàŧē: %1$s !!]</string>
   <string name="history_anchor_header_missing">[!! Àñçĥōŕ ďàŧē ūñàṽàīľàƀľē !!]</string>
   <string name="history_empty_placeholder">[!! Ñō àďďīŧīōñàľ ĥīşŧōŕŷ ĥàş ƀēēñ àďďēď. !!]</string>
   <string name="history_additions_only_header">[!! Īñçŕēḿēñŧàľ Ĥīşŧōŕŷ Àďďīŧīōñş (ōñľŷ) !!]</string>
-  <plurals name="notify_lead_days_prior_summary">
-    <item quantity="one">[!! Ŕēḿīñďēŕ: %1$d ďàŷ ƥŕīōŕ !!]</item>
-    <item quantity="other">[!! Ŕēḿīñďēŕ: %1$d ďàŷş ƥŕīōŕ !!]</item>
-  </plurals>
 </resources>

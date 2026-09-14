@@ -296,8 +296,8 @@
     <string name="review_notifications_created">Revision completada: notificaciones agregadas al panel de Android.</string>
     <string name="review_notifications_blocked">Revision completada: se generaron notificaciones pero estan bloqueadas por la configuracion de Android.</string>
     <string name="enable_notifications_title">Activar notificaciones</string>
-    <string name="enable_notifications_msg">Para recibir alertas de eventos vencidos o proximos, activa las notificaciones de DaysSincePro en Configuracion de Android.</string>
-    <string name="notification_permission_rationale">Las notificaciones son necesarias para avisarte cuando los eventos vencen o se acercan a su recurrencia.</string>
+    <string name="enable_notifications_msg">Las notificaciones estan desactivadas en Configuracion. Activalas alli para recibir alertas de eventos vencidos o proximos.</string>
+    <string name="notification_permission_rationale">Activa las notificaciones en Configuracion para que DaysSincePro pueda avisarte cuando los eventos esten vencidos o proximos.</string>
     <string name="open_settings">Abrir configuracion</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">La fecha de ocurrido no puede estar en el futuro.</string>

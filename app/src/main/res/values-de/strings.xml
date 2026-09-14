@@ -296,8 +296,8 @@
     <string name="review_notifications_created">Pruefung abgeschlossen: Benachrichtigungen wurden zur Android-Leiste hinzugefuegt.</string>
     <string name="review_notifications_blocked">Pruefung abgeschlossen: Benachrichtigungen wurden erzeugt, aber von Android-Einstellungen blockiert.</string>
     <string name="enable_notifications_title">Benachrichtigungen aktivieren</string>
-    <string name="enable_notifications_msg">Um Warnungen fuer faellige oder bevorstehende Ereignisse zu erhalten, aktiviere Benachrichtigungen fuer DaysSincePro in Android-Einstellungen.</string>
-    <string name="notification_permission_rationale">Benachrichtigungen sind erforderlich, um auf faellige oder bevorstehende Ereignisse hinzuweisen.</string>
+    <string name="enable_notifications_msg">Benachrichtigungen sind in den Einstellungen deaktiviert. Aktiviere sie dort, um Hinweise zu faelligen oder bevorstehenden Ereignissen zu erhalten.</string>
+    <string name="notification_permission_rationale">Aktiviere Benachrichtigungen in den Einstellungen, damit DaysSincePro dich bei faelligen oder bevorstehenden Ereignissen benachrichtigen kann.</string>
     <string name="open_settings">Einstellungen oeffnen</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">Das Ereignisdatum darf nicht in der Zukunft liegen.</string>

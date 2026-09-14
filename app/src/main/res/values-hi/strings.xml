@@ -309,8 +309,8 @@
     <string name="review_notifications_created">समीक्षा पूर्ण: सूचनाएं Android notification drawer में जोड़ी गईं।</string>
     <string name="review_notifications_blocked">समीक्षा पूर्ण: सूचनाएं बनीं लेकिन Android सेटिंग्स ने रोक दीं।</string>
     <string name="enable_notifications_title">सूचनाएं सक्षम करें</string>
-    <string name="enable_notifications_msg">देय या आने वाले इवेंट की सूचना पाने के लिए Android सेटिंग्स में DaysSincePro की सूचनाएं सक्षम करें।</string>
-    <string name="notification_permission_rationale">इवेंट देय होने या पुनरावृत्ति के पास आने पर आपको सतर्क करने के लिए सूचनाएं आवश्यक हैं।</string>
+    <string name="enable_notifications_msg">सूचनाएं Settings में अक्षम हैं। देय या आने वाले इवेंट अलर्ट पाने के लिए उन्हें वहीं सक्षम करें।</string>
+    <string name="notification_permission_rationale">Settings में सूचनाएं सक्षम करें ताकि DaysSincePro आपको देय या आने वाले इवेंट पर अलर्ट कर सके।</string>
     <string name="open_settings">सेटिंग्स खोलें</string>
     <string name="mini_b_ok">ठीक है</string>
     <string name="history_future_date_not_allowed">घटित तिथि भविष्य में नहीं हो सकती।</string>

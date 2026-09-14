@@ -296,8 +296,8 @@
     <string name="review_notifications_created">Revisione completata: notifiche aggiunte al pannello Android.</string>
     <string name="review_notifications_blocked">Revisione completata: notifiche generate ma bloccate dalle impostazioni Android.</string>
     <string name="enable_notifications_title">Abilita notifiche</string>
-    <string name="enable_notifications_msg">Per ricevere avvisi per eventi in scadenza o in arrivo, abilita le notifiche di DaysSincePro nelle impostazioni Android.</string>
-    <string name="notification_permission_rationale">Le notifiche sono necessarie per avvisarti quando gli eventi sono in scadenza o vicini alla ricorrenza.</string>
+    <string name="enable_notifications_msg">Le notifiche sono disattivate nelle impostazioni. Abilitale li per ricevere avvisi per eventi in scadenza o in arrivo.</string>
+    <string name="notification_permission_rationale">Abilita le notifiche nelle impostazioni cosi DaysSincePro puo avvisarti quando gli eventi sono in scadenza o in arrivo.</string>
     <string name="open_settings">Apri impostazioni</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">La data avvenuta non puo essere nel futuro.</string>

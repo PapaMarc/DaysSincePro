@@ -48,7 +48,7 @@
   <string name="daysTillTitle">[!! ‮Future Events‬ !!]</string>
   <string name="no_entries">[!! ‮No Entries‬ !!]</string>
   <string name="no_categories">[!! ‮No Categories‬ !!]</string>
-  <string name="choose">[!! ‮Edit Notification Time‬ !!]</string>
+  <string name="choose">[!! ‮ Edit Notification Time‬ !!]</string>
   <string name="change">[!! ‮ Change‬ !!]</string>
   <string name="prompt">[!! ‮Pick a Category‬ !!]</string>
   <string name="export">[!! ‮Export database file‬ !!]</string>
@@ -168,9 +168,12 @@
   <string name="settings_language_hindi">[!! ‮Hindi‬ !!]</string>
   <string name="no_data_entries">[!! ‮ No Data‬ !!]</string>
   <string name="developer_tools">[!! ‮Developer Tools‬ !!]</string>
+  <string name="developer_enable_pseudo_langs">[!! ‮Enable Pseudo Langs‬ !!]</string>
+  <string name="developer_pseudo_langs_active">[!! ‮Pseudo Langs Active‬ !!]</string>
   <string name="enable_logging">[!! ‮Enable Logging‬ !!]</string>
   <string name="disable_logging">[!! ‮Disable Logging‬ !!]</string>
   <string name="developer_tools_unlocked">[!! ‮Developer Tools unlocked for this session.‬ !!]</string>
+  <string name="developer_pseudo_langs_enabled">[!! ‮Pseudo languages enabled for this session.‬ !!]</string>
   <string name="developer_logging_enabled">[!! ‮Developer logging enabled.‬ !!]</string>
   <string name="developer_logging_disabled">[!! ‮Developer logging disabled.‬ !!]</string>
   <string name="export_diagnostics">[!! ‮Export Diagnostics‬ !!]</string>
@@ -182,6 +185,20 @@
   <string name="select_date">[!! ‮Select Date‬ !!]</string>
   <string name="choose_time">[!! ‮Time‬ !!]</string>
   <string name="end_day">[!! ‮End Day‬ !!]</string>
+  <string name="notify_lead_days_heading">[!! ‮Reminder lead days‬ !!]</string>
+  <string name="notify_lead_days_title">[!! ‮Reminder lead days‬ !!]</string>
+  <string name="notify_lead_days_prompt">[!! ‮Enter custom lead days (0 to 30), or use recurrence default.‬ !!]</string>
+  <string name="notify_lead_days_set_custom">[!! ‮Set Custom‬ !!]</string>
+  <string name="notify_lead_days_use_default">[!! ‮Use Default‬ !!]</string>
+  <string name="notify_lead_days_invalid">[!! ‮Enter a whole number from 0 to 30.‬ !!]</string>
+  <string name="notify_lead_days_effective_placeholder">[!! ‮Reminder: 3 days prior‬ !!]</string>
+  <string name="notify_lead_days_effective_value">[!! ‮Effective lead days: %1$d‬ !!]</string>
+  <string name="notify_lead_days_edit_button">[!! ‮Edit lead days‬ !!]</string>
+  <string name="lead_days_source_default_from_recurrence">[!! ‮Source: Default (per recurrence type)‬ !!]</string>
+  <string name="lead_days_source_custom">[!! ‮Source: Custom‬ !!]</string>
+  <string name="event_notifications_enabled">[!! ‮Notifications: Enabled‬ !!]</string>
+  <string name="event_notifications_disabled">[!! ‮Notifications: Disabled‬ !!]</string>
+  <string name="notify_global_disabled_hint">[!! ‮Global notifications are disabled in Settings. Event-specific reminder settings are saved, but currently inactive.‬ !!]</string>
   <string name="details">[!! ‮Details‬ !!]</string>
   <string name="enter_details_optional">[!! ‮&lt;Enter Details (Optional)&gt;‬ !!]</string>
   <string name="touch_here">[!! ‮Touch Here‬ !!]</string>
@@ -232,6 +249,10 @@
     <item quantity="one">[!! ‮, %1$d skipped‬ !!]</item>
     <item quantity="other">[!! ‮, %1$d skipped‬ !!]</item>
   </plurals>
+  <plurals name="notify_lead_days_prior_summary">
+    <item quantity="one">[!! ‮Reminder: %1$d day prior‬ !!]</item>
+    <item quantity="other">[!! ‮Reminder: %1$d days prior‬ !!]</item>
+  </plurals>
   <string name="csv_import_failure_db_or_reader_null">[!! ‮Database or reader is null‬ !!]</string>
   <string name="csv_import_failure_read_csv">[!! ‮Failed to read CSV: %1$s‬ !!]</string>
   <string name="csv_import_failure_db_null">[!! ‮Database is null‬ !!]</string>
@@ -280,37 +301,19 @@
   <string name="review_notifications_created">[!! ‮Review complete: Notifications added to Android notification drawer.‬ !!]</string>
   <string name="review_notifications_blocked">[!! ‮Review complete: Notifications generated but blocked by Android settings.‬ !!]</string>
   <string name="enable_notifications_title">[!! ‮Enable Notifications‬ !!]</string>
-  <string name="enable_notifications_msg">[!! ‮To receive alerts for due or upcoming events, please enable notifications for DaysSincePro in Android Settings.‬ !!]</string>
-  <string name="notification_permission_rationale">[!! ‮Notifications are required to alert you when events are due or approaching recurrence.‬ !!]</string>
+  <string name="enable_notifications_msg">[!! ‮Notifications are disabled in Settings. Enable them there to receive due or upcoming alerts.‬ !!]</string>
+  <string name="notification_permission_rationale">[!! ‮Enable notifications in Settings so DaysSincePro can alert you when events are due or upcoming.‬ !!]</string>
   <string name="open_settings">[!! ‮Open Settings‬ !!]</string>
   <string name="mini_b_ok">[!! ‮Ok‬ !!]</string>
   <string name="history_future_date_not_allowed">[!! ‮Happened date cannot be in the future.‬ !!]</string>
   <string name="action_not_available_for_one_time">[!! ‮This action is only available for recurring events.‬ !!]</string>
   <string name="planned_date_cleared_info">[!! ‮Planned future date cleared because it is no longer in the future.‬ !!]</string>
   <string name="csv_history_warning_title">[!! ‮CSV export does not include History‬ !!]</string>
-  <string name="csv_history_warning_message">[!! ‮History entries: %1$d\nEvents with history: %2$d\nEvents with custom notify days: %3$d\nEvents with notifications disabled: %4$d\n\nCSV export/import does not preserve History, custom notify days, or per-event notification enabled state. Use database export for full-fidelity backup and restore.‬ !!]</string>
+  <string name="csv_history_warning_message">[!! ‮History entries: %4$d\nEvents with history: %4$d\nEvents with custom notify days: %4$d\nEvents with notifications disabled: %4$d\n\nCSV export/import does not preserve History, custom notify days, or per-event notification enabled state. Use database export for full-fidelity backup and restore.‬ !!]</string>
   <string name="csv_history_warning_continue">[!! ‮Continue CSV Export‬ !!]</string>
   <string name="csv_history_warning_export_db">[!! ‮Export .db Instead‬ !!]</string>
-  <string name="notify_lead_days_heading">[!! ‮Reminder lead days‬ !!]</string>
-  <string name="notify_lead_days_title">[!! ‮Reminder lead days‬ !!]</string>
-  <string name="notify_lead_days_prompt">[!! ‮Enter custom lead days (0 to 30), or use recurrence default.‬ !!]</string>
-  <string name="notify_lead_days_set_custom">[!! ‮Set Custom‬ !!]</string>
-  <string name="notify_lead_days_use_default">[!! ‮Use Default‬ !!]</string>
-  <string name="notify_lead_days_invalid">[!! ‮Enter a whole number from 0 to 30.‬ !!]</string>
-  <string name="notify_lead_days_effective_placeholder">[!! ‮Reminder: 3 days prior‬ !!]</string>
-  <string name="notify_lead_days_effective_value">[!! ‮Effective lead days: %1$d‬ !!]</string>
-  <string name="notify_lead_days_edit_button">[!! ‮Edit lead days‬ !!]</string>
-  <string name="lead_days_source_default_from_recurrence">[!! ‮Source: Default (per recurrence type)‬ !!]</string>
-  <string name="lead_days_source_custom">[!! ‮Source: Custom‬ !!]</string>
-  <string name="event_notifications_enabled">[!! ‮Notifications: Enabled‬ !!]</string>
-  <string name="event_notifications_disabled">[!! ‮Notifications: Disabled‬ !!]</string>
-  <string name="notify_global_disabled_hint">[!! ‮Global notifications are disabled in Settings. Event-specific reminder settings are saved, but currently inactive.‬ !!]</string>
   <string name="history_anchor_header">[!! ‮Event (Anchor) date: %1$s‬ !!]</string>
   <string name="history_anchor_header_missing">[!! ‮Anchor date unavailable‬ !!]</string>
   <string name="history_empty_placeholder">[!! ‮No additional history has been added.‬ !!]</string>
   <string name="history_additions_only_header">[!! ‮Incremental History Additions (only)‬ !!]</string>
-  <plurals name="notify_lead_days_prior_summary">
-    <item quantity="one">[!! ‮Reminder: %1$d day prior‬ !!]</item>
-    <item quantity="other">[!! ‮Reminder: %1$d days prior‬ !!]</item>
-  </plurals>
 </resources>

@@ -304,8 +304,8 @@
     <string name="review_notifications_created">检查完成：通知已添加到 Android 通知栏。</string>
     <string name="review_notifications_blocked">检查完成：通知已生成，但被 Android 设置阻止。</string>
     <string name="enable_notifications_title">启用通知</string>
-    <string name="enable_notifications_msg">若要接收即将到期或即将重复事件的提醒，请在 Android 设置中为 DaysSincePro 启用通知。</string>
-    <string name="notification_permission_rationale">需要通知权限以在事件到期或接近重复时提醒你。</string>
+    <string name="enable_notifications_msg">通知已在设置中禁用。请在设置中启用，以接收事件到期或即将到来的提醒。</string>
+    <string name="notification_permission_rationale">请在设置中启用通知，以便 DaysSincePro 在事件到期或即将到来时提醒你。</string>
     <string name="open_settings">打开设置</string>
     <string name="mini_b_ok">确定</string>
     <string name="history_future_date_not_allowed">发生日期不能是未来日期。</string>

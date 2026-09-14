@@ -327,8 +327,8 @@
     <string name="review_notifications_created">Review complete: Notifications added to Android notification drawer.</string>
     <string name="review_notifications_blocked">Review complete: Notifications generated but blocked by Android settings.</string>
     <string name="enable_notifications_title">Enable Notifications</string>
-    <string name="enable_notifications_msg">To receive alerts for due or upcoming events, please enable notifications for DaysSincePro in Android Settings.</string>
-    <string name="notification_permission_rationale">Notifications are required to alert you when events are due or approaching recurrence.</string>
+    <string name="enable_notifications_msg">Notifications are disabled in Settings. Enable them there to receive due or upcoming alerts.</string>
+    <string name="notification_permission_rationale">Enable notifications in Settings so DaysSincePro can alert you when events are due or upcoming.</string>
     <string name="open_settings">Open Settings</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">Happened date cannot be in the future.</string>
