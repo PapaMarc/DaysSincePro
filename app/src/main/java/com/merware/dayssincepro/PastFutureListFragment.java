@@ -97,7 +97,7 @@ public class PastFutureListFragment extends ListFragment {
         }
 
         getActivity().setTitle(text);
-        DeveloperToolsSession.log("PastFutureListFragment",
+        DeveloperToolsSession.logTrackA("PastFutureListFragment",
             "onActivityCreated kind=" + kind + " title=\"" + text + "\"");
 
         listData();
@@ -132,7 +132,7 @@ public class PastFutureListFragment extends ListFragment {
     public void listData() {
 
         if (!searchText.isEmpty()) {
-            DeveloperToolsSession.log("PastFutureListFragment",
+                DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listData route=search kind=" + kind
                             + " fragment=" + debugFragmentId()
                             + " query=\"" + searchText + "\"");
@@ -195,7 +195,7 @@ public class PastFutureListFragment extends ListFragment {
 
             sql = sql + whereClause + " order by " + orderBy;
 
-                DeveloperToolsSession.log("PastFutureListFragment",
+                DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listData begin route=normal kind=" + kind
                         + " fragment=" + debugFragmentId()
                         + " categoryIds=" + categories
@@ -204,7 +204,7 @@ public class PastFutureListFragment extends ListFragment {
             //    showToast(sql);
             cursor = db.rawQuery(sql, null);
                 String firstRowProbe = firstRowProbe(cursor);
-                DeveloperToolsSession.log("PastFutureListFragment",
+                DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listData end route=normal kind=" + kind
                         + " fragment=" + debugFragmentId()
                         + " categoryIds=" + categories
@@ -287,7 +287,7 @@ public class PastFutureListFragment extends ListFragment {
 
             sql = buildSearchSql(orderBy);
 
-                DeveloperToolsSession.log("PastFutureListFragment",
+                DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listDataAjax begin route=search kind=" + kind
                         + " fragment=" + debugFragmentId()
                         + " query=\"" + str + "\""
@@ -297,7 +297,7 @@ public class PastFutureListFragment extends ListFragment {
 
             cursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
                 String firstRowProbe = firstRowProbe(cursor);
-                DeveloperToolsSession.log("PastFutureListFragment",
+                DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listDataAjax end route=search kind=" + kind
                         + " fragment=" + debugFragmentId()
                         + " query=\"" + str + "\""

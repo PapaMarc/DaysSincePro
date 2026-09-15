@@ -18,10 +18,14 @@ final class AppLocaleManager {
     static void applyStoredLocale(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String localeValue = prefs.getString(PREF_APP_LANGUAGE, VALUE_SYSTEM);
-        applyLocaleValue(localeValue);
+        applyLocaleValue(context, localeValue, "stored_locale");
     }
 
     static void applyLocaleValue(String localeValue) {
+        applyLocaleValue(null, localeValue, "unspecified");
+    }
+
+    static void applyLocaleValue(Context context, String localeValue, String source) {
         LocaleListCompat targetLocales;
         if (localeValue == null || VALUE_SYSTEM.equals(localeValue)) {
             targetLocales = LocaleListCompat.getEmptyLocaleList();
@@ -31,9 +35,24 @@ final class AppLocaleManager {
 
         String currentTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
         String targetTags = targetLocales.toLanguageTags();
-        if (!targetTags.equals(currentTags)) {
+
+        DeveloperToolsSession.logTrackB(
+                "LocaleFlow",
+                "event=locale_apply_start source=" + source
+                        + " current_tags=" + tagsForLog(currentTags)
+                        + " target_tags=" + tagsForLog(targetTags));
+
+        boolean applied = !targetTags.equals(currentTags);
+        if (applied) {
             AppCompatDelegate.setApplicationLocales(targetLocales);
         }
+
+        String finalTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        DeveloperToolsSession.logTrackB(
+                "LocaleFlow",
+                "event=locale_apply_result source=" + source
+                        + " applied=" + applied
+                        + " final_tags=" + tagsForLog(finalTags));
     }
 
     static String currentPreferenceValue() {
@@ -44,5 +63,12 @@ final class AppLocaleManager {
 
         int firstComma = tags.indexOf(',');
         return firstComma > 0 ? tags.substring(0, firstComma) : tags;
+    }
+
+    private static String tagsForLog(String tags) {
+        if (tags == null || tags.trim().isEmpty()) {
+            return VALUE_SYSTEM;
+        }
+        return tags;
     }
 }

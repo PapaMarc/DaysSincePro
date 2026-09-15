@@ -13,6 +13,8 @@ import java.util.Locale;
 public final class DeveloperToolsSession {
 
     private static final String TAG = "DSP_DEVTOOLS";
+    static final String TRACK_A = "TRACK_A";
+    static final String TRACK_B = "TRACK_B";
     private static final int MAX_BUFFER_LINES = 2000;
     private static final Object LOCK = new Object();
 
@@ -28,7 +30,7 @@ public final class DeveloperToolsSession {
 
     static void initialize(String packageName) {
         synchronized (LOCK) {
-            sideloadBuild = packageName != null && packageName.endsWith(".dev");
+            sideloadBuild = BuildConfig.ENABLE_DEV_DIAGNOSTICS;
             if (!sideloadBuild) {
                 unlockedForSession = false;
                 loggingEnabled = false;
@@ -127,6 +129,14 @@ public final class DeveloperToolsSession {
         }
 
         Log.i(TAG, line);
+    }
+
+    static void logTrackA(String source, String message) {
+        log(source, TRACK_A + " | " + message);
+    }
+
+    static void logTrackB(String source, String message) {
+        log(source, TRACK_B + " | " + message);
     }
 
     static String defaultDiagnosticsFilename() {

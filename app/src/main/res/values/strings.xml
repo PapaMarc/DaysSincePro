@@ -230,6 +230,7 @@
     <string name="about_version_format">Version: %1$s</string>
     <string name="about_schema_format">Schema: v%1$d</string>
     <string name="about_sideload_format">SideLoad .apk: %1$s</string>
+    <string name="about_running_in_debug_mode">(currently running in DEBUG mode)</string>
     <string name="about_author_name">Alex Mak</string>
     <string name="about_author_timeline">2.x Aug 2015 --&gt; v3.0.2 Sep 30 2016 --&gt; v3.1.5 Nov 23, 2023</string>
     <string name="about_originally_written_by">Originally written by %1$s\n%2$s</string>

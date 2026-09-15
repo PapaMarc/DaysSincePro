@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Debug;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -38,13 +39,28 @@ public class AboutDialog {
         String aboutTitle = context.getString(R.string.about_title, context.getString(R.string.app_name));
         String versionString = context.getString(R.string.about_version_format, versionInfo);
         String packageName = context.getPackageName();
-        boolean isSideloadBuild = packageName.endsWith(".dev");
+                boolean isSideloadBuild = BuildConfig.SHOW_SIDELOAD_IDENTITY;
+                boolean isDebuggerAttached = Debug.isDebuggerConnected();
         String schemaString = context.getString(R.string.about_schema_format, DatabaseHelper.DATABASE_VERSION);
         String sideloadString = context.getString(R.string.about_sideload_format, packageName);
-        String headerText = isSideloadBuild
-                ? versionString + "\n" + schemaString + "\n" + sideloadString
-                : versionString;
+                String debugRuntimeString = context.getString(R.string.about_running_in_debug_mode);
+                String headerText;
+                if (isSideloadBuild) {
+                        headerText = versionString + "\n" + schemaString + "\n" + sideloadString;
+                        if (isDebuggerAttached) {
+                                headerText += "\n" + debugRuntimeString;
+                        }
+                } else {
+                        headerText = versionString;
+                }
         String aboutText = context.getString(R.string.about_originally_written_by, author, date);
+
+                DeveloperToolsSession.logTrackB(
+                                "AboutDialog",
+                                "event=render_probe key=about_title text_preview=\""
+                                                + sanitizeForLog(clipForLog(aboutTitle))
+                                                + "\" text_len=" + aboutTitle.length()
+                                                + " debugger_attached=" + isDebuggerAttached);
 
         String maintained = context.getString(R.string.about_maintained);
         String republished = context.getString(R.string.about_republished);
@@ -157,4 +173,19 @@ public class AboutDialog {
                 .setPositiveButton(context.getString(android.R.string.ok), null)
                 .setView(message).create();
     }
+
+        private static String clipForLog(String input) {
+                if (input == null) {
+                        return "";
+                }
+                int max = 48;
+                if (input.length() <= max) {
+                        return input;
+                }
+                return input.substring(0, max);
+        }
+
+        private static String sanitizeForLog(String input) {
+                return input.replace("\n", " ").replace("\r", " ").replace("\"", "'");
+        }
 }

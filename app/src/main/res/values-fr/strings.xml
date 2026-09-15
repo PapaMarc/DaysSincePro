@@ -193,6 +193,7 @@
   <string name="about_version_format">Version : %1$s</string>
   <string name="about_schema_format">Schéma : v%1$d</string>
   <string name="about_sideload_format">APK installée manuellement : %1$s</string>
+  <string name="about_running_in_debug_mode">(en cours d\'execution en mode DEBUG)</string>
   <string name="about_author_name">Alex Mak</string>
   <string name="about_author_timeline">2.x août 2015 --&gt; v3.0.2 30 septembre 2016 --&gt; v3.1.5 23 novembre 2023</string>
   <string name="about_originally_written_by">Initialement écrit par %1$s\n%2$s</string>

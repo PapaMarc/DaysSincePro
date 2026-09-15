@@ -3,6 +3,7 @@ package com.merware.dayssincepro;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -135,11 +136,27 @@ public class PrefActivity extends AppCompatActivity {
             }
 
             if (AppLocaleManager.PREF_APP_LANGUAGE.equals(key)) {
+                String previousValue = AppLocaleManager.currentPreferenceValue();
                 String localeValue = sharedPreferences.getString(
                         AppLocaleManager.PREF_APP_LANGUAGE,
                         AppLocaleManager.VALUE_SYSTEM
                 );
-                AppLocaleManager.applyLocaleValue(localeValue);
+
+                DeveloperToolsSession.logTrackB(
+                    "LocaleFlow",
+                    "event=scenario_start reason=locale_picker_change");
+                DeveloperToolsSession.logTrackB(
+                    "LocaleFlow",
+                    "event=device_context manufacturer=" + sanitizeForLog(Build.MANUFACTURER)
+                        + " model=" + sanitizeForLog(Build.MODEL)
+                        + " api=" + Build.VERSION.SDK_INT);
+                DeveloperToolsSession.logTrackB(
+                    "LocaleFlow",
+                    "event=locale_intent source=settings_picker previous_value="
+                        + sanitizeForLog(previousValue)
+                        + " target_value=" + sanitizeForLog(localeValue));
+
+                AppLocaleManager.applyLocaleValue(getActivity(), localeValue, "settings_picker");
             }
         }
 
@@ -162,11 +179,27 @@ public class PrefActivity extends AppCompatActivity {
 
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
+
+                String localeValue = AppLocaleManager.currentPreferenceValue();
+                DeveloperToolsSession.logTrackB(
+                    "PrefActivity",
+                    "event=lifecycle_checkpoint screen=settings state=on_resume locale="
+                        + sanitizeForLog(localeValue));
+                logRenderProbe(R.string.settings_title, "settings_title");
         }
 
         @Override
         public void onPause() {
             super.onPause();
+
+                String localeValue = AppLocaleManager.currentPreferenceValue();
+                DeveloperToolsSession.logTrackB(
+                    "PrefActivity",
+                    "event=lifecycle_checkpoint screen=settings state=on_pause locale="
+                        + sanitizeForLog(localeValue));
+                DeveloperToolsSession.logTrackB(
+                    "LocaleFlow",
+                    "event=scenario_end reason=settings_pause");
 
             getPreferenceScreen().getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
@@ -207,7 +240,7 @@ public class PrefActivity extends AppCompatActivity {
             String currentValue = AppLocaleManager.currentPreferenceValue();
             if (!LocaleExposureConfig.isPickerValueExposed(currentValue, getActivity())) {
                 currentValue = AppLocaleManager.VALUE_SYSTEM;
-                AppLocaleManager.applyLocaleValue(currentValue);
+                AppLocaleManager.applyLocaleValue(getActivity(), currentValue, "sync_language_pref");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 prefs.edit().putString(AppLocaleManager.PREF_APP_LANGUAGE, currentValue).apply();
             }
@@ -232,6 +265,36 @@ public class PrefActivity extends AppCompatActivity {
 
             appLanguagePref.setEntries(entries);
             appLanguagePref.setEntryValues(values);
+        }
+
+        private void logRenderProbe(int resId, String key) {
+            String resolved = getString(resId);
+            DeveloperToolsSession.logTrackB(
+                    "PrefActivity",
+                    "event=render_probe key=" + key
+                            + " text_preview=\"" + sanitizeForLog(clipForLog(resolved)) + "\""
+                            + " text_len=" + resolved.length());
+        }
+
+        private static String clipForLog(String value) {
+            if (value == null) {
+                return "";
+            }
+            int max = 48;
+            if (value.length() <= max) {
+                return value;
+            }
+            return value.substring(0, max);
+        }
+
+        private static String sanitizeForLog(String value) {
+            if (value == null) {
+                return "";
+            }
+            return value.replace("\n", " ")
+                    .replace("\r", " ")
+                    .replace("\"", "'")
+                    .replace(" ", "_");
         }
 
     }

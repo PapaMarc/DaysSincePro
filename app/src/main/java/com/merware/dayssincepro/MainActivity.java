@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
             showToast(enable
                     ? getString(R.string.developer_logging_enabled)
                     : getString(R.string.developer_logging_disabled));
-            DeveloperToolsSession.log("MainActivity", "developerLogging=" + enable);
+                DeveloperToolsSession.logTrackA("MainActivity", "event=developer_logging enabled=" + enable);
             return true;
 
         } else if (itemId == MENU_DEVELOPER_ENABLE_PSEUDO_LANGS) {
@@ -540,6 +540,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
 
+        DeveloperToolsSession.logTrackB(
+                "MainActivity",
+                "event=lifecycle_checkpoint screen=main state=on_resume locale="
+                        + sanitizeForLog(AppLocaleManager.currentPreferenceValue()));
+
         if (!waitingForSettingsReturn) {
             return;
         }
@@ -555,6 +560,13 @@ public class MainActivity extends AppCompatActivity implements
         sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
         daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
         refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
+
+        String tabLabel = getString(R.string.dayssince);
+        DeveloperToolsSession.logTrackB(
+            "MainActivity",
+            "event=render_probe key=main_tab_label_days_since text_preview=\""
+                + sanitizeForLog(clipForLog(tabLabel))
+                + "\" text_len=" + tabLabel.length());
     }
 
     private boolean reconcileThemeAfterSettingsReturn() {
@@ -631,33 +643,33 @@ public class MainActivity extends AppCompatActivity implements
     static void refreshTabs(PastFutureListFragment daysSince, PastFutureListFragment sinceLast,
                             PastFutureListFragment daysUntil) {
         if (daysSince != null) {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke start fragment=" + debugFragmentId(daysSince));
             daysSince.listData();
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke end fragment=" + debugFragmentId(daysSince));
         } else {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs skip fragment=DaysSinceFragment(null)");
         }
         if (sinceLast != null) {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke start fragment=" + debugFragmentId(sinceLast));
             sinceLast.listData();
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke end fragment=" + debugFragmentId(sinceLast));
         } else {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs skip fragment=SinceLastFragment(null)");
         }
         if (daysUntil != null) {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke start fragment=" + debugFragmentId(daysUntil));
             daysUntil.listData();
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs invoke end fragment=" + debugFragmentId(daysUntil));
         } else {
-            DeveloperToolsSession.log("MainActivity",
+            DeveloperToolsSession.logTrackA("MainActivity",
                 "refreshTabs skip fragment=DaysUntilFragment(null)");
         }
     }
@@ -1163,7 +1175,7 @@ public class MainActivity extends AppCompatActivity implements
                     text = getString(R.string.uncategorized);
                 }
 
-                DeveloperToolsSession.log(
+                DeveloperToolsSession.logTrackA(
                     "MainActivity",
                     "CATEGORY_ACTIVITY preApply tab=" + currentTab
                         + " titleBefore=\"" + (previousTitle == null ? "" : previousTitle.toString()) + "\""
@@ -1176,7 +1188,7 @@ public class MainActivity extends AppCompatActivity implements
                 sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
                 daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
 
-                DeveloperToolsSession.log(
+                DeveloperToolsSession.logTrackA(
                     "MainActivity",
                     "CATEGORY_ACTIVITY fragments ds=" + debugFragmentId(daysSinceFragment)
                         + " sl=" + debugFragmentId(sinceLastFragment)
@@ -1184,7 +1196,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
 
-                DeveloperToolsSession.log(
+                DeveloperToolsSession.logTrackA(
                     "MainActivity",
                     "CATEGORY_ACTIVITY postApply tab="
                         + (mViewPager != null ? mViewPager.getCurrentItem() : -1)
@@ -1200,6 +1212,27 @@ public class MainActivity extends AppCompatActivity implements
         }
         return fragment.getClass().getSimpleName() + "@"
                 + Integer.toHexString(System.identityHashCode(fragment));
+    }
+
+    private static String clipForLog(String input) {
+        if (input == null) {
+            return "";
+        }
+        int max = 48;
+        if (input.length() <= max) {
+            return input;
+        }
+        return input.substring(0, max);
+    }
+
+    private static String sanitizeForLog(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input.replace("\n", " ")
+                .replace("\r", " ")
+                .replace("\"", "'")
+                .replace(" ", "_");
     }
 
 

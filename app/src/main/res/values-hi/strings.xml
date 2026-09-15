@@ -216,6 +216,7 @@
     <string name="about_version_format">संस्करण: %1$s</string>
     <string name="about_schema_format">स्कीमा: v%1$d</string>
     <string name="about_sideload_format">साइडलोड .apk: %1$s</string>
+    <string name="about_running_in_debug_mode">(वर्तमान में DEBUG मोड में चल रहा है)</string>
     <string name="about_author_name">Alex Mak</string>
     <string name="about_author_timeline">2.x Aug 2015 --&gt; v3.0.2 Sep 30 2016 --&gt; v3.1.5 Nov 23, 2023</string>
     <string name="about_originally_written_by">%1$s द्वारा मूल रूप से लिखित\n%2$s</string>

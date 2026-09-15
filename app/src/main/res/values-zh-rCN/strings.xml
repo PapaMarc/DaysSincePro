@@ -211,6 +211,7 @@
     <string name="about_version_format">版本：%1$s</string>
     <string name="about_schema_format">架构：v%1$d</string>
     <string name="about_sideload_format">旁加载 .apk：%1$s</string>
+    <string name="about_running_in_debug_mode">（当前正在 DEBUG 模式下运行）</string>
     <string name="about_author_name">Alex Mak</string>
     <string name="about_author_timeline">2.x 2015年8月 --&gt; v3.0.2 2016年9月30日 --&gt; v3.1.5 2023年11月23日</string>
     <string name="about_originally_written_by">最初由 %1$s 编写\n%2$s</string>

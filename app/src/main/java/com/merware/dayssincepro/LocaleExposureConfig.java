@@ -55,11 +55,7 @@ final class LocaleExposureConfig {
     }
 
     static boolean isSideloadBuild(Context context) {
-        if (context == null) {
-            return false;
-        }
-        String packageName = context.getPackageName();
-        return packageName != null && packageName.endsWith(".dev");
+        return BuildConfig.ENABLE_DEV_DIAGNOSTICS;
     }
 
     static PickerOption[] pickerOptions(Context context) {

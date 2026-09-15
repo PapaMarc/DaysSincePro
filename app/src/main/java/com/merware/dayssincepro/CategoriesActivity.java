@@ -235,7 +235,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
     private void onListRowClicked(int position) {
         CheckedSelectionSnapshot snapshot = collectCheckedSelection();
-        DeveloperToolsSession.log(
+        DeveloperToolsSession.logTrackA(
                 "CategoriesActivity",
                 "rowClick pos=" + position
                         + " checkedIds=" + Arrays.toString(snapshot.selectedIds)
@@ -393,7 +393,7 @@ public class CategoriesActivity extends AppCompatActivity {
         ed.putBoolean(PREF_HAS_EXPLICIT_FILTER_SELECTION, true);
         ed.commit();
 
-        DeveloperToolsSession.log(
+        DeveloperToolsSession.logTrackA(
                 "CategoriesActivity",
                 "persistSelection ids=" + Arrays.toString(stableSelection)
                         + " label=\"" + joined + "\"");
