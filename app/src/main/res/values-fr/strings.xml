@@ -209,6 +209,7 @@
   <string name="csv_export_failed_with_reason">Échec de l\'exportation : %1$s</string>
   <string name="category_csv_export_saved_with_rows">%1$s.csv enregistré (%2$d événements)</string>
   <string name="csv_restore_invalid_database_file">Désolé, fichier de base de données invalide.</string>
+  <string name="csv_restore_newer_schema_not_supported">Import non pris en charge. Cette sauvegarde utilise un schema de base de donnees plus recent (v%1$d) que celui pris en charge par cette application (v%2$d). Veuillez mettre a jour l\'application et reessayer.</string>
   <string name="widget_db_problem_with_reason">Problème de base de données : %1$s</string>
   <string name="end_date_before_start_date">La date de fin ne doit pas être antérieure à la date de l\'événement.</string>
   <string name="history_remove_failed">La suppression a échoué.</string>

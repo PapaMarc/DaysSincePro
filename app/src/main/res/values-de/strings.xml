@@ -222,6 +222,7 @@
     <string name="csv_export_failed_with_reason">Export fehlgeschlagen: %1$s</string>
     <string name="category_csv_export_saved_with_rows">%1$s.csv gespeichert (%2$d Ereignisse)</string>
     <string name="csv_restore_invalid_database_file">Ungueltige Datenbankdatei.</string>
+    <string name="csv_restore_newer_schema_not_supported">Import nicht unterstuetzt. Dieses Backup verwendet ein neueres Datenbankschema (v%1$d) als diese App unterstuetzt (v%2$d). Bitte aktualisieren Sie die App und versuchen Sie es erneut.</string>
     <string name="widget_db_problem_with_reason">Datenbankproblem: %1$s</string>
     <string name="end_date_before_start_date">Das Enddatum darf nicht vor dem Datum liegen.</string>
     <string name="history_remove_failed">Entfernen fehlgeschlagen.</string>

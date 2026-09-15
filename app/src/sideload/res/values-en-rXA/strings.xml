@@ -226,6 +226,7 @@
   <string name="csv_export_failed_with_reason">[!! Ēẋƥōŕŧ ƒàīľēď: %1$s !!]</string>
   <string name="category_csv_export_saved_with_rows">[!! %2$d.çşṽ şàṽēď (%2$d ēṽēñŧş) !!]</string>
   <string name="csv_restore_invalid_database_file">[!! Šōŕŕŷ, īñṽàľīď ďàŧàƀàşē ƒīľē. !!]</string>
+  <string name="csv_restore_newer_schema_not_supported">[!! Īḿƥōŕŧ ñōŧ şūƥƥōŕŧēď. Ŧĥīş ƀàçķūƥ ūşēş à ñēŵēŕ ďàŧàƀàşē şçĥēḿà (ṽ%1$d) ŧĥàñ ŧĥīş àƥƥ şūƥƥōŕŧş (ṽ%2$d). Ƥľēàşē ūƥďàŧē ŧĥē àƥƥ àñď ŧŕŷ àğàīñ. !!]</string>
   <string name="widget_db_problem_with_reason">[!! Ďàŧàƀàşē ƥŕōƀľēḿ: %1$s !!]</string>
   <string name="end_date_before_start_date">[!! Ēñď ďàŧē şĥōūľď ñōŧ ƀē ēàŕľīēŕ ŧĥàñ ŧĥē ďàŧē. !!]</string>
   <string name="history_remove_failed">[!! Ŕēḿōṽē ƒàīľēď. !!]</string>

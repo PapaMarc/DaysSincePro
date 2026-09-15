@@ -222,6 +222,7 @@
     <string name="csv_export_failed_with_reason">La exportacion fallo: %1$s</string>
     <string name="category_csv_export_saved_with_rows">%1$s.csv guardado (%2$d eventos)</string>
     <string name="csv_restore_invalid_database_file">Lo sentimos, archivo de base de datos no valido.</string>
+    <string name="csv_restore_newer_schema_not_supported">Importacion no compatible. Esta copia de seguridad usa un esquema de base de datos mas nuevo (v%1$d) que el que admite esta app (v%2$d). Actualice la app e intentelo de nuevo.</string>
     <string name="widget_db_problem_with_reason">Problema de base de datos: %1$s</string>
     <string name="end_date_before_start_date">La fecha final no debe ser anterior a la fecha.</string>
     <string name="history_remove_failed">La eliminacion fallo.</string>

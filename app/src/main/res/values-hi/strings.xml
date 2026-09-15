@@ -233,6 +233,7 @@
     <string name="csv_export_failed_with_reason">निर्यात विफल: %1$s</string>
     <string name="category_csv_export_saved_with_rows">%1$s.csv सहेजा गया (%2$d इवेंट)</string>
     <string name="csv_restore_invalid_database_file">क्षमा करें, अमान्य डेटाबेस फ़ाइल।</string>
+    <string name="csv_restore_newer_schema_not_supported">आयात समर्थित नहीं है। यह बैकअप इस ऐप द्वारा समर्थित संस्करण (v%2$d) से नया डेटाबेस स्कीमा (v%1$d) उपयोग करता है। कृपया ऐप अपडेट करके फिर प्रयास करें।</string>
     <string name="widget_db_problem_with_reason">डेटाबेस समस्या: %1$s</string>
     <string name="end_date_before_start_date">समाप्ति तिथि, प्रारंभ तिथि से पहले नहीं होनी चाहिए।</string>
     <string name="history_remove_failed">हटाना विफल।</string>

@@ -222,6 +222,7 @@
     <string name="csv_export_failed_with_reason">Exportacao falhou: %1$s</string>
     <string name="category_csv_export_saved_with_rows">%1$s.csv guardado (%2$d eventos)</string>
     <string name="csv_restore_invalid_database_file">Desculpe, ficheiro de base de dados invalido.</string>
+    <string name="csv_restore_newer_schema_not_supported">Importacao nao suportada. Este backup usa um esquema de base de dados mais recente (v%1$d) do que esta app suporta (v%2$d). Atualize a app e tente novamente.</string>
     <string name="widget_db_problem_with_reason">Problema de base de dados: %1$s</string>
     <string name="end_date_before_start_date">A data final nao deve ser anterior a data.</string>
     <string name="history_remove_failed">Remocao falhou.</string>

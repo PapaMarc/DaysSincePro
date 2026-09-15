@@ -226,6 +226,7 @@
   <string name="csv_export_failed_with_reason">[!! ‮Export failed: %1$s‬ !!]</string>
   <string name="category_csv_export_saved_with_rows">[!! ‮%2$d.csv saved (%2$d events)‬ !!]</string>
   <string name="csv_restore_invalid_database_file">[!! ‮Sorry, invalid database file.‬ !!]</string>
+  <string name="csv_restore_newer_schema_not_supported">[!! ‮Import not supported. This backup uses a newer database schema (v%1$d) than this app supports (v%2$d). Please update the app and try again.‬ !!]</string>
   <string name="widget_db_problem_with_reason">[!! ‮Database problem: %1$s‬ !!]</string>
   <string name="end_date_before_start_date">[!! ‮End date should not be earlier than the date.‬ !!]</string>
   <string name="history_remove_failed">[!! ‮Remove failed.‬ !!]</string>
