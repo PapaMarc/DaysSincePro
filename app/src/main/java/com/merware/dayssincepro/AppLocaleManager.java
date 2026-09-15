@@ -39,8 +39,8 @@ final class AppLocaleManager {
         DeveloperToolsSession.logTrackB(
                 "LocaleFlow",
                 "event=locale_apply_start source=" + source
-                        + " current_tags=" + tagsForLog(currentTags)
-                        + " target_tags=" + tagsForLog(targetTags));
+                + " current_tags=" + normalizeTagsForLog(currentTags)
+                + " target_tags=" + normalizeTagsForLog(targetTags));
 
         boolean applied = !targetTags.equals(currentTags);
         if (applied) {
@@ -52,7 +52,7 @@ final class AppLocaleManager {
                 "LocaleFlow",
                 "event=locale_apply_result source=" + source
                         + " applied=" + applied
-                        + " final_tags=" + tagsForLog(finalTags));
+                + " final_tags=" + normalizeTagsForLog(finalTags));
     }
 
     static String currentPreferenceValue() {
@@ -65,7 +65,7 @@ final class AppLocaleManager {
         return firstComma > 0 ? tags.substring(0, firstComma) : tags;
     }
 
-    private static String tagsForLog(String tags) {
+    static String normalizeTagsForLog(String tags) {
         if (tags == null || tags.trim().isEmpty()) {
             return VALUE_SYSTEM;
         }

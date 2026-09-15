@@ -44,15 +44,13 @@ public class AboutDialog {
         String schemaString = context.getString(R.string.about_schema_format, DatabaseHelper.DATABASE_VERSION);
         String sideloadString = context.getString(R.string.about_sideload_format, packageName);
                 String debugRuntimeString = context.getString(R.string.about_running_in_debug_mode);
-                String headerText;
-                if (isSideloadBuild) {
-                        headerText = versionString + "\n" + schemaString + "\n" + sideloadString;
-                        if (isDebuggerAttached) {
-                                headerText += "\n" + debugRuntimeString;
-                        }
-                } else {
-                        headerText = versionString;
-                }
+                String headerText = buildHeaderText(
+                                versionString,
+                                schemaString,
+                                sideloadString,
+                                debugRuntimeString,
+                                isSideloadBuild,
+                                isDebuggerAttached);
         String aboutText = context.getString(R.string.about_originally_written_by, author, date);
 
                 DeveloperToolsSession.logTrackB(
@@ -187,5 +185,22 @@ public class AboutDialog {
 
         private static String sanitizeForLog(String input) {
                 return input.replace("\n", " ").replace("\r", " ").replace("\"", "'");
+        }
+
+        static String buildHeaderText(String versionString,
+                                                                  String schemaString,
+                                                                  String sideloadString,
+                                                                  String debugRuntimeString,
+                                                                  boolean showSideloadIdentity,
+                                                                  boolean isDebuggerAttached) {
+                if (!showSideloadIdentity) {
+                        return versionString;
+                }
+
+                String headerText = versionString + "\n" + schemaString + "\n" + sideloadString;
+                if (isDebuggerAttached) {
+                        headerText += "\n" + debugRuntimeString;
+                }
+                return headerText;
         }
 }

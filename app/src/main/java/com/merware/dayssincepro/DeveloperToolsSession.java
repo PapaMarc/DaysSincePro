@@ -132,11 +132,15 @@ public final class DeveloperToolsSession {
     }
 
     static void logTrackA(String source, String message) {
-        log(source, TRACK_A + " | " + message);
+        log(source, withTrack(TRACK_A, message));
     }
 
     static void logTrackB(String source, String message) {
-        log(source, TRACK_B + " | " + message);
+        log(source, withTrack(TRACK_B, message));
+    }
+
+    static String withTrack(String track, String message) {
+        return track + " | " + message;
     }
 
     static String defaultDiagnosticsFilename() {
