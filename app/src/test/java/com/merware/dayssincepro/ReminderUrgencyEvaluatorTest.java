@@ -19,8 +19,8 @@ public class ReminderUrgencyEvaluatorTest {
     }
 
     @Test
-    public void oneTime_pastEvent_isOverdue() {
-        assertEquals(ReminderUrgencyEvaluator.ReminderUrgency.OVERDUE,
+    public void oneTime_pastEvent_isNone() {
+        assertEquals(ReminderUrgencyEvaluator.ReminderUrgency.NONE,
                 ReminderUrgencyEvaluator.evaluate(0, 2, 0, 3));
     }
 
