@@ -258,9 +258,10 @@ sequenceDiagram
 3. **Behavior:**
    - **Destructive Replace:** Replaces existing SQLite database entirely.
    - **User Confirmation:** Displays confirmation alert dialog informing the user that all current app data will be replaced.
+   - **Schema Compatibility Preflight:** Stages selected file to a temp snapshot and checks SQLite `PRAGMA user_version` before any live-db swap; if backup schema is newer than app-supported schema, restore is rejected with a user message and the current live database remains untouched.
    - **Connection Lifecycle Management:**
      - Closes active singleton connection via `DatabaseHelper.closeInstance()`.
-     - Streams bytes from SAF `Uri` directly to the app's internal database path (`/data/data/com.MerWare.DaysSincePro/databases/alex_db`).
+     - Streams bytes from the validated temp snapshot to the app's internal database path (`/data/data/com.MerWare.DaysSincePro/databases/alex_db`).
      - Forces Activity restart (`CLEAR_TOP | NEW_TASK`) to re-initialize SQLite connections and reload all tabs/fragments cleanly.
 
 ### 5.2 Mode B: Import CSV Events (`.csv` — Append & Deduplicate)

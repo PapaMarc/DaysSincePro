@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.util.Log;
@@ -865,19 +864,41 @@ public class MainActivity extends AppCompatActivity implements
 
     private void handleRestoreDbSaf(Uri uri) {
         if (uri == null) return;
+        File importedSnapshot = null;
         try {
-            // Verify SQLite header magic string before overwriting database
-            try (InputStream testIn = getContentResolver().openInputStream(uri)) {
-                if (testIn == null) {
+            importedSnapshot = File.createTempFile("daysSince_restore", ".db", getCacheDir());
+
+            // Stage the selected SAF source to a temp file first so we can safely preflight it
+            // before touching the live database.
+            try (InputStream in = getContentResolver().openInputStream(uri);
+                 OutputStream out = new FileOutputStream(importedSnapshot)) {
+                if (in == null) {
                     showToast(getString(R.string.restore_fail));
                     return;
                 }
-                byte[] byteArr = new byte[6];
-                int read = testIn.read(byteArr);
-                if (read < 6 || !Arrays.equals(byteArr, "SQLite".getBytes())) {
-                    showToast(getString(R.string.csv_restore_invalid_database_file));
-                    return;
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
                 }
+                out.flush();
+            }
+
+            if (!SqliteImportPreflight.hasSqliteHeader(importedSnapshot)) {
+                showToast(getString(R.string.csv_restore_invalid_database_file));
+                return;
+            }
+
+            int importedSchemaVersion = SqliteImportPreflight.readUserVersion(importedSnapshot);
+            int supportedSchemaVersion = DatabaseHelper.DATABASE_VERSION;
+            if (!SqliteImportPreflight.isSchemaVersionSupported(
+                    importedSchemaVersion,
+                    supportedSchemaVersion)) {
+                showToast(getString(
+                        R.string.csv_restore_newer_schema_not_supported,
+                        importedSchemaVersion,
+                        supportedSchemaVersion));
+                return;
             }
 
             // Close shared database connection before replacing file
@@ -889,12 +910,8 @@ public class MainActivity extends AppCompatActivity implements
                 dbDir.mkdirs();
             }
 
-            try (InputStream in = getContentResolver().openInputStream(uri);
+            try (InputStream in = new FileInputStream(importedSnapshot);
                  OutputStream out = new FileOutputStream(liveDbFile)) {
-                if (in == null) {
-                    showToast(getString(R.string.restore_fail));
-                    return;
-                }
                 byte[] buffer = new byte[4096];
                 int len;
                 while ((len = in.read(buffer)) > 0) {
@@ -921,6 +938,10 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
             Log.e("DSP_RESTORE_DB", "Database restore failed", e);
             showToast(getString(R.string.restore_fail) + ": " + e.getMessage());
+        } finally {
+            if (importedSnapshot != null && importedSnapshot.exists()) {
+                importedSnapshot.delete();
+            }
         }
     }
 

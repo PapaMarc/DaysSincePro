@@ -95,6 +95,12 @@ else {
 2. Remove (or make explicitly opt-in / logged / confirmed) the destructive drop-and-recreate fallback. At minimum, it should never be the silent default for an unrecognized-but-plausible version transition.
 3. Add a regression test that simulates upgrading from each known prior version (1, 2, 3) to the new version and asserts no data loss and correct final schema — this is realistic to write given the project's existing pattern of JVM-testable, real-SQLite-backed tests (`org.xerial:sqlite-jdbc` test dependency already present in [app/build.gradle](../app/build.gradle)).
 
+Restore compatibility rule (backup-import safety):
+
+1. Full `.db` restore must preflight the imported backup schema version (`PRAGMA user_version`) before replacing the live database file.
+2. If imported schema version is greater than `DatabaseHelper.DATABASE_VERSION` in the running app build, restore must fail gracefully and must not replace the live database.
+3. Rationale: this prevents downgrade/open crash loops caused by restoring a backup produced by a newer app version than the currently installed binary can handle.
+
 ---
 
 ## 4. Planned Schema Additions
