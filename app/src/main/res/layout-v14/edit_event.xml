@@ -16,7 +16,9 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,6 +33,41 @@
                 android:capitalize="sentences"
                 android:imeOptions="actionDone" >
             </EditText>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/category"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.merware.dayssincepro.SelectAgainSpinner
+                    android:id="@+id/catSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:prompt="@string/prompt" />
+
+                <Button
+                    android:id="@+id/buttonAddCategory"
+                    style="@style/MiniBActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/add_category_tooltip" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/categoryNudgeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/add_event_category_nudge"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/layout1"
@@ -177,26 +214,6 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/category"
-                android:textStyle="bold" />
-
-            <com.merware.dayssincepro.SelectAgainSpinner
-                android:id="@+id/catSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:prompt="@string/prompt" />
-
-            <TextView
-                android:id="@+id/categoryNudgeText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/add_event_category_nudge"
-                android:visibility="gone" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/details"
                 android:textStyle="bold" />
@@ -212,37 +229,38 @@
                 android:maxLines="4"
                 android:minLines="2" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:background="?android:attr/dividerHorizontal" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                style="@style/MiniBButtonRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <!-- Android 14 reverse OK, Cancel -->
-
-                <Button
-                    android:id="@+id/eventCancel"
-                    style="@style/MiniBActionButton"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
-                    android:layout_weight="1"
-                    android:text="@string/Cancel" />
-
-                <Button
-                    android:id="@+id/eventOK"
-                    style="@style/MiniBActionButton"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mini_b_ok" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerHorizontal" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        style="@style/MiniBButtonRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <!-- Android 14 reverse OK, Cancel -->
+
+        <Button
+            android:id="@+id/eventCancel"
+            style="@style/MiniBActionButton"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:text="@string/Cancel" />
+
+        <Button
+            android:id="@+id/eventOK"
+            style="@style/MiniBActionButton"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/mini_b_ok" />
+    </LinearLayout>
 
 </LinearLayout>

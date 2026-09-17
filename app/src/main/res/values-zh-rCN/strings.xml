@@ -147,8 +147,8 @@
     <string name="category_name_exists">类别已存在。</string>
     <string name="category_create_failed">无法创建类别。请重试。</string>
     <string name="add_new_category_action">&lt;添加新类别&gt;</string>
-    <string name="add_event_category_nudge">若要添加类别，请先在上方选择 &lt;添加新类别&gt;。</string>
-    <string name="choose_or_create_category">请选择类别，或先选择添加新类别。</string>
+    <string name="add_event_category_nudge">若要添加类别，请先点按上方的添加类别。</string>
+    <string name="choose_or_create_category">请选择类别，或先点按添加类别。</string>
     <string name="remove_cat_msg">这也会删除该类别下的所有事件。确定吗？</string>
     <string name="repeats_every">每隔</string>
     <string name="backup_success">数据库备份成功！</string>

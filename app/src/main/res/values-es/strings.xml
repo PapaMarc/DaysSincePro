@@ -142,8 +142,8 @@
     <string name="category_name_exists">La categoria ya existe.</string>
     <string name="category_create_failed">No se pudo crear la categoria. Intentalo de nuevo.</string>
     <string name="add_new_category_action">&lt;Agregar nueva categoria&gt;</string>
-    <string name="add_event_category_nudge">Para agregar una categoria, selecciona &lt;Agregar nueva categoria&gt; arriba.</string>
-    <string name="choose_or_create_category">Elige una categoria o selecciona primero Agregar nueva categoria.</string>
+    <string name="add_event_category_nudge">Para agregar una categoria, toca Agregar categoria arriba.</string>
+    <string name="choose_or_create_category">Elige una categoria o toca primero Agregar categoria.</string>
     <string name="remove_cat_msg">Esto tambien eliminara todos los eventos asociados a esta categoria. Estas seguro?</string>
     <string name="repeats_every">se repite cada</string>
     <string name="backup_success">Respaldo correcto!</string>

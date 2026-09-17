@@ -132,8 +132,8 @@
   <string name="category_name_exists">[!! Çàŧēğōŕŷ àľŕēàďŷ ēẋīşŧş. !!]</string>
   <string name="category_create_failed">[!! Ūñàƀľē ŧō çŕēàŧē çàŧēğōŕŷ. Ƥľēàşē ŧŕŷ àğàīñ. !!]</string>
   <string name="add_new_category_action">[!! &lt;Àďď Ñēŵ Çàŧēğōŕŷ&gt; !!]</string>
-  <string name="add_event_category_nudge">[!! Ŧō àďď à Çàŧēğōŕŷ, şēľēçŧ &lt;Àďď Ñēŵ Çàŧēğōŕŷ&gt; àƀōṽē. !!]</string>
-  <string name="choose_or_create_category">[!! Çĥōōşē à çàŧēğōŕŷ, ōŕ şēľēçŧ Àďď Ñēŵ Çàŧēğōŕŷ ƒīŕşŧ. !!]</string>
+  <string name="add_event_category_nudge">[!! Ŧō àďď à çàŧēğōŕŷ, ŧàƥ Àďď Çàŧēğōŕŷ àƀōṽē. !!]</string>
+  <string name="choose_or_create_category">[!! Çĥōōşē à çàŧēğōŕŷ, ōŕ ŧàƥ Àďď Çàŧēğōŕŷ ƒīŕşŧ. !!]</string>
   <string name="remove_cat_msg">[!! Ŧĥīş ŵīľľ àľşō ďēľēŧē àľľ ēṽēñŧş àşşōçīàŧēď ŵīŧĥ ŧĥīş çàŧēğōŕŷ. Àŕē ŷōū şūŕē? !!]</string>
   <string name="repeats_every">[!! ŕēƥēàŧş ēṽēŕŷ !!]</string>
   <string name="backup_success">[!! ßàçķūƥ ďàŧàƀàşē şūççēşş! !!]</string>

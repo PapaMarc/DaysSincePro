@@ -31,11 +31,21 @@ public class EditEventCategoryPickerLayoutTest {
     private static void assertContainsCategorySelectAgainSpinner(String xml) {
         assertTrue(xml.contains("<com.merware.dayssincepro.SelectAgainSpinner"));
         assertTrue(xml.contains("android:id=\"@+id/catSpinner\""));
+        assertTrue(xml.contains("android:id=\"@+id/buttonAddCategory\""));
         assertFalse(xml.contains("android:id=\"@+id/checkBox1\""));
 
         int categorySpinnerIndex = xml.indexOf("android:id=\"@+id/catSpinner\"");
+        int dateLayoutIndex = xml.indexOf("android:id=\"@+id/layout1\"");
+        int recurSpinnerIndex = xml.indexOf("android:id=\"@+id/recur_spinner\"");
         int detailsInputIndex = xml.indexOf("android:id=\"@+id/editDetails\"");
+        int scrollViewCloseIndex = xml.indexOf("</ScrollView>");
+        int buttonRowIndex = xml.indexOf("android:id=\"@+id/linearLayout3\"");
+
         assertTrue(categorySpinnerIndex >= 0);
+        assertTrue(dateLayoutIndex > categorySpinnerIndex);
+        assertTrue(recurSpinnerIndex > dateLayoutIndex);
         assertTrue(detailsInputIndex > categorySpinnerIndex);
+        assertTrue(scrollViewCloseIndex >= 0);
+        assertTrue(buttonRowIndex > scrollViewCloseIndex);
     }
 }

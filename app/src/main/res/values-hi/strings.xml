@@ -147,8 +147,8 @@
     <string name="category_name_exists">श्रेणी पहले से मौजूद है।</string>
     <string name="category_create_failed">श्रेणी बनाई नहीं जा सकी। कृपया पुनः प्रयास करें।</string>
     <string name="add_new_category_action">&lt;नई श्रेणी जोड़ें&gt;</string>
-    <string name="add_event_category_nudge">श्रेणी जोड़ने के लिए ऊपर &lt;नई श्रेणी जोड़ें&gt; चुनें।</string>
-    <string name="choose_or_create_category">कोई श्रेणी चुनें, या पहले नई श्रेणी जोड़ें।</string>
+    <string name="add_event_category_nudge">श्रेणी जोड़ने के लिए ऊपर श्रेणी जोड़ें पर टैप करें।</string>
+    <string name="choose_or_create_category">कोई श्रेणी चुनें, या पहले श्रेणी जोड़ें पर टैप करें।</string>
     <string name="remove_cat_msg">इससे इस श्रेणी से जुड़े सभी इवेंट भी हट जाएंगे। क्या आप सुनिश्चित हैं?</string>
     <string name="repeats_every">हर</string>
     <string name="backup_success">डेटाबेस बैकअप सफल!</string>
