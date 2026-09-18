@@ -154,6 +154,11 @@
     <string name="opaque">Deckend</string>
     <string name="notify_midnight">Um 8:00 benachrichtigen</string>
     <string name="notify_at_time_format">Um %1$s benachrichtigen</string>
+    <string name="reminders_off">Erinnerungen aus</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">Erinnerungen an: Um %1$s, %2$d Tag Vorher</item>
+        <item quantity="other">Erinnerungen an: Um %1$s, %2$d Tage Vorher</item>
+    </plurals>
     <string name="days_diff">Rechner fuer Tage zwischen Daten</string>
     <string name="days_events_diff">Tage zwischen Ereignissen</string>
     <string name="click_choose">Datum oder Ereignis</string>
@@ -309,15 +314,15 @@
     <string name="csv_history_warning_message">Verlaufseintraege: %1$d\nEreignisse mit Verlauf: %2$d\nEreignisse mit benutzerdefinierten Benachrichtigungstagen: %3$d\nEreignisse mit deaktivierten Benachrichtigungen: %4$d\n\nCSV-Export/-Import bewahrt Verlauf, benutzerdefinierte Benachrichtigungstage und den Benachrichtigungsstatus pro Ereignis nicht. Verwende Datenbankexport fuer vollstaendige Sicherung und Wiederherstellung.</string>
     <string name="csv_history_warning_continue">CSV-Export fortsetzen</string>
     <string name="csv_history_warning_export_db">Stattdessen .db exportieren</string>
-    <string name="notify_lead_days_heading">Erinnerungsvorlauf in Tagen</string>
-    <string name="notify_lead_days_title">Erinnerungsvorlauf in Tagen</string>
-    <string name="notify_lead_days_prompt">Benutzerdefinierte Vorlauftage eingeben (0 bis 30) oder Wiederholungsstandard verwenden.</string>
+    <string name="notify_lead_days_heading">Erinnerungstage Vorher</string>
+    <string name="notify_lead_days_title">Erinnerungstage Vorher</string>
+    <string name="notify_lead_days_prompt">Benutzerdefinierte Tage Vorher eingeben (0 bis 30) oder Wiederholungsstandard verwenden.</string>
     <string name="notify_lead_days_set_custom">Benutzerdefiniert setzen</string>
     <string name="notify_lead_days_use_default">Standard verwenden</string>
     <string name="notify_lead_days_invalid">Bitte eine ganze Zahl von 0 bis 30 eingeben.</string>
-    <string name="notify_lead_days_effective_placeholder">Erinnerung: 3 Tage vorher</string>
+    <string name="notify_lead_days_effective_placeholder">Erinnerung: 3 Tage Vorher</string>
     <string name="notify_lead_days_effective_value">Effektive Vorlauftage: %1$d</string>
-    <string name="notify_lead_days_edit_button">Vorlauftage bearbeiten</string>
+    <string name="notify_lead_days_edit_button">Tage Vorher Bearbeiten</string>
     <string name="lead_days_source_default_from_recurrence">Quelle: Standard (nach Wiederholungstyp)</string>
     <string name="lead_days_source_custom">Quelle: Benutzerdefiniert</string>
     <string name="event_notifications_enabled">Benachrichtigungen: Aktiviert</string>
@@ -328,7 +333,7 @@
     <string name="history_empty_placeholder">Kein zusaetzlicher Verlauf hinzugefuegt.</string>
     <string name="history_additions_only_header">Inkrementelle Verlaufszusaetze (nur)</string>
     <plurals name="notify_lead_days_prior_summary">
-        <item quantity="one">Erinnerung: %1$d Tag vorher</item>
-        <item quantity="other">Erinnerung: %1$d Tage vorher</item>
+        <item quantity="one">Erinnerung: %1$d Tag Vorher</item>
+        <item quantity="other">Erinnerung: %1$d Tage Vorher</item>
     </plurals>
 </resources>

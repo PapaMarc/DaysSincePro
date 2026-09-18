@@ -154,6 +154,11 @@
     <string name="opaque">Opaco</string>
     <string name="notify_midnight">Notificar a las 8:00</string>
     <string name="notify_at_time_format">Notificar a las %1$s</string>
+    <string name="reminders_off">Recordatorios desactivados</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">Recordatorios activados: A las %1$s, %2$d Día Antes</item>
+        <item quantity="other">Recordatorios activados: A las %1$s, %2$d Días Antes</item>
+    </plurals>
     <string name="days_diff">Calculadora de dias entre fechas</string>
     <string name="days_events_diff">Dias entre eventos</string>
     <string name="click_choose">Fecha o evento</string>
@@ -309,15 +314,15 @@
     <string name="csv_history_warning_message">Entradas de historial: %1$d\nEventos con historial: %2$d\nEventos con dias de notificacion personalizados: %3$d\nEventos con notificaciones deshabilitadas: %4$d\n\nLa exportacion/importacion CSV no conserva historial, dias de notificacion personalizados ni el estado de notificaciones por evento. Usa la exportacion de base de datos para respaldo y restauracion completos.</string>
     <string name="csv_history_warning_continue">Continuar exportacion CSV</string>
     <string name="csv_history_warning_export_db">Exportar .db en su lugar</string>
-    <string name="notify_lead_days_heading">Dias de anticipacion del recordatorio</string>
-    <string name="notify_lead_days_title">Dias de anticipacion del recordatorio</string>
-    <string name="notify_lead_days_prompt">Ingresa dias personalizados (0 a 30), o usa el valor predeterminado de recurrencia.</string>
+    <string name="notify_lead_days_heading">Dias Antes del Recordatorio</string>
+    <string name="notify_lead_days_title">Dias Antes del Recordatorio</string>
+    <string name="notify_lead_days_prompt">Ingresa Dias Antes personalizados (0 a 30), o usa el valor predeterminado de recurrencia.</string>
     <string name="notify_lead_days_set_custom">Establecer personalizado</string>
     <string name="notify_lead_days_use_default">Usar predeterminado</string>
     <string name="notify_lead_days_invalid">Ingresa un numero entero de 0 a 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Recordatorio: 3 dias antes</string>
+    <string name="notify_lead_days_effective_placeholder">Recordatorio: 3 Dias Antes</string>
     <string name="notify_lead_days_effective_value">Dias efectivos de anticipacion: %1$d</string>
-    <string name="notify_lead_days_edit_button">Editar dias de anticipacion</string>
+    <string name="notify_lead_days_edit_button">Editar Dias Antes</string>
     <string name="lead_days_source_default_from_recurrence">Origen: Predeterminado (por tipo de recurrencia)</string>
     <string name="lead_days_source_custom">Origen: Personalizado</string>
     <string name="event_notifications_enabled">Notificaciones: Habilitadas</string>
@@ -328,7 +333,7 @@
     <string name="history_empty_placeholder">No se ha agregado historial adicional.</string>
     <string name="history_additions_only_header">Adiciones incrementales de historial (solo)</string>
     <plurals name="notify_lead_days_prior_summary">
-        <item quantity="one">Recordatorio: %1$d dia antes</item>
-        <item quantity="other">Recordatorio: %1$d dias antes</item>
+        <item quantity="one">Recordatorio: %1$d Dia Antes</item>
+        <item quantity="other">Recordatorio: %1$d Dias Antes</item>
     </plurals>
 </resources>

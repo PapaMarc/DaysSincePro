@@ -159,6 +159,13 @@
     <string name="opaque">Opaque</string>
     <string name="notify_midnight">Notify at 8:00 AM</string>
     <string name="notify_at_time_format">Notify at %1$s</string>
+    <string name="reminders">Reminders</string>
+    <string name="reminders_off">Reminders off</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">Reminders on: At %1$s, %2$d Day Prior</item>
+        <item quantity="other">Reminders on: At %1$s, %2$d Days Prior</item>
+    </plurals>
+    <string name="open_reminders">Open reminder settings</string>
     <string name="days_diff">Days Between Calculator</string>
     <string name="days_events_diff">Days Between Events</string>
     <string name="click_choose">Date or Event</string>
@@ -204,15 +211,15 @@
     <string name="select_date">Select Date</string>
     <string name="choose_time">Time</string>
     <string name="end_day">End Day</string>
-    <string name="notify_lead_days_heading">Reminder lead days</string>
-    <string name="notify_lead_days_title">Reminder lead days</string>
-    <string name="notify_lead_days_prompt">Enter custom lead days (0 to 30), or use recurrence default.</string>
+    <string name="notify_lead_days_heading">Reminder days prior</string>
+    <string name="notify_lead_days_title">Reminder days prior</string>
+    <string name="notify_lead_days_prompt">Enter custom days prior (0 to 30), or use recurrence default.</string>
     <string name="notify_lead_days_set_custom">Set Custom</string>
     <string name="notify_lead_days_use_default">Use Default</string>
     <string name="notify_lead_days_invalid">Enter a whole number from 0 to 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Reminder: 3 days prior</string>
+    <string name="notify_lead_days_effective_placeholder">Reminder: 3 Days Prior</string>
     <string name="notify_lead_days_effective_value">Effective lead days: %1$d</string>
-    <string name="notify_lead_days_edit_button">Edit lead days</string>
+    <string name="notify_lead_days_edit_button">Edit Days Prior</string>
     <string name="lead_days_source_default_from_recurrence">Source: Default (per recurrence type)</string>
     <string name="lead_days_source_custom">Source: Custom</string>
     <string name="event_notifications_enabled">Notifications: Enabled</string>
@@ -274,8 +281,8 @@
         <item quantity="other">, %1$d skipped</item>
     </plurals>
     <plurals name="notify_lead_days_prior_summary">
-        <item quantity="one">Reminder: %1$d day prior</item>
-        <item quantity="other">Reminder: %1$d days prior</item>
+        <item quantity="one">Reminder: %1$d Day Prior</item>
+        <item quantity="other">Reminder: %1$d Days Prior</item>
     </plurals>
 
     <string name="csv_import_failure_db_or_reader_null">Database or reader is null</string>

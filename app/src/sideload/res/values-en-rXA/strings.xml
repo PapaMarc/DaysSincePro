@@ -144,6 +144,11 @@
   <string name="opaque">[!! Ōƥàʠūē !!]</string>
   <string name="notify_midnight">[!! Ñōŧīƒŷ àŧ 8:00 ÀṀ !!]</string>
   <string name="notify_at_time_format">[!! Ñōŧīƒŷ àŧ %1$s !!]</string>
+  <string name="reminders_off">[!! Ŕēḿīñďēŕş ōƒƒ !!]</string>
+  <plurals name="reminders_on_summary">
+    <item quantity="one">[!! Ŕēḿīñďēŕş ōñ: Àŧ %1$s, %2$d Ďàŷ Ƥŕīōŕ !!]</item>
+    <item quantity="other">[!! Ŕēḿīñďēŕş ōñ: Àŧ %1$s, %2$d Ďàŷş Ƥŕīōŕ !!]</item>
+  </plurals>
   <string name="days_diff">[!! Ďàŷş ßēŧŵēēñ Çàľçūľàŧōŕ !!]</string>
   <string name="days_events_diff">[!! Ďàŷş ßēŧŵēēñ Ēṽēñŧş !!]</string>
   <string name="click_choose">[!! Ďàŧē ōŕ Ēṽēñŧ !!]</string>
@@ -185,15 +190,15 @@
   <string name="select_date">[!! Šēľēçŧ Ďàŧē !!]</string>
   <string name="choose_time">[!! Ŧīḿē !!]</string>
   <string name="end_day">[!! Ēñď Ďàŷ !!]</string>
-  <string name="notify_lead_days_heading">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
-  <string name="notify_lead_days_title">[!! Ŕēḿīñďēŕ ľēàď ďàŷş !!]</string>
-  <string name="notify_lead_days_prompt">[!! Ēñŧēŕ çūşŧōḿ ľēàď ďàŷş (0 ŧō 30), ōŕ ūşē ŕēçūŕŕēñçē ďēƒàūľŧ. !!]</string>
+  <string name="notify_lead_days_heading">[!! Ŕēḿīñďēŕ Ďàŷş Ƥŕīōŕ !!]</string>
+  <string name="notify_lead_days_title">[!! Ŕēḿīñďēŕ Ďàŷş Ƥŕīōŕ !!]</string>
+  <string name="notify_lead_days_prompt">[!! Ēñŧēŕ çūşŧōḿ Ďàŷş Ƥŕīōŕ (0 ŧō 30), ōŕ ūşē ŕēçūŕŕēñçē ďēƒàūľŧ. !!]</string>
   <string name="notify_lead_days_set_custom">[!! Šēŧ Çūşŧōḿ !!]</string>
   <string name="notify_lead_days_use_default">[!! Ūşē Ďēƒàūľŧ !!]</string>
   <string name="notify_lead_days_invalid">[!! Ēñŧēŕ à ŵĥōľē ñūḿƀēŕ ƒŕōḿ 0 ŧō 30. !!]</string>
-  <string name="notify_lead_days_effective_placeholder">[!! Ŕēḿīñďēŕ: 3 ďàŷş ƥŕīōŕ !!]</string>
+  <string name="notify_lead_days_effective_placeholder">[!! Ŕēḿīñďēŕ: 3 Ďàŷş Ƥŕīōŕ !!]</string>
   <string name="notify_lead_days_effective_value">[!! Ēƒƒēçŧīṽē ľēàď ďàŷş: %1$d !!]</string>
-  <string name="notify_lead_days_edit_button">[!! Ēďīŧ ľēàď ďàŷş !!]</string>
+  <string name="notify_lead_days_edit_button">[!! Ēďīŧ Ďàŷş Ƥŕīōŕ !!]</string>
   <string name="lead_days_source_default_from_recurrence">[!! Šōūŕçē: Ďēƒàūľŧ (ƥēŕ ŕēçūŕŕēñçē ŧŷƥē) !!]</string>
   <string name="lead_days_source_custom">[!! Šōūŕçē: Çūşŧōḿ !!]</string>
   <string name="event_notifications_enabled">[!! Ñōŧīƒīçàŧīōñş: Ēñàƀľēď !!]</string>
@@ -252,8 +257,8 @@
     <item quantity="other">[!! , %1$d şķīƥƥēď !!]</item>
   </plurals>
   <plurals name="notify_lead_days_prior_summary">
-    <item quantity="one">[!! Ŕēḿīñďēŕ: %1$d ďàŷ ƥŕīōŕ !!]</item>
-    <item quantity="other">[!! Ŕēḿīñďēŕ: %1$d ďàŷş ƥŕīōŕ !!]</item>
+    <item quantity="one">[!! Ŕēḿīñďēŕ: %1$d Ďàŷ Ƥŕīōŕ !!]</item>
+    <item quantity="other">[!! Ŕēḿīñďēŕ: %1$d Ďàŷş Ƥŕīōŕ !!]</item>
   </plurals>
   <string name="csv_import_failure_db_or_reader_null">[!! Ďàŧàƀàşē ōŕ ŕēàďēŕ īş ñūľľ !!]</string>
   <string name="csv_import_failure_read_csv">[!! Ƒàīľēď ŧō ŕēàď ÇŠṼ: %1$s !!]</string>

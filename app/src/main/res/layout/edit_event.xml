@@ -129,64 +129,42 @@
                 android:text="" />
 
             <LinearLayout
-                android:id="@+id/reminderSettingsGroup"
+                android:id="@+id/reminderSummaryRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/reminder_settings_group_background"
-                android:orientation="vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/notify_lead_days_effective"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/notify_lead_days_effective_placeholder"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/notify_lead_days_source"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lead_days_source_default_from_recurrence" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reminders"
+                        android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/buttonEditNotifyLeadDays"
-                    style="@style/MiniBActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/notify_lead_days_edit_button" />
+                    <TextView
+                        android:id="@+id/reminderSummaryValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reminders_off" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/notify_at"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/notify_midnight" />
-
-                <Button
-                    android:id="@+id/buttonPickRecur"
-                    style="@style/MiniBActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/choose" />
-
-                <CheckBox
-                    android:id="@+id/eventNotifyEnabledCheckbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/event_notifications_enabled" />
-
-                <TextView
-                    android:id="@+id/notify_global_disabled_hint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/notify_global_disabled_hint" />
+                    android:contentDescription="@string/open_reminders"
+                    android:src="@drawable/ic_chevron_end" />
             </LinearLayout>
 
 

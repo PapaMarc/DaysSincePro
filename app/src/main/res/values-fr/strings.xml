@@ -144,6 +144,11 @@
   <string name="opaque">Opaque</string>
   <string name="notify_midnight">Notifier à 8h00</string>
   <string name="notify_at_time_format">Notifier à %1$s</string>
+  <string name="reminders_off">Rappels désactivés</string>
+  <plurals name="reminders_on_summary">
+    <item quantity="one">Rappels activés : à %1$s, %2$d Jour Avant</item>
+    <item quantity="other">Rappels activés : à %1$s, %2$d Jours Avant</item>
+  </plurals>
   <string name="days_diff">Calculateur de jours entre les jours</string>
   <string name="days_events_diff">Jours entre les événements</string>
   <string name="click_choose">Date ou événement</string>
@@ -291,15 +296,15 @@
   <string name="csv_history_warning_message">Entrées de l’historique : %1$d\nÉvénements avec historique : %2$d\nÉvénements avec jours de notification personnalisés : %3$d\nÉvénements avec notifications désactivées : %4$d\n\nL’exportation/importation CSV ne conserve pas l’historique, les jours de notification personnalisés ni l’état des notifications par événement. Utilisez l’exportation de base de données pour une sauvegarde et une restauration en toute fidélité.</string>
   <string name="csv_history_warning_continue">Continuer l’exportation CSV</string>
   <string name="csv_history_warning_export_db">Exportez plutôt .db</string>
-  <string name="notify_lead_days_heading">Jours d’anticipation du rappel</string>
-  <string name="notify_lead_days_title">Jours d’anticipation du rappel</string>
-  <string name="notify_lead_days_prompt">Saisissez un nombre de jours personnalisé (0 à 30), ou utilisez la valeur par défaut de la récurrence.</string>
+  <string name="notify_lead_days_heading">Jours Avant le Rappel</string>
+  <string name="notify_lead_days_title">Jours Avant le Rappel</string>
+  <string name="notify_lead_days_prompt">Saisissez un nombre de Jours Avant (0 à 30), ou utilisez la valeur par défaut de la récurrence.</string>
   <string name="notify_lead_days_set_custom">Définir personnalisé</string>
   <string name="notify_lead_days_use_default">Utiliser la valeur par défaut</string>
   <string name="notify_lead_days_invalid">Saisissez un nombre entier entre 0 et 30.</string>
-  <string name="notify_lead_days_effective_placeholder">Rappel : 3 jours avant</string>
+  <string name="notify_lead_days_effective_placeholder">Rappel : 3 Jours Avant</string>
   <string name="notify_lead_days_effective_value">Jours d’anticipation effectifs : %1$d</string>
-  <string name="notify_lead_days_edit_button">Modifier les jours d’anticipation</string>
+  <string name="notify_lead_days_edit_button">Modifier les Jours Avant</string>
   <string name="lead_days_source_default_from_recurrence">Source : Par défaut (par type de récurrence)</string>
   <string name="lead_days_source_custom">Source : Personnalisé</string>
   <string name="event_notifications_enabled">Notifications : Activées</string>
@@ -310,7 +315,7 @@
   <string name="history_empty_placeholder">Aucun historique supplémentaire n’a été ajouté.</string>
   <string name="history_additions_only_header">Ajouts d’historique incrémentiels (uniquement)</string>
   <plurals name="notify_lead_days_prior_summary">
-    <item quantity="one">Rappel : %1$d jour avant</item>
-    <item quantity="other">Rappel : %1$d jours avant</item>
+    <item quantity="one">Rappel : %1$d Jour Avant</item>
+    <item quantity="other">Rappel : %1$d Jours Avant</item>
   </plurals>
 </resources>
