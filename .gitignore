@@ -8,6 +8,7 @@
 /.idea/deviceManager.xml
 /.idea/shelf/
 /.idea/gradle.xml
+/.idea/caches/deviceStreaming.xml
 
 # ----------------------------------------
 # Gradle files and build outputs
