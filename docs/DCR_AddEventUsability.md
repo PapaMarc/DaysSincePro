@@ -190,6 +190,7 @@ Implementation notes:
 
 - The reminder summary is localized across supported locales and pseudo-locales, including singular/plural `days prior` forms.
 - The existing reminder controls remain in a modal editor; reminder enablement, notification time, days-prior values, validation, save behavior, and scheduling semantics are preserved.
+- The editor uses a centered title, consistently inset action row, disabled OK until a reminder setting changes, and Cancel restoration of the values present when the editor opened.
 - End day remains unchanged in Phase 2.
 - JVM contract coverage verifies both layout variants, dialog controls, full-row interaction wiring, and locale resource coverage.
 

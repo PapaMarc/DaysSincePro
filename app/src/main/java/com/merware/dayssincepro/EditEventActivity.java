@@ -72,6 +72,11 @@ public class EditEventActivity extends AppCompatActivity {
     Button buttonEditNotifyLeadDays;
     Button buttonAddCategory;
     ScrollView formScrollView;
+    Button reminderEditorOkButton;
+    private boolean reminderEditorInitialNotifyEnabled;
+    private int reminderEditorInitialNotifyHour;
+    private int reminderEditorInitialNotifyMinute;
+    private Integer reminderEditorInitialCustomNotifyLeadDays;
 
     private long categoryID;
     private long eventID;
@@ -611,11 +616,13 @@ public class EditEventActivity extends AppCompatActivity {
                 return;
             }
             customNotifyLeadDays = parsed;
+            markReminderEditorDirty();
             updateReminderStateViews();
         });
 
         alert.setNeutralButton(R.string.notify_lead_days_use_default, (dialog, whichButton) -> {
             customNotifyLeadDays = null;
+            markReminderEditorDirty();
             updateReminderStateViews();
         });
 
@@ -631,6 +638,11 @@ public class EditEventActivity extends AppCompatActivity {
             return;
         }
 
+        reminderEditorInitialNotifyEnabled = eventNotifyEnabled;
+        reminderEditorInitialNotifyHour = notifyHour;
+        reminderEditorInitialNotifyMinute = notifyMinute;
+        reminderEditorInitialCustomNotifyLeadDays = customNotifyLeadDays;
+
         View editorView = LayoutInflater.from(this).inflate(
                 R.layout.reminder_editor_dialog, null, false);
         notifyAtView = (TextView) editorView.findViewById(R.id.notify_at);
@@ -643,19 +655,52 @@ public class EditEventActivity extends AppCompatActivity {
         eventNotifyEnabledCheckbox = (CheckBox) editorView.findViewById(R.id.eventNotifyEnabledCheckbox);
         eventNotifyEnabledCheckbox.setOnClickListener(v -> {
             eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
+            markReminderEditorDirty();
             updateReminderStateViews();
         });
         buttonEditNotifyLeadDays = (Button) editorView.findViewById(R.id.buttonEditNotifyLeadDays);
         buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
+        Button reminderEditorCancelButton = (Button) editorView.findViewById(R.id.reminder_editor_cancel);
+        reminderEditorOkButton = (Button) editorView.findViewById(R.id.reminder_editor_ok);
+        reminderEditorCancelButton.setOnClickListener(v -> cancelReminderEditor());
+        reminderEditorOkButton.setOnClickListener(v -> reminderEditorDialog.dismiss());
 
         reminderEditorDialog = DialogThemeHelper.themedBuilder(this)
-                .setTitle(R.string.reminders)
                 .setView(editorView)
-                .setNegativeButton(R.string.Cancel, null)
                 .create();
+        reminderEditorDialog.setOnCancelListener(dialog -> restoreReminderEditorState());
         reminderEditorDialog.setOnDismissListener(dialog -> reminderEditorDialog = null);
+        reminderEditorOkButton.setEnabled(false);
         updateReminderStateViews();
         reminderEditorDialog.show();
+    }
+
+    private void markReminderEditorDirty() {
+        if (reminderEditorOkButton != null) {
+            reminderEditorOkButton.setEnabled(true);
+        }
+    }
+
+    private void cancelReminderEditor() {
+        restoreReminderEditorState();
+        if (reminderEditorDialog != null) {
+            reminderEditorDialog.dismiss();
+        }
+    }
+
+    private void restoreReminderEditorState() {
+        eventNotifyEnabled = reminderEditorInitialNotifyEnabled;
+        notifyHour = reminderEditorInitialNotifyHour;
+        notifyMinute = reminderEditorInitialNotifyMinute;
+        customNotifyLeadDays = reminderEditorInitialCustomNotifyLeadDays;
+        if (eventID != 0) {
+            String appName = getString(R.string.app_name);
+            Preferences.storePreferenceInt(this, appName,
+                    "notify_hour_" + eventID, notifyHour);
+            Preferences.storePreferenceInt(this, appName,
+                    "notify_minute_" + eventID, notifyMinute);
+        }
+        updateReminderStateViews();
     }
 
     public void setRecurText(String value) {
@@ -918,6 +963,7 @@ public class EditEventActivity extends AppCompatActivity {
 
             notifyHour = hourOfDay;
             notifyMinute = minute;
+            markReminderEditorDirty();
 
             // updateDisplay();
         }

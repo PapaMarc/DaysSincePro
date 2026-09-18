@@ -36,11 +36,18 @@ public class EditEventReminderDisclosureContractTest {
     public void reminderDialog_retainsExistingEditorControls() throws IOException {
         String xml = readFile("src/main/res/layout/reminder_editor_dialog.xml");
 
+        assertTrue(xml.contains("@+id/reminder_editor_title"));
+        assertTrue(xml.contains("android:gravity=\"center\""));
         assertTrue(xml.contains("@+id/reminder_editor_content"));
         assertTrue(xml.contains("@+id/eventNotifyEnabledCheckbox"));
         assertTrue(xml.contains("@+id/buttonPickRecur"));
         assertTrue(xml.contains("@+id/buttonEditNotifyLeadDays"));
         assertTrue(xml.contains("@+id/notify_global_disabled_hint"));
+        assertTrue(xml.contains("@+id/reminder_editor_cancel"));
+        assertTrue(xml.contains("@+id/reminder_editor_ok"));
+        assertTrue(xml.contains("android:enabled=\"false\""));
+        assertTrue(xml.contains("android:layout_marginStart=\"8dp\""));
+        assertTrue(xml.contains("android:paddingBottom=\"16dp\""));
     }
 
     @Test
@@ -51,6 +58,18 @@ public class EditEventReminderDisclosureContractTest {
             assertTrue(path, xml.contains("name=\"reminders_on_summary\""));
             assertTrue(path, xml.contains("%1$s"));
             assertTrue(path, xml.contains("%2$d"));
+            if (path.contains("values-hi") || path.contains("values-zh-rCN")) {
+                continue;
+            }
+            String expectedTitleCase = path.contains("values-de") ? "Tage Vorher"
+                    : path.contains("values-es") ? "Dias Antes"
+                    : path.contains("values-fr") ? "Jours Avant"
+                    : path.contains("values-it") ? "Giorni Prima"
+                    : path.contains("values-pt") ? "Dias Antes"
+                    : path.contains("values-en-rXA") ? "Ďàŷş Ƥŕīōŕ"
+                    : path.contains("values-ar-rXB") ? "Days Prior"
+                    : "Days Prior";
+            assertTrue(path, xml.contains(expectedTitleCase));
         }
     }
 
@@ -62,6 +81,12 @@ public class EditEventReminderDisclosureContractTest {
         assertTrue(source.contains("showReminderEditor();"));
         assertTrue(source.contains("R.plurals.reminders_on_summary"));
         assertTrue(source.contains("eventNotifyEnabledCheckbox.setOnClickListener"));
+        assertTrue(source.contains("markReminderEditorDirty();"));
+        assertTrue(source.contains("reminderEditorOkButton.setEnabled(false);"));
+        assertTrue(source.contains("reminderEditorCancelButton.setOnClickListener"));
+        assertTrue(source.contains("reminderEditorOkButton.setOnClickListener"));
+        assertTrue(source.contains("restoreReminderEditorState();"));
+        assertTrue(source.contains("reminderEditorDialog.setOnCancelListener"));
         assertFalse(source.contains("eventNotifyEnabledCheckbox.setOnClickListener(v -> {\n            dismissKeyboardAndClearFocus();"));
     }
 

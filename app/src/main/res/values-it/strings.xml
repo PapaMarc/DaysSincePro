@@ -156,8 +156,8 @@
     <string name="notify_at_time_format">Notifica alle %1$s</string>
     <string name="reminders_off">Promemoria disattivati</string>
     <plurals name="reminders_on_summary">
-        <item quantity="one">Promemoria attivati: alle %1$s, %2$d giorno prima</item>
-        <item quantity="other">Promemoria attivati: alle %1$s, %2$d giorni prima</item>
+        <item quantity="one">Promemoria attivati: alle %1$s, %2$d Giorno Prima</item>
+        <item quantity="other">Promemoria attivati: alle %1$s, %2$d Giorni Prima</item>
     </plurals>
     <string name="days_diff">Calcolatore giorni tra date</string>
     <string name="days_events_diff">Giorni tra eventi</string>
@@ -314,15 +314,15 @@
     <string name="csv_history_warning_message">Voci cronologia: %1$d\nEventi con cronologia: %2$d\nEventi con giorni di notifica personalizzati: %3$d\nEventi con notifiche disabilitate: %4$d\n\nL export/import CSV non preserva cronologia, giorni di notifica personalizzati o lo stato notifiche per evento. Usa export database per backup e ripristino completi.</string>
     <string name="csv_history_warning_continue">Continua export CSV</string>
     <string name="csv_history_warning_export_db">Esporta invece .db</string>
-    <string name="notify_lead_days_heading">Giorni prima del promemoria</string>
-    <string name="notify_lead_days_title">Giorni prima del promemoria</string>
-    <string name="notify_lead_days_prompt">Inserisci giorni personalizzati prima (da 0 a 30), oppure usa il predefinito della ricorrenza.</string>
+    <string name="notify_lead_days_heading">Giorni Prima del Promemoria</string>
+    <string name="notify_lead_days_title">Giorni Prima del Promemoria</string>
+    <string name="notify_lead_days_prompt">Inserisci Giorni Prima personalizzati (da 0 a 30), oppure usa il predefinito della ricorrenza.</string>
     <string name="notify_lead_days_set_custom">Imposta personalizzato</string>
     <string name="notify_lead_days_use_default">Usa predefinito</string>
     <string name="notify_lead_days_invalid">Inserisci un numero intero da 0 a 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Promemoria: 3 giorni prima</string>
+    <string name="notify_lead_days_effective_placeholder">Promemoria: 3 Giorni Prima</string>
     <string name="notify_lead_days_effective_value">Giorni effettivi di anticipo: %1$d</string>
-    <string name="notify_lead_days_edit_button">Modifica giorni prima</string>
+    <string name="notify_lead_days_edit_button">Modifica Giorni Prima</string>
     <string name="lead_days_source_default_from_recurrence">Origine: Predefinito (per tipo di ricorrenza)</string>
     <string name="lead_days_source_custom">Origine: Personalizzato</string>
     <string name="event_notifications_enabled">Notifiche: Abilitate</string>
@@ -333,7 +333,7 @@
     <string name="history_empty_placeholder">Nessuna cronologia aggiuntiva inserita.</string>
     <string name="history_additions_only_header">Aggiunte cronologia incrementali (solo)</string>
     <plurals name="notify_lead_days_prior_summary">
-        <item quantity="one">Promemoria: %1$d giorno prima</item>
-        <item quantity="other">Promemoria: %1$d giorni prima</item>
+        <item quantity="one">Promemoria: %1$d Giorno Prima</item>
+        <item quantity="other">Promemoria: %1$d Giorni Prima</item>
     </plurals>
 </resources>

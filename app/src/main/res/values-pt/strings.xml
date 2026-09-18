@@ -156,8 +156,8 @@
     <string name="notify_at_time_format">Notificar as %1$s</string>
     <string name="reminders_off">Lembretes desativados</string>
     <plurals name="reminders_on_summary">
-        <item quantity="one">Lembretes ativados: às %1$s, %2$d dia antes</item>
-        <item quantity="other">Lembretes ativados: às %1$s, %2$d dias antes</item>
+        <item quantity="one">Lembretes ativados: às %1$s, %2$d Dia Antes</item>
+        <item quantity="other">Lembretes ativados: às %1$s, %2$d Dias Antes</item>
     </plurals>
     <string name="days_diff">Calculadora de dias entre datas</string>
     <string name="days_events_diff">Dias entre eventos</string>
@@ -314,15 +314,15 @@
     <string name="csv_history_warning_message">Entradas de historico: %1$d\nEventos com historico: %2$d\nEventos com dias de notificacao personalizados: %3$d\nEventos com notificacoes desativadas: %4$d\n\nA exportacao/importacao CSV nao preserva historico, dias de notificacao personalizados nem o estado de notificacoes por evento. Use exportacao de base de dados para copia e restauro completos.</string>
     <string name="csv_history_warning_continue">Continuar exportacao CSV</string>
     <string name="csv_history_warning_export_db">Exportar .db em vez disso</string>
-    <string name="notify_lead_days_heading">Dias antes do lembrete</string>
-    <string name="notify_lead_days_title">Dias antes do lembrete</string>
-    <string name="notify_lead_days_prompt">Introduza dias personalizados antes (0 a 30), ou use o predefinido da recorrencia.</string>
+    <string name="notify_lead_days_heading">Dias Antes do Lembrete</string>
+    <string name="notify_lead_days_title">Dias Antes do Lembrete</string>
+    <string name="notify_lead_days_prompt">Introduza Dias Antes personalizados (0 a 30), ou use o predefinido da recorrencia.</string>
     <string name="notify_lead_days_set_custom">Definir personalizado</string>
     <string name="notify_lead_days_use_default">Usar predefinido</string>
     <string name="notify_lead_days_invalid">Introduza um numero inteiro de 0 a 30.</string>
-    <string name="notify_lead_days_effective_placeholder">Lembrete: 3 dias antes</string>
+    <string name="notify_lead_days_effective_placeholder">Lembrete: 3 Dias Antes</string>
     <string name="notify_lead_days_effective_value">Dias efetivos de antecedencia: %1$d</string>
-    <string name="notify_lead_days_edit_button">Editar dias antes</string>
+    <string name="notify_lead_days_edit_button">Editar Dias Antes</string>
     <string name="lead_days_source_default_from_recurrence">Origem: Predefinido (por tipo de recorrencia)</string>
     <string name="lead_days_source_custom">Origem: Personalizado</string>
     <string name="event_notifications_enabled">Notificacoes: Ativadas</string>
@@ -333,7 +333,7 @@
     <string name="history_empty_placeholder">Nao foi adicionado historico adicional.</string>
     <string name="history_additions_only_header">Adicoes incrementais de historico (apenas)</string>
     <plurals name="notify_lead_days_prior_summary">
-        <item quantity="one">Lembrete: %1$d dia antes</item>
-        <item quantity="other">Lembrete: %1$d dias antes</item>
+        <item quantity="one">Lembrete: %1$d Dia Antes</item>
+        <item quantity="other">Lembrete: %1$d Dias Antes</item>
     </plurals>
 </resources>
