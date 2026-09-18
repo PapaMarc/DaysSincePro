@@ -39,6 +39,17 @@ public class CreateCategoryFlowWiringTest {
         assertTrue(categoriesSource.contains("!CategorySelectionPolicy.areCategoryNamesEquivalent(newName, name)"));
     }
 
+    @Test
+    public void createCategory_cancelPathsDismissKeyboardBeforeFinishing() throws IOException {
+        String source = readFile("src/main/java/com/merware/dayssincepro/CreateCategoryActivity.java");
+
+        assertTrue(source.contains("public void onBackPressed()"));
+        assertTrue(source.contains("cancelAndFinish();"));
+        assertTrue(source.contains("private void cancelAndFinish()"));
+        assertTrue(source.contains("dismissKeyboardAndClearFocus();"));
+        assertTrue(source.contains("setResult(RESULT_CANCELED, null);"));
+    }
+
     private static String readFile(String relativePath) throws IOException {
         return new String(Files.readAllBytes(Paths.get(relativePath)), StandardCharsets.UTF_8);
     }

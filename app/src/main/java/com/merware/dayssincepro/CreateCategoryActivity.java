@@ -53,9 +53,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismissKeyboardAndClearFocus();
-                setResult(RESULT_CANCELED, null);
-                finish();
+                cancelAndFinish();
             }
         });
 
@@ -76,9 +74,19 @@ public class CreateCategoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        dismissKeyboardAndClearFocus();
-        finish();
+        cancelAndFinish();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelAndFinish();
+    }
+
+    private void cancelAndFinish() {
+        dismissKeyboardAndClearFocus();
+        setResult(RESULT_CANCELED, null);
+        finish();
     }
 
     private void submitCategory() {
