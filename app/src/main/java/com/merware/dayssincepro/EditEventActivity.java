@@ -1302,7 +1302,7 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         isBindingCategorySpinner = false;
-        dismissKeyboardAndClearFocus();
+        restoreEventTitleInputAfterCategoryResult();
 
         long createdCategoryId = -1L;
         if (data != null) {
@@ -1319,6 +1319,20 @@ public class EditEventActivity extends AppCompatActivity {
         listCategories();
         updateCategoryNudgeVisibility();
         ensureTopOfFormVisible();
+    }
+
+    private void restoreEventTitleInputAfterCategoryResult() {
+        if (eventText.getText().toString().trim().isEmpty()) {
+            eventText.requestFocus();
+            eventText.post(() -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+        } else {
+            dismissKeyboardAndClearFocus();
+        }
     }
 
     private void dismissKeyboardAndClearFocus() {

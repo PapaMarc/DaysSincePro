@@ -24,6 +24,11 @@ public class EditEventKeyboardPolicyContractTest {
         assertTrue(source.contains("showNotifyLeadDaysDialog();"));
         assertTrue(source.contains("if (!globalNotificationsEnabled)"));
         assertTrue(source.contains("if (cbEndDay.isChecked())"));
+        assertTrue(source.contains("restoreEventTitleInputAfterCategoryResult();"));
+        assertTrue(source.contains("eventText.getText().toString().trim().isEmpty()"));
+        assertTrue(source.contains("eventText.requestFocus();"));
+        assertTrue(source.contains("imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);"));
+        assertTrue(source.contains("dismissKeyboardAndClearFocus();"));
     }
 
     @Test

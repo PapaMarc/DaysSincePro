@@ -17,7 +17,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 53
-        versionName "3.16.309.53"
+        versionName "3.16.310.53"
         buildConfigField "boolean", "ENABLE_DEV_DIAGNOSTICS", "false"
         buildConfigField "boolean", "SHOW_SIDELOAD_IDENTITY", "false"
     }
