@@ -149,10 +149,18 @@ Why:
 ## E) Collapse Reminder and End Day Editing Surface
 
 1. Replace full reminder box with compact summary row in main form.
-2. Open reminder editor via bottom sheet/dialog when summary is tapped.
-3. Keep End day as a compact summary row in main form (for example: No end date, or Ends on <date>).
-4. Open End day picker/details only when user taps/enables End day.
-5. Keep global disabled messaging in reminder editor and optionally one-line muted summary in form.
+2. Open reminder editor in a modal dialog when the reminder summary is activated.
+3. Keep End day unchanged for Phase 2; defer its summary-first treatment to a later decision.
+4. Give the row a stable `Reminders` label and place the state/value beneath it. Use the following localized summary values:
+   - Reminders off
+   - Reminders on: At <time>, <n> days prior
+5. Use `days prior` consistently in both summary copy and the reminder editor, replacing the current `lead days` terminology.
+6. Localize all summary and editor copy, including plural resources, across supported languages and pseudo-locales.
+7. Keep the reminder editor collapsed when Add/Edit Event opens. Once opened, it remains available for the current editing interaction but its expanded state is not persisted across activity launches.
+8. Keep global-disabled explanations inside the reminder editor; the main-form summary remains simply Reminders off.
+9. Preserve existing reminder enablement, notification time, days-prior values, validation, save behavior, and scheduling semantics.
+
+The summary is a full-width tappable settings row with a trailing chevron. The entire row opens the modal reminder editor; no separate Edit button is required. This treatment makes the row an explicit navigation affordance rather than passive status text and should be validated against first-time users who did not see the previous reminder controls.
 
 Why:
 
@@ -170,10 +178,10 @@ Phase 1: Add Event Usability First Pass
 6. Keep reminders and End day logic/architecture unchanged.
 7. Verify no regressions in add/edit save behavior.
 
-Phase 2: Progressive Disclosure (Optional Follow-Up)
+Phase 2: Progressive Disclosure (Optional Follow-Up; reminders only)
 
-1. Replace reminder box with compact summary row plus dedicated editor surface.
-2. Optionally present End day with summary-first entry and reveal details on demand.
+1. Replace reminder box with a compact summary row plus modal reminder editor.
+2. Implement the full-row summary affordance with trailing chevron and validate its discoverability.
 3. Validate whether this improves completion without adding navigation friction.
 
 Phase 3: IA and Copy Polish (Optional Follow-Up)
