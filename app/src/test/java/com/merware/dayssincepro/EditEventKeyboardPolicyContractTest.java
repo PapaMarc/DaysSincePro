@@ -24,10 +24,16 @@ public class EditEventKeyboardPolicyContractTest {
         assertTrue(source.contains("showNotifyLeadDaysDialog();"));
         assertTrue(source.contains("if (!globalNotificationsEnabled)"));
         assertTrue(source.contains("if (cbEndDay.isChecked())"));
-        assertTrue(source.contains("restoreEventTitleInputAfterCategoryResult();"));
+        assertTrue(source.contains("private void syncEventTitleKeyboardState()"));
+        assertTrue(source.contains("eventText.post(this::syncEventTitleKeyboardState);"));
+        assertTrue(source.contains("public void onWindowFocusChanged(boolean hasFocus)"));
         assertTrue(source.contains("eventText.getText().toString().trim().isEmpty()"));
+        assertTrue(source.contains("eventText.setOnClickListener"));
+        assertTrue(source.contains("focusEmptyEventTitleAndShowKeyboard();"));
         assertTrue(source.contains("eventText.requestFocus();"));
+        assertTrue(source.contains("SOFT_INPUT_STATE_ALWAYS_VISIBLE"));
         assertTrue(source.contains("imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);"));
+        assertTrue(source.contains("SOFT_INPUT_STATE_HIDDEN"));
         assertTrue(source.contains("dismissKeyboardAndClearFocus();"));
     }
 
@@ -36,6 +42,8 @@ public class EditEventKeyboardPolicyContractTest {
         String source = readFile("src/main/java/com/merware/dayssincepro/CreateCategoryActivity.java");
 
         assertTrue(source.contains("categoryInput.requestFocus();"));
+        assertTrue(source.contains("categoryInput.post(this::showKeyboardForCategoryInput);"));
+        assertTrue(source.contains("public void onWindowFocusChanged(boolean hasFocus)"));
         assertTrue(source.contains("imm.showSoftInput(categoryInput, InputMethodManager.SHOW_IMPLICIT);"));
         assertTrue(source.contains("categoryInput.clearFocus();"));
         assertTrue(source.contains("SOFT_INPUT_STATE_HIDDEN"));

@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -134,6 +135,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         eventText = (EditText) findViewById(R.id.editEvent);
         detailsText = (EditText) findViewById(R.id.editDetails);
+        eventText.setOnClickListener(v -> focusEmptyEventTitleAndShowKeyboard());
         formScrollView = (ScrollView) findViewById(R.id.scrollView1);
         Button btnPickDate = (Button) findViewById(R.id.buttonPickDate);
         btnPickDate.setOnClickListener(dateDialogListener);
@@ -308,18 +310,13 @@ public class EditEventActivity extends AppCompatActivity {
         updateDisplay();
 
         eventText.setHint(R.string.enter_text);
+    }
 
-        if (mode.equals("Add")) {
-            eventText.requestFocus();
-            eventText.post(new Runnable() {
-                @Override
-                public void run() {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    if (imm != null) {
-                        imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                }
-            });
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            eventText.post(this::syncEventTitleKeyboardState);
         }
     }
 
@@ -1302,7 +1299,6 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         isBindingCategorySpinner = false;
-        restoreEventTitleInputAfterCategoryResult();
 
         long createdCategoryId = -1L;
         if (data != null) {
@@ -1321,28 +1317,53 @@ public class EditEventActivity extends AppCompatActivity {
         ensureTopOfFormVisible();
     }
 
-    private void restoreEventTitleInputAfterCategoryResult() {
+    // Window focus is regained after this activity resumes (initial show, or
+    // returning from Add Category / a date picker / the reminder editor), so
+    // driving the keyboard state from onWindowFocusChanged avoids racing the
+    // manifest's stateHidden being re-applied after a post()-based show call.
+    private void syncEventTitleKeyboardState() {
         if (eventText.getText().toString().trim().isEmpty()) {
-            eventText.requestFocus();
-            eventText.post(() -> {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);
-                }
-            });
+            focusEmptyEventTitleAndShowKeyboard();
         } else {
             dismissKeyboardAndClearFocus();
         }
     }
 
+    private void focusEmptyEventTitleAndShowKeyboard() {
+        if (isFinishing() || !eventText.getText().toString().trim().isEmpty()) {
+            return;
+        }
+
+        eventText.requestFocus();
+
+        if (getWindow() != null) {
+            getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                            | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(eventText, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
     private void dismissKeyboardAndClearFocus() {
         View focused = getCurrentFocus();
+        android.os.IBinder windowToken = focused != null ? focused.getWindowToken() : eventText.getWindowToken();
         if (focused != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(focused.getWindowToken(), 0);
-            }
             focused.clearFocus();
+        }
+
+        // Force HIDDEN explicitly; otherwise a prior ALWAYS_VISIBLE request for a
+        // blank title sticks on the window and reshows the keyboard later.
+        if (getWindow() != null) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null && windowToken != null) {
+            imm.hideSoftInputFromWindow(windowToken, 0);
         }
     }
 

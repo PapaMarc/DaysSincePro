@@ -58,18 +58,27 @@ public class CreateCategoryActivity extends AppCompatActivity {
         });
 
         categoryInput.requestFocus();
-        categoryInput.post(new Runnable() {
-            @Override
-            public void run() {
-                if (getWindow() != null) {
-                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.showSoftInput(categoryInput, InputMethodManager.SHOW_IMPLICIT);
-                }
-            }
-        });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            categoryInput.post(this::showKeyboardForCategoryInput);
+        }
+    }
+
+    private void showKeyboardForCategoryInput() {
+        if (isFinishing()) {
+            return;
+        }
+        if (getWindow() != null) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(categoryInput, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @Override
