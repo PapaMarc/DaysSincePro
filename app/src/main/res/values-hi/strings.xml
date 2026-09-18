@@ -159,6 +159,11 @@
     <string name="opaque">अपारदर्शी</string>
     <string name="notify_midnight">सुबह 8:00 बजे सूचित करें</string>
     <string name="notify_at_time_format">%1$s पर सूचित करें</string>
+    <string name="reminders_off">रिमाइंडर बंद</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">रिमाइंडर चालू: %1$s पर, %2$d दिन पहले</item>
+        <item quantity="other">रिमाइंडर चालू: %1$s पर, %2$d दिन पहले</item>
+    </plurals>
     <string name="days_diff">दिन अंतर कैलकुलेटर</string>
     <string name="days_events_diff">इवेंटों के बीच दिन</string>
     <string name="click_choose">तारीख या इवेंट</string>
@@ -322,15 +327,15 @@
     <string name="csv_history_warning_message">History प्रविष्टियां: %1$d\nHistory वाले इवेंट: %2$d\nकस्टम नोटिफ़ाई डेज़ वाले इवेंट: %3$d\nनोटिफ़िकेशन अक्षम वाले इवेंट: %4$d\n\nCSV निर्यात/आयात History, कस्टम नोटिफ़ाई डेज़, या प्रति-इवेंट नोटिफ़िकेशन स्थिति को संरक्षित नहीं करता। पूर्ण बैकअप/पुनर्स्थापना के लिए डेटाबेस निर्यात उपयोग करें।</string>
     <string name="csv_history_warning_continue">CSV निर्यात जारी रखें</string>
     <string name="csv_history_warning_export_db">इसके बजाय .db निर्यात करें</string>
-    <string name="notify_lead_days_heading">रिमाइंडर अग्रिम दिन</string>
-    <string name="notify_lead_days_title">रिमाइंडर अग्रिम दिन</string>
-    <string name="notify_lead_days_prompt">कस्टम अग्रिम दिन दर्ज करें (0 से 30), या recurrence का डिफ़ॉल्ट उपयोग करें।</string>
+    <string name="notify_lead_days_heading">रिमाइंडर से पहले के दिन</string>
+    <string name="notify_lead_days_title">रिमाइंडर से पहले के दिन</string>
+    <string name="notify_lead_days_prompt">कस्टम पहले के दिन दर्ज करें (0 से 30), या recurrence का डिफ़ॉल्ट उपयोग करें।</string>
     <string name="notify_lead_days_set_custom">कस्टम सेट करें</string>
     <string name="notify_lead_days_use_default">डिफ़ॉल्ट उपयोग करें</string>
     <string name="notify_lead_days_invalid">0 से 30 के बीच पूर्णांक दर्ज करें।</string>
     <string name="notify_lead_days_effective_placeholder">रिमाइंडर: 3 दिन पहले</string>
     <string name="notify_lead_days_effective_value">प्रभावी अग्रिम दिन: %1$d</string>
-    <string name="notify_lead_days_edit_button">अग्रिम दिन संपादित करें</string>
+    <string name="notify_lead_days_edit_button">पहले के दिन संपादित करें</string>
     <string name="lead_days_source_default_from_recurrence">स्रोत: डिफ़ॉल्ट (recurrence प्रकार के अनुसार)</string>
     <string name="lead_days_source_custom">स्रोत: कस्टम</string>
     <string name="event_notifications_enabled">सूचनाएं: सक्षम</string>

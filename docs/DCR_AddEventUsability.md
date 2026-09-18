@@ -184,6 +184,15 @@ Phase 2: Progressive Disclosure (Optional Follow-Up; reminders only)
 2. Implement the full-row summary affordance with trailing chevron and validate its discoverability.
 3. Validate whether this improves completion without adding navigation friction.
 
+Status: IMPLEMENTED on `feature/usability-add-event`.
+
+Implementation notes:
+
+- The reminder summary is localized across supported locales and pseudo-locales, including singular/plural `days prior` forms.
+- The existing reminder controls remain in a modal editor; reminder enablement, notification time, days-prior values, validation, save behavior, and scheduling semantics are preserved.
+- End day remains unchanged in Phase 2.
+- JVM contract coverage verifies both layout variants, dialog controls, full-row interaction wiring, and locale resource coverage.
+
 Phase 3: IA and Copy Polish (Optional Follow-Up)
 
 1. Refine spacing/typography and helper copy based on Phase 1/2 learnings.
@@ -202,8 +211,8 @@ Phase 3: IA and Copy Polish (Optional Follow-Up)
    - primary actions visible.
 6. In first-run zero-category state, user is explicitly guided to create a category.
 7. Main form follows What/When/Optional grouping with category before date.
-8. Reminders boxed group remains below the initial top four fields in Phase 1.
-9. Reminder and End day logic remain unchanged in Phase 1.
+8. Reminders summary row remains below the initial top four fields in Phase 2.
+9. Reminder and End day logic remain unchanged in Phase 2.
 10. Keyboard is dismissed when non-text controls are touched and remains available when entering text-only surfaces.
 
 ## Test Recommendations
@@ -226,7 +235,7 @@ UI tests (instrumented/manual QA checklist):
 1. First-run create-event flow completes without manual keyboard dismissal knowledge.
 2. Category and primary actions are reachable without exploratory scrolling while keyboard is active.
 3. Title and category assignment can be completed before date/recurrence in a single downward reading pass.
-4. Reminder box remains present below top-four section for Phase 1.
+4. Reminder summary row opens the reminder editor in one tap and remains below the top-four section for Phase 2.
 
 ## Risks and Mitigations
 
@@ -258,6 +267,6 @@ UI tests (instrumented/manual QA checklist):
 
 ## Status
 
-Proposed, not yet implemented.
+Phase 1 and Phase 2 implemented on `feature/usability-add-event`.
 
-No code changes are included in this DCR.
+Phase 3 remains optional and deferred for later IA/copy polish.

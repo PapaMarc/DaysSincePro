@@ -154,6 +154,11 @@
     <string name="opaque">Opaco</string>
     <string name="notify_midnight">Notificar as 8:00</string>
     <string name="notify_at_time_format">Notificar as %1$s</string>
+    <string name="reminders_off">Lembretes desativados</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">Lembretes ativados: às %1$s, %2$d dia antes</item>
+        <item quantity="other">Lembretes ativados: às %1$s, %2$d dias antes</item>
+    </plurals>
     <string name="days_diff">Calculadora de dias entre datas</string>
     <string name="days_events_diff">Dias entre eventos</string>
     <string name="click_choose">Data ou evento</string>
@@ -309,15 +314,15 @@
     <string name="csv_history_warning_message">Entradas de historico: %1$d\nEventos com historico: %2$d\nEventos com dias de notificacao personalizados: %3$d\nEventos com notificacoes desativadas: %4$d\n\nA exportacao/importacao CSV nao preserva historico, dias de notificacao personalizados nem o estado de notificacoes por evento. Use a exportacao de banco de dados para backup e restauracao completos.</string>
     <string name="csv_history_warning_continue">Continuar exportacao CSV</string>
     <string name="csv_history_warning_export_db">Exportar .db em vez disso</string>
-    <string name="notify_lead_days_heading">Dias de antecedencia do lembrete</string>
-    <string name="notify_lead_days_title">Dias de antecedencia do lembrete</string>
-    <string name="notify_lead_days_prompt">Informe dias personalizados (0 a 30), ou use o padrao da recorrencia.</string>
+    <string name="notify_lead_days_heading">Dias antes do lembrete</string>
+    <string name="notify_lead_days_title">Dias antes do lembrete</string>
+    <string name="notify_lead_days_prompt">Informe dias personalizados antes (0 a 30), ou use o padrao da recorrencia.</string>
     <string name="notify_lead_days_set_custom">Definir personalizado</string>
     <string name="notify_lead_days_use_default">Usar padrao</string>
     <string name="notify_lead_days_invalid">Informe um numero inteiro de 0 a 30.</string>
     <string name="notify_lead_days_effective_placeholder">Lembrete: 3 dias antes</string>
     <string name="notify_lead_days_effective_value">Dias efetivos de antecedencia: %1$d</string>
-    <string name="notify_lead_days_edit_button">Editar dias de antecedencia</string>
+    <string name="notify_lead_days_edit_button">Editar dias antes</string>
     <string name="lead_days_source_default_from_recurrence">Origem: Padrao (por tipo de recorrencia)</string>
     <string name="lead_days_source_custom">Origem: Personalizado</string>
     <string name="event_notifications_enabled">Notificacoes: Ativadas</string>

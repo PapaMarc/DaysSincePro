@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -64,6 +65,7 @@ public class EditEventActivity extends AppCompatActivity {
     CheckBox eventNotifyEnabledCheckbox;
     TextView explainText;
     TextView categoryNudgeText;
+    TextView reminderSummaryValueView;
     SelectAgainSpinner recurSpinner;
     Button btnPickEndDate;
     Button btnPickNotify;
@@ -96,6 +98,7 @@ public class EditEventActivity extends AppCompatActivity {
     private Integer customNotifyLeadDays;
     private boolean eventNotifyEnabled = true;
     private boolean globalNotificationsEnabled = false;
+    private AlertDialog reminderEditorDialog;
 
     SharedPreferences preferences;
 
@@ -137,27 +140,17 @@ public class EditEventActivity extends AppCompatActivity {
         recurTextView = (TextView) findViewById(R.id.recur);
         endDateText = (TextView) findViewById(R.id.endDateText);
 
-        notifyAtView = (TextView) findViewById(R.id.notify_at);
-        btnPickNotify = (Button) findViewById(R.id.buttonPickRecur);
-        btnPickNotify.setOnClickListener(timeDialogListener);
-        leadDaysEffectiveView = (TextView) findViewById(R.id.notify_lead_days_effective);
-        leadDaysSourceView = (TextView) findViewById(R.id.notify_lead_days_source);
-        globalReminderDisabledHintView = (TextView) findViewById(R.id.notify_global_disabled_hint);
-        reminderSettingsGroup = findViewById(R.id.reminderSettingsGroup);
-        eventNotifyEnabledCheckbox = (CheckBox) findViewById(R.id.eventNotifyEnabledCheckbox);
-        buttonEditNotifyLeadDays = (Button) findViewById(R.id.buttonEditNotifyLeadDays);
-        buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
+        reminderSummaryValueView = (TextView) findViewById(R.id.reminderSummaryValue);
+        View reminderSummaryRow = findViewById(R.id.reminderSummaryRow);
+        reminderSummaryRow.setOnClickListener(v -> {
+            dismissKeyboardAndClearFocus();
+            showReminderEditor();
+        });
 
         // if notify not specified, don't even show option.
 
         boolean optionNotify = preferences.getBoolean("noti", false);
         globalNotificationsEnabled = optionNotify;
-
-        eventNotifyEnabledCheckbox.setOnClickListener(v -> {
-            dismissKeyboardAndClearFocus();
-            eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
-            updateReminderStateViews();
-        });
 
         Button okButton = (Button) findViewById(R.id.eventOK);
         okButton.setOnClickListener(eventOK);
@@ -307,7 +300,6 @@ public class EditEventActivity extends AppCompatActivity {
 
         listCategories();
         updateCategoryNudgeVisibility();
-        eventNotifyEnabledCheckbox.setChecked(eventNotifyEnabled);
         updateDisplay();
 
         eventText.setHint(R.string.enter_text);
@@ -634,6 +626,38 @@ public class EditEventActivity extends AppCompatActivity {
         alert.show();
     }
 
+    private void showReminderEditor() {
+        if (reminderEditorDialog != null && reminderEditorDialog.isShowing()) {
+            return;
+        }
+
+        View editorView = LayoutInflater.from(this).inflate(
+                R.layout.reminder_editor_dialog, null, false);
+        notifyAtView = (TextView) editorView.findViewById(R.id.notify_at);
+        btnPickNotify = (Button) editorView.findViewById(R.id.buttonPickRecur);
+        btnPickNotify.setOnClickListener(timeDialogListener);
+        leadDaysEffectiveView = (TextView) editorView.findViewById(R.id.notify_lead_days_effective);
+        leadDaysSourceView = (TextView) editorView.findViewById(R.id.notify_lead_days_source);
+        globalReminderDisabledHintView = (TextView) editorView.findViewById(R.id.notify_global_disabled_hint);
+        reminderSettingsGroup = editorView.findViewById(R.id.reminder_editor_content);
+        eventNotifyEnabledCheckbox = (CheckBox) editorView.findViewById(R.id.eventNotifyEnabledCheckbox);
+        eventNotifyEnabledCheckbox.setOnClickListener(v -> {
+            eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
+            updateReminderStateViews();
+        });
+        buttonEditNotifyLeadDays = (Button) editorView.findViewById(R.id.buttonEditNotifyLeadDays);
+        buttonEditNotifyLeadDays.setOnClickListener(notifyLeadDaysDialogListener);
+
+        reminderEditorDialog = DialogThemeHelper.themedBuilder(this)
+                .setTitle(R.string.reminders)
+                .setView(editorView)
+                .setNegativeButton(R.string.Cancel, null)
+                .create();
+        reminderEditorDialog.setOnDismissListener(dialog -> reminderEditorDialog = null);
+        updateReminderStateViews();
+        reminderEditorDialog.show();
+    }
+
     public void setRecurText(String value) {
 
         try {
@@ -741,7 +765,9 @@ public class EditEventActivity extends AppCompatActivity {
         // showToast("updateDisplay: from pref hour " + notifyHour + " minute " + notifyMinute + " for ID " + eventID);
 
         String text = formatNotifyAtText(notifyHour, notifyMinute);
-        notifyAtView.setText(text);
+        if (notifyAtView != null) {
+            notifyAtView.setText(text);
+        }
 
         updateReminderStateViews();
 
@@ -807,6 +833,20 @@ public class EditEventActivity extends AppCompatActivity {
 
         if (reminderSettingsGroup != null) {
             reminderSettingsGroup.setAlpha(globalNotificationsEnabled ? 1.0f : 0.92f);
+        }
+
+        if (reminderSummaryValueView != null) {
+            ReminderLeadDaysResolver.Resolution summaryResolution =
+                    ReminderLeadDaysResolver.resolve(nRecur, customNotifyLeadDays);
+            if (!eventNotifyEnabled) {
+                reminderSummaryValueView.setText(R.string.reminders_off);
+            } else {
+                reminderSummaryValueView.setText(getResources().getQuantityString(
+                        R.plurals.reminders_on_summary,
+                        summaryResolution.effectiveLeadDays,
+                        formatHourMinute(notifyHour, notifyMinute),
+                        summaryResolution.effectiveLeadDays));
+            }
         }
     }
 

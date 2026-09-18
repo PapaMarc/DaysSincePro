@@ -159,6 +159,11 @@
     <string name="opaque">不透明</string>
     <string name="notify_midnight">上午 8:00 通知</string>
     <string name="notify_at_time_format">在 %1$s 通知</string>
+    <string name="reminders_off">提醒已关闭</string>
+    <plurals name="reminders_on_summary">
+        <item quantity="one">提醒已开启：%1$s，提前 %2$d 天</item>
+        <item quantity="other">提醒已开启：%1$s，提前 %2$d 天</item>
+    </plurals>
     <string name="days_diff">日期间隔计算器</string>
     <string name="days_events_diff">事件间隔天数</string>
     <string name="click_choose">日期或事件</string>
@@ -317,15 +322,15 @@
     <string name="csv_history_warning_message">历史条目：%1$d\n有历史的事件：%2$d\n使用自定义提醒天数的事件：%3$d\n已禁用通知的事件：%4$d\n\nCSV 导出/导入不会保留历史、自定义提醒天数或每个事件的通知开关状态。若需完整备份与恢复，请使用数据库导出。</string>
     <string name="csv_history_warning_continue">继续 CSV 导出</string>
     <string name="csv_history_warning_export_db">改为导出 .db</string>
-    <string name="notify_lead_days_heading">提醒提前天数</string>
-    <string name="notify_lead_days_title">提醒提前天数</string>
-    <string name="notify_lead_days_prompt">输入自定义提前天数（0 到 30），或使用重复周期默认值。</string>
+    <string name="notify_lead_days_heading">提醒之前的天数</string>
+    <string name="notify_lead_days_title">提醒之前的天数</string>
+    <string name="notify_lead_days_prompt">输入提醒之前的自定义天数（0 到 30），或使用重复周期默认值。</string>
     <string name="notify_lead_days_set_custom">设置为自定义</string>
     <string name="notify_lead_days_use_default">使用默认值</string>
     <string name="notify_lead_days_invalid">请输入 0 到 30 的整数。</string>
     <string name="notify_lead_days_effective_placeholder">提醒：提前 3 天</string>
     <string name="notify_lead_days_effective_value">生效提前天数：%1$d</string>
-    <string name="notify_lead_days_edit_button">编辑提前天数</string>
+    <string name="notify_lead_days_edit_button">编辑提醒之前的天数</string>
     <string name="lead_days_source_default_from_recurrence">来源：默认值（按重复类型）</string>
     <string name="lead_days_source_custom">来源：自定义</string>
     <string name="event_notifications_enabled">通知：已启用</string>

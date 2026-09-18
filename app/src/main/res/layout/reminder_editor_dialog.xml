@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reminder_editor_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/notify_lead_days_effective"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notify_lead_days_effective_placeholder"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/notify_lead_days_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lead_days_source_default_from_recurrence" />
+
+    <Button
+        android:id="@+id/buttonEditNotifyLeadDays"
+        style="@style/MiniBActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/notify_lead_days_edit_button" />
+
+    <TextView
+        android:id="@+id/notify_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/notify_midnight" />
+
+    <Button
+        android:id="@+id/buttonPickRecur"
+        style="@style/MiniBActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/choose" />
+
+    <CheckBox
+        android:id="@+id/eventNotifyEnabledCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/event_notifications_enabled" />
+
+    <TextView
+        android:id="@+id/notify_global_disabled_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/notify_global_disabled_hint" />
+
+</LinearLayout>
