@@ -32,6 +32,9 @@ public class EditEventKeyboardPolicyContractTest {
 
         assertTrue(source.contains("categoryInput.requestFocus();"));
         assertTrue(source.contains("imm.showSoftInput(categoryInput, InputMethodManager.SHOW_IMPLICIT);"));
+        assertTrue(source.contains("categoryInput.clearFocus();"));
+        assertTrue(source.contains("SOFT_INPUT_STATE_HIDDEN"));
+        assertTrue(source.contains("imm.hideSoftInputFromWindow(windowToken, 0);"));
     }
 
     private static String readFile(String relativePath) throws IOException {

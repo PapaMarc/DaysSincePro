@@ -53,6 +53,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismissKeyboardAndClearFocus();
                 setResult(RESULT_CANCELED, null);
                 finish();
             }
@@ -75,6 +76,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        dismissKeyboardAndClearFocus();
         finish();
         return true;
     }
@@ -108,8 +110,29 @@ public class CreateCategoryActivity extends AppCompatActivity {
 
         Intent result = new Intent();
         result.putExtra(EXTRA_CREATED_CATEGORY_ID, createdId);
+        dismissKeyboardAndClearFocus();
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    private void dismissKeyboardAndClearFocus() {
+        View focused = getCurrentFocus();
+        android.os.IBinder windowToken = focused != null ? focused.getWindowToken() : null;
+        if (categoryInput != null) {
+            categoryInput.clearFocus();
+            if (windowToken == null) {
+                windowToken = categoryInput.getWindowToken();
+            }
+        }
+
+        if (getWindow() != null) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null && windowToken != null) {
+            imm.hideSoftInputFromWindow(windowToken, 0);
+        }
     }
 
     private boolean categoryExistsByName(String categoryName, long excludeCategoryId) {
