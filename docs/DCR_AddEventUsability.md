@@ -54,10 +54,15 @@ Out of scope:
    - Do not add repeated harassing prompts in non-first-time paths.
    - Update wording/control references from spinner synthetic row language to explicit Add Category action language.
 10. IME behavior contract uses resize plus persistent bottom actions; the flow must not rely on manual keyboard dismissal.
-11. Category model semantics remain unchanged.
-12. Reminder architecture and scheduling logic remain unchanged.
-13. Phase 1 keeps End day behavior/logic unchanged.
-14. Phase 1 verification gate uses explicit Gradle commands and must pass:
+11. After title/details entry, touching any non-text control in Add/Edit Event dismisses keyboard and clears text-field focus.
+
+- Applies to Category spinner, Add Category, Date/Recurrence controls, reminder controls, and End day controls.
+- Keyboard re-opens only when the user re-enters a text field or enters a text-first screen/dialog (for example Add Category input).
+
+12. Category model semantics remain unchanged.
+13. Reminder architecture and scheduling logic remain unchanged.
+14. Phase 1 keeps End day behavior/logic unchanged.
+15. Phase 1 verification gate uses explicit Gradle commands and must pass:
 
 - .\\gradlew :app:testDebugUnitTest
 - .\\gradlew :app:assembleDebug
@@ -191,6 +196,7 @@ Phase 3: IA and Copy Polish (Optional Follow-Up)
 7. Main form follows What/When/Optional grouping with category before date.
 8. Reminders boxed group remains below the initial top four fields in Phase 1.
 9. Reminder and End day logic remain unchanged in Phase 1.
+10. Keyboard is dismissed when non-text controls are touched and remains available when entering text-only surfaces.
 
 ## Test Recommendations
 
@@ -205,6 +211,7 @@ Unit and integration tests:
 7. Non-first-time flows do not introduce repeated harassment prompts.
 8. Add Category action launches category creation on a single tap.
 9. Localization coverage includes pseudo-locale validation for new/updated strings.
+10. Keyboard-dismiss contract holds for non-text controls without regressing Add Category auto-focus behavior.
 
 UI tests (instrumented/manual QA checklist):
 

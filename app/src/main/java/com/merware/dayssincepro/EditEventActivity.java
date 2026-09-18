@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -153,6 +154,7 @@ public class EditEventActivity extends AppCompatActivity {
         globalNotificationsEnabled = optionNotify;
 
         eventNotifyEnabledCheckbox.setOnClickListener(v -> {
+            dismissKeyboardAndClearFocus();
             eventNotifyEnabled = eventNotifyEnabledCheckbox.isChecked();
             updateReminderStateViews();
         });
@@ -168,6 +170,14 @@ public class EditEventActivity extends AppCompatActivity {
         buttonAddCategory = (Button) findViewById(R.id.buttonAddCategory);
         buttonAddCategory.setOnClickListener(addCategoryClickListener);
         recurSpinner = (SelectAgainSpinner) findViewById(R.id.recur_spinner);
+        View.OnTouchListener hideKeyboardTouchListener = (view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                dismissKeyboardAndClearFocus();
+            }
+            return false;
+        };
+        catSpinner.setOnTouchListener(hideKeyboardTouchListener);
+        recurSpinner.setOnTouchListener(hideKeyboardTouchListener);
         categoryNudgeText = (TextView) findViewById(R.id.categoryNudgeText);
 
         cbEndDay = (CheckBox) findViewById(R.id.checkBoxEndDate);
@@ -459,6 +469,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
+            dismissKeyboardAndClearFocus();
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
             MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(EditEventActivity.this, initial);
             picker.addOnPositiveButtonClickListener(selection -> {
@@ -474,6 +485,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     private OnClickListener endDateDialogListener = new OnClickListener() {
         public void onClick(View v) {
+            dismissKeyboardAndClearFocus();
             openEndDatePicker(false);
         }
     };
@@ -567,6 +579,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            dismissKeyboardAndClearFocus();
             if (!globalNotificationsEnabled) {
                 return;
             }
@@ -577,6 +590,7 @@ public class EditEventActivity extends AppCompatActivity {
     private OnClickListener notifyLeadDaysDialogListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            dismissKeyboardAndClearFocus();
             showNotifyLeadDaysDialog();
         }
     };
@@ -967,6 +981,7 @@ public class EditEventActivity extends AppCompatActivity {
     private OnClickListener addCategoryClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            dismissKeyboardAndClearFocus();
             launchAddCategoryFromPicker();
         }
     };
@@ -1117,6 +1132,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View arg0) {
+            dismissKeyboardAndClearFocus();
             if (cbEndDay.isChecked()) {
                 showEndDateFields(false);
                 openEndDatePicker(true);
