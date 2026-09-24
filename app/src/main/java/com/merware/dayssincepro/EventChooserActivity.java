@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class EventChooserActivity extends AppCompatActivity {
 
     private static final String PREF_CATEGORY_IDS = "CategoryIds";
+    private static final int MULTI_SELECTED_CATEGORIES_CAT_ID = -200;
 
     SharedPreferences preferences;
     protected SQLiteDatabase db;
@@ -47,6 +48,8 @@ public class EventChooserActivity extends AppCompatActivity {
     String orderBy = null;
     String orderByColumn = null;
     int preferredCategorySpinnerIndex = 0;
+    ArrayList<Integer> selectedDisplayCategoryIds = new ArrayList<>();
+    boolean showSelectedCategoriesSyntheticOption = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +145,7 @@ public class EventChooserActivity extends AppCompatActivity {
                     setEventDropDown(-1, orderBy);
 
                 } else {
+                    spinnerC.setEnabled(true);
                     int selectedCategoryIndex = getPreferredCategoryIndexInBounds();
                     int catId = listOfCatIds.get(selectedCategoryIndex);
                     setEventDropDown(catId, orderBy);
@@ -185,6 +189,9 @@ public class EventChooserActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView,
                                        View selectedItemView, int position, long id) {
+                if (position < 0 || position >= listOfDates.size()) {
+                    return;
+                }
                 usDate1 = listOfDates.get(position);
                 updateDisplay();
             }
@@ -246,6 +253,13 @@ public class EventChooserActivity extends AppCompatActivity {
                 startManagingCursor(cursor);
 
             }
+
+            selectedDisplayCategoryIds = resolveSelectedDisplayCategoryIds();
+            showSelectedCategoriesSyntheticOption = selectedDisplayCategoryIds.size() > 1;
+            if (showSelectedCategoriesSyntheticOption) {
+                listOfCatIds.add(0, MULTI_SELECTED_CATEGORIES_CAT_ID);
+                catAdapter.insert(getString(R.string.current_display_categories), 0);
+            }
         } catch (Exception e) {
             // showToast("wut?" + e.getMessage());
             Log.wtf("PROB", e.getMessage());
@@ -273,9 +287,30 @@ public class EventChooserActivity extends AppCompatActivity {
     }
 
     private int resolvePreferredCategorySpinnerIndex() {
+        if (showSelectedCategoriesSyntheticOption) {
+            return 0;
+        }
+
+        if (selectedDisplayCategoryIds.size() == 0) {
+            return 0;
+        }
+
+        int preferredCategoryId = selectedDisplayCategoryIds.get(0);
+        for (int i = 0; i < listOfCatIds.size(); i++) {
+            if (listOfCatIds.get(i) == preferredCategoryId) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private ArrayList<Integer> resolveSelectedDisplayCategoryIds() {
+        ArrayList<Integer> parsedSelectedIds = new ArrayList<>();
+
         String categoryIdsPreference = preferences.getString(PREF_CATEGORY_IDS, "");
         if (categoryIdsPreference == null) {
-            return 0;
+            return parsedSelectedIds;
         }
 
         String normalized = categoryIdsPreference
@@ -284,24 +319,22 @@ public class EventChooserActivity extends AppCompatActivity {
                 .trim();
 
         if (normalized.isEmpty()) {
-            return 0;
+            return parsedSelectedIds;
         }
 
         String[] selectedIds = normalized.split(",");
         for (String selectedIdRaw : selectedIds) {
             try {
                 int selectedId = Integer.parseInt(selectedIdRaw.trim());
-                for (int i = 0; i < listOfCatIds.size(); i++) {
-                    if (listOfCatIds.get(i) == selectedId) {
-                        return i;
-                    }
+                if (!parsedSelectedIds.contains(selectedId) && listOfCatIds.contains(selectedId)) {
+                    parsedSelectedIds.add(selectedId);
                 }
             } catch (NumberFormatException ignored) {
                 // Ignore malformed category id entries and keep searching.
             }
         }
 
-        return 0;
+        return parsedSelectedIds;
     }
 
     // based on work long done in ConfigWidgetActivity
@@ -320,6 +353,11 @@ public class EventChooserActivity extends AppCompatActivity {
 
             if (catId == -1) {
                 sql = "select event, date from event order by " + orderBy;
+                } else if (catId == MULTI_SELECTED_CATEGORIES_CAT_ID
+                    && selectedDisplayCategoryIds.size() > 1) {
+                String selectedCatIdCsv = android.text.TextUtils.join(",", selectedDisplayCategoryIds);
+                sql = "select event, date from event where catId in (" + selectedCatIdCsv
+                    + ") order by " + orderBy;
             }
 
             Cursor cursor = db.rawQuery(sql, null);

@@ -168,6 +168,7 @@
     <string name="days_events_diff">事件间隔天数</string>
     <string name="click_choose">日期或事件</string>
     <string name="choose_category">选择类别</string>
+    <string name="current_display_categories">当前显示类别</string>
     <string name="sort_order">排序方式</string>
     <string name="no_events">没有事件。</string>
 

@@ -168,6 +168,7 @@
     <string name="days_events_diff">इवेंटों के बीच दिन</string>
     <string name="click_choose">तारीख या इवेंट</string>
     <string name="choose_category">एक श्रेणी चुनें</string>
+    <string name="current_display_categories">वर्तमान प्रदर्शन श्रेणियां</string>
     <string name="sort_order">क्रम</string>
     <string name="no_events">कोई इवेंट नहीं है।</string>
 

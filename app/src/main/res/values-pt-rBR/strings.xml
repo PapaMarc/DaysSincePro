@@ -163,6 +163,7 @@
     <string name="days_events_diff">Dias entre eventos</string>
     <string name="click_choose">Data ou evento</string>
     <string name="choose_category">Escolha uma categoria</string>
+    <string name="current_display_categories">Categorias de exibicao atuais</string>
     <string name="sort_order">Ordem</string>
     <string name="no_events">Nao ha eventos.</string>
 
