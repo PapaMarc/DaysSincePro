@@ -24,6 +24,8 @@ import java.util.ArrayList;
  */
 public class EventChooserActivity extends AppCompatActivity {
 
+    private static final String PREF_CATEGORY_IDS = "CategoryIds";
+
     SharedPreferences preferences;
     protected SQLiteDatabase db;
 
@@ -44,6 +46,7 @@ public class EventChooserActivity extends AppCompatActivity {
 
     String orderBy = null;
     String orderByColumn = null;
+    int preferredCategorySpinnerIndex = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,10 +142,12 @@ public class EventChooserActivity extends AppCompatActivity {
                     setEventDropDown(-1, orderBy);
 
                 } else {
-                    int catId = listOfCatIds.get(0); // first thing in category
+                    int selectedCategoryIndex = getPreferredCategoryIndexInBounds();
+                    int catId = listOfCatIds.get(selectedCategoryIndex);
                     setEventDropDown(catId, orderBy);
                 }
 
+                applyCurrentEventSelection();
                 updateDisplay();
             }
 
@@ -160,8 +165,13 @@ public class EventChooserActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView,
                                        View selectedItemView, int position, long id) {
 
+                if (position < 0 || position >= listOfCatIds.size()) {
+                    return;
+                }
+
                 int catId = listOfCatIds.get(position);
                 setEventDropDown(catId, orderBy);
+                applyCurrentEventSelection();
                 updateDisplay();
             }
 
@@ -244,9 +254,54 @@ public class EventChooserActivity extends AppCompatActivity {
         catAdapter.notifyDataSetChanged();
         eventAdapter.notifyDataSetChanged();
 
-        spinnerC.setSelection(0);
+        preferredCategorySpinnerIndex = resolvePreferredCategorySpinnerIndex();
+        spinnerC.setSelection(preferredCategorySpinnerIndex);
         spinnerE.setSelection(0);
 
+    }
+
+    private int getPreferredCategoryIndexInBounds() {
+        if (listOfCatIds == null || listOfCatIds.size() == 0) {
+            return 0;
+        }
+
+        if (preferredCategorySpinnerIndex < 0 || preferredCategorySpinnerIndex >= listOfCatIds.size()) {
+            return 0;
+        }
+
+        return preferredCategorySpinnerIndex;
+    }
+
+    private int resolvePreferredCategorySpinnerIndex() {
+        String categoryIdsPreference = preferences.getString(PREF_CATEGORY_IDS, "");
+        if (categoryIdsPreference == null) {
+            return 0;
+        }
+
+        String normalized = categoryIdsPreference
+                .replace("[", "")
+                .replace("]", "")
+                .trim();
+
+        if (normalized.isEmpty()) {
+            return 0;
+        }
+
+        String[] selectedIds = normalized.split(",");
+        for (String selectedIdRaw : selectedIds) {
+            try {
+                int selectedId = Integer.parseInt(selectedIdRaw.trim());
+                for (int i = 0; i < listOfCatIds.size(); i++) {
+                    if (listOfCatIds.get(i) == selectedId) {
+                        return i;
+                    }
+                }
+            } catch (NumberFormatException ignored) {
+                // Ignore malformed category id entries and keep searching.
+            }
+        }
+
+        return 0;
     }
 
     // based on work long done in ConfigWidgetActivity
@@ -298,6 +353,21 @@ public class EventChooserActivity extends AppCompatActivity {
         }
     }
 
+    private void applyCurrentEventSelection() {
+        if (listOfDates == null || listOfDates.size() == 0) {
+            usDate1 = "";
+            return;
+        }
+
+        int selectedIndex = spinnerE.getSelectedItemPosition();
+        if (selectedIndex < 0 || selectedIndex >= listOfDates.size()) {
+            selectedIndex = 0;
+            spinnerE.setSelection(selectedIndex);
+        }
+
+        usDate1 = listOfDates.get(selectedIndex);
+    }
+
     private String asDate(String usDate) {
         String systemDateFormat = DateFormat.GetSystemDateFormat(this);
 
@@ -332,7 +402,7 @@ public class EventChooserActivity extends AppCompatActivity {
 
         // showToast("Date1 is " + usDate1);
 
-        if (usDate1 == null || usDate1 == "")
+        if (usDate1 == null || usDate1.isEmpty())
             return;
 
         selectedEvent = spinnerE.getSelectedItem().toString();
