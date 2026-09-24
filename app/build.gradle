@@ -16,8 +16,8 @@ android {
         applicationId "com.MerWare.DaysSincePro"
         minSdk 30
         targetSdk 36
-        versionCode 54
-        versionName "3.16.320.54"
+        versionCode 55
+        versionName "3.16.323.55"
         buildConfigField "boolean", "ENABLE_DEV_DIAGNOSTICS", "false"
         buildConfigField "boolean", "SHOW_SIDELOAD_IDENTITY", "false"
     }

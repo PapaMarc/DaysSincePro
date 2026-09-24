@@ -247,8 +247,8 @@
   <string name="csv_import_row_event_name_empty">Ligne %1$d : le nom de l’événement est vide.</string>
   <string name="csv_import_row_invalid_date">Ligne %1$d (\'%2$s\') : format de date non valide \'%3$s\'. Prévu aaaa-MM-jj.</string>
   <string name="csv_import_row_invalid_end_date">Ligne %1$d (\'%2$s\') : format de date de fin non valide \'%3$s\'. Prévu aaaa-MM-jj.</string>
-  <string name="csv_import_row_duplicate_enrichment_update_failed">Ligne %1$d (\’%2$s\’) : échec de la mise à jour de l’enrichissement en double.</string>
-  <string name="csv_import_row_database_insert_failed">Ligne %1$d (\’%2$s\’) : échec de l’insertion de la base de données.</string>
+  <string name="csv_import_row_duplicate_enrichment_update_failed">Ligne %1$d (\'%2$s\') : échec de la mise à jour de l’enrichissement en double.</string>
+  <string name="csv_import_row_database_insert_failed">Ligne %1$d (\'%2$s\') : échec de l’insertion de la base de données.</string>
   <string name="csv_import_failure_input_stream_null">InputStream est nul</string>
   <string name="csv_import_failure_invalid_context_db_or_uris">Contexte, base de données ou liste d’URI vides non valides</string>
   <string name="csv_import_error_unable_to_open_uri_stream">Impossible d’ouvrir le flux pour l’URI : %1$s</string>

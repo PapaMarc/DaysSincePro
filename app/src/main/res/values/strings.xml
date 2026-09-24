@@ -171,7 +171,7 @@
     <string name="click_choose">Date or Event</string>
     <string name="choose_category">Choose a Category</string>
     <!-- Label for synthetic category spinner option that represents the current Display Categories selection. -->
-    <string name="current_display_categories">Current 'Display Categories'</string>
+    <string name="current_display_categories">Current &quot;Display Categories&quot;</string>
     <string name="sort_order">Sort Order</string>
     <string name="no_events">There are no events.</string>
 
