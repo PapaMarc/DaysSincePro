@@ -407,6 +407,39 @@ public class PastFutureListFragment extends ListFragment {
         }
     }
 
+    private int tabIndexForKind() {
+        if (kind == TabKind.SinceLast) {
+            return 1;
+        }
+        if (kind == TabKind.DaysUntil) {
+            return 2;
+        }
+        return 0;
+    }
+
+    private boolean isContextActionTargetFragment() {
+        if (!isAdded()) {
+            return false;
+        }
+
+        Activity host = getActivity();
+        if (!(host instanceof MainActivity)) {
+            return true;
+        }
+
+        MainActivity mainActivity = (MainActivity) host;
+        return mainActivity.getCurrentTabIndex() == tabIndexForKind();
+    }
+
+    private void requestTabsRefresh() {
+        Activity host = getActivity();
+        if (host instanceof MainActivity) {
+            ((MainActivity) host).refreshAllTabsFromChild();
+            return;
+        }
+        listData();
+    }
+
     void editItem(int position, long id) {
 
         Cursor c = (Cursor) lv.getItemAtPosition(position);
@@ -443,8 +476,7 @@ public class PastFutureListFragment extends ListFragment {
     void todayItem(int position, long id) {
         SimpleDate now = new SimpleDate(new Date());
         logHappened(id, now.getDate(SimpleDate.DateStyle.YMD));
-
-        listData();
+        requestTabsRefresh();
     }
 
     private void chooseDayItemDate(int position, long id, SimpleDate d) {
@@ -454,7 +486,7 @@ public class PastFutureListFragment extends ListFragment {
         // Log.wtf("future", "update to this: " + d.getDate(SimpleDate.DateStyle.YMD) + " for id " + id);
 
         db.update("event", args, "_id = " + id, null);
-        listData();
+        requestTabsRefresh();
 
         if (kind == TabKind.DaysUntil && d.getDate().before(now.getDate())) {
             showToast(getString(R.string.untilToSince));
@@ -474,7 +506,7 @@ public class PastFutureListFragment extends ListFragment {
         }
 
         logHappened(id, isoDate);
-        listData();
+        requestTabsRefresh();
     }
 
     void yesterdayItem(int position, long id) {
@@ -567,7 +599,7 @@ public class PastFutureListFragment extends ListFragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         // this is the remedy to have only one fragment call this at a time.
-        if (getUserVisibleHint()) {
+        if (isContextActionTargetFragment()) {
 
             super.onContextItemSelected(item);
             AdapterView.AdapterContextMenuInfo menuInfo;
@@ -864,7 +896,7 @@ public class PastFutureListFragment extends ListFragment {
                         db.endTransaction();
                     }
 
-                    listData();
+                    requestTabsRefresh();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
@@ -1039,7 +1071,7 @@ public class PastFutureListFragment extends ListFragment {
 
                         alarmHelp.setAlarm(id, notifyHour, notifyMinute);
 
-                        listData();
+                        requestTabsRefresh();
 
                         break;
                     case Activity.RESULT_CANCELED:

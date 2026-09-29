@@ -58,6 +58,16 @@ public class MainActivity extends AppCompatActivity implements
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     ViewPager2 mViewPager;
+    private final ViewPager2.OnPageChangeCallback pageRefreshCallback =
+            new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+                    sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+                    daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+                    refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment, position);
+                }
+            };
 
     AlarmHelper alarmHelp;
 
@@ -112,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager.setAdapter(mSectionsPagerAdapter);
         // Keep all 3 tabs instantiated so search can update all tab lists consistently.
         mViewPager.setOffscreenPageLimit(2);
+        mViewPager.registerOnPageChangeCallback(pageRefreshCallback);
 
         TabLayout tabLayout = findViewById(R.id.main_tabs);
         new TabLayoutMediator(tabLayout, mViewPager,
@@ -155,6 +166,14 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_TAB, mViewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mViewPager != null) {
+            mViewPager.unregisterOnPageChangeCallback(pageRefreshCallback);
+        }
+        super.onDestroy();
     }
 
     MenuItem searchMenuItem;
@@ -692,6 +711,20 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
         }
+    }
+
+    int getCurrentTabIndex() {
+        if (mViewPager == null) {
+            return 0;
+        }
+        return mViewPager.getCurrentItem();
+    }
+
+    void refreshAllTabsFromChild() {
+        daysSinceFragment = (DaysSinceFragment) resolvePagerFragment(0, daysSinceFragment);
+        sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
+        daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
+        refreshTabs(daysSinceFragment, sinceLastFragment, daysUntilFragment);
     }
 
     // package-private + static so it can be unit tested without an Activity/pager instance.
