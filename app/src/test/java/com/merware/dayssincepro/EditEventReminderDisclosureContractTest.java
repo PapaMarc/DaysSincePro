@@ -82,7 +82,9 @@ public class EditEventReminderDisclosureContractTest {
         assertTrue(source.contains("R.plurals.reminders_on_summary"));
         assertTrue(source.contains("eventNotifyEnabledCheckbox.setOnClickListener"));
         assertTrue(source.contains("markReminderEditorDirty();"));
-        assertTrue(source.contains("reminderEditorOkButton.setEnabled(false);"));
+        assertTrue(source.contains("reminderEditorOkButton.setEnabled(true);"));
+        assertTrue(source.contains("notifyAtView.setText(formatNotifyAtText(notifyHour, notifyMinute));"));
+        assertTrue(source.contains("updateReminderStateViews();"));
         assertTrue(source.contains("reminderEditorCancelButton.setOnClickListener"));
         assertTrue(source.contains("reminderEditorOkButton.setOnClickListener"));
         assertTrue(source.contains("restoreReminderEditorState();"));

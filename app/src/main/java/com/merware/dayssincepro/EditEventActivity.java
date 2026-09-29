@@ -667,7 +667,8 @@ public class EditEventActivity extends AppCompatActivity {
                 .create();
         reminderEditorDialog.setOnCancelListener(dialog -> restoreReminderEditorState());
         reminderEditorDialog.setOnDismissListener(dialog -> reminderEditorDialog = null);
-        reminderEditorOkButton.setEnabled(false);
+        reminderEditorOkButton.setEnabled(true);
+        notifyAtView.setText(formatNotifyAtText(notifyHour, notifyMinute));
         updateReminderStateViews();
         reminderEditorDialog.show();
     }
@@ -961,6 +962,7 @@ public class EditEventActivity extends AppCompatActivity {
             notifyHour = hourOfDay;
             notifyMinute = minute;
             markReminderEditorDirty();
+            updateReminderStateViews();
 
             // updateDisplay();
         }
