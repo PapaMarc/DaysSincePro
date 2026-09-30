@@ -61,6 +61,8 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         String plannedDate = c.getString(8);
         int lastHappenedDateCol = c.getColumnIndex("last_happened_date");
         String lastHappenedDate = (lastHappenedDateCol >= 0) ? c.getString(lastHappenedDateCol) : null;
+        int lastOffTimeDateCol = c.getColumnIndex("last_off_time_date");
+        String lastOffTimeDate = (lastOffTimeDateCol >= 0) ? c.getString(lastOffTimeDateCol) : null;
 
         if (nEstDays == 0) { // distinct real future one time date
             if (themeOption == 1) // dark
@@ -93,7 +95,12 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             }
         }
 
-        EventTimeline.Snapshot timeline = EventTimeline.compute(sd, usEndDate, nEstDays, now);
+        SimpleDate latestHistory = lastHappenedDate == null ? null
+            : new SimpleDate(lastHappenedDate, SimpleDate.DateStyle.US);
+        SimpleDate latestOffTime = lastOffTimeDate == null ? null
+            : new SimpleDate(lastOffTimeDate, SimpleDate.DateStyle.US);
+        EventTimeline.Snapshot timeline = EventTimeline.compute(
+            sd, usEndDate, nEstDays, latestHistory, latestOffTime, now);
         nextDate = timeline.nextOccurrence;
 
         if (nEstDays != 0) {
@@ -102,8 +109,8 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         }
 
         SimpleDate sinceLastDate = timeline.sinceLastReferenceDate;
-        if (nEstDays == 0 && lastHappenedDate != null && lastHappenedDate.length() > 0) {
-            sinceLastDate = new SimpleDate(lastHappenedDate, SimpleDate.DateStyle.US);
+        if (nEstDays == 0 && latestHistory != null) {
+            sinceLastDate = latestHistory;
         }
 
         DaysSinceCalculations dsc3 = new DaysSinceCalculations(context, sinceLastDate);

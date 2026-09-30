@@ -44,6 +44,35 @@ public class EventTimelineTest {
     }
 
     @Test
+    public void historyCorrection_movesRecurringUntilNext_butSinceLastUsesLatestHistory() {
+        EventTimeline.Snapshot snapshot = EventTimeline.compute(
+                new SimpleDate("2026-09-01"),
+                null,
+                7,
+                new SimpleDate("2026-09-19"),
+                new SimpleDate("2026-09-12"),
+                calendarFor("2026-09-20"));
+
+        assertEquals("2026-09-19", snapshot.sinceLastReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2026-09-26", snapshot.untilNextReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2026-09-01", snapshot.daysSinceReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+    }
+
+    @Test
+    public void onTimeHistoryDoesNotMoveRecurringScheduleWhenNoCorrectionExists() {
+        EventTimeline.Snapshot snapshot = EventTimeline.compute(
+                new SimpleDate("2026-09-01"),
+                null,
+                7,
+                new SimpleDate("2026-09-19"),
+                null,
+                calendarFor("2026-09-20"));
+
+        assertEquals("2026-09-19", snapshot.sinceLastReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2026-09-22", snapshot.untilNextReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+    }
+
+    @Test
     public void recurringEventWithEndBeforeNextOccurrence_hasNoFutureOccurrence() {
         EventTimeline.Snapshot snapshot = EventTimeline.compute(
                 new SimpleDate("2026-08-03"),

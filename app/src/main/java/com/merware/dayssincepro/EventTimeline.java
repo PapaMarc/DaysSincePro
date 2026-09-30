@@ -47,6 +47,13 @@ final class EventTimeline {
     }
 
     static Snapshot compute(SimpleDate startDate, String usEndDate, long recurDays, Calendar now) {
+        return compute(startDate, usEndDate, recurDays, null, null, now);
+    }
+
+    static Snapshot compute(SimpleDate startDate, String usEndDate, long recurDays,
+                            SimpleDate latestHistoryDate,
+                            SimpleDate latestOffTimeDate,
+                            Calendar now) {
         boolean hasEndDate = usEndDate != null && usEndDate.trim().length() > 0;
         SimpleDate endDate = hasEndDate ? new SimpleDate(usEndDate, SimpleDate.DateStyle.US) : null;
 
@@ -54,8 +61,10 @@ final class EventTimeline {
         SimpleDate nextOccurrence = startDate;
 
         if (recurDays != 0) {
+            SimpleDate recurrenceAnchor = latestOffTimeDate != null
+                    ? latestOffTimeDate : startDate;
             RecurrenceCycle.Occurrences occurrences =
-                    RecurrenceCycle.computeOccurrences(startDate, recurDays, now);
+                    RecurrenceCycle.computeOccurrences(recurrenceAnchor, recurDays, now);
             lastOccurrence = occurrences.lastOccurrence;
             nextOccurrence = occurrences.nextOccurrence;
         }
@@ -65,9 +74,14 @@ final class EventTimeline {
         boolean bothInPast = startInPast && endInPast;
 
         SimpleDate daysSinceReferenceDate = startDate;
-        SimpleDate sinceLastReferenceDate = bothInPast
-                ? endDate
-                : (recurDays == 0 ? startDate : lastOccurrence);
+        SimpleDate sinceLastReferenceDate;
+        if (latestHistoryDate != null) {
+            sinceLastReferenceDate = latestHistoryDate;
+        } else if (bothInPast) {
+            sinceLastReferenceDate = endDate;
+        } else {
+            sinceLastReferenceDate = recurDays == 0 ? startDate : lastOccurrence;
+        }
 
         SimpleDate untilNextReferenceDate;
         if (recurDays == 0 || !startInPast) {
