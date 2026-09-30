@@ -1,7 +1,7 @@
 # Design Change Request (DCR): Dynamic History Departure From Primary Event Creation
 
 Document ID: DCR-2026-09-07-E
-Status: Draft - Option 1 selected for near-term implementation planning; Option 2 deferred
+Status: Draft - Option 1 selected; Option 1.1 complete; Option 2 deferred
 Author: DaysSincePro Architecture
 
 ## 1. Problem Statement
@@ -417,6 +417,32 @@ Roughly:
 1. Effort: about 1 to 2.5 days if done immediately after Option1.
 2. Risk: medium-low, mostly logic consistency and edge-case testing.
 3. Why not “trivial”: notifications are currently driven by event-level recurrence fields, so we’d be changing the reminder source-of-truth to match display projection rules, then validating no regressions in existing reminder timing.
+
+### 8.1 Option 1.1 — History-Corrected Recurrence Projection and Reminder Alignment
+
+**Status: COMPLETE (2026-09-30).**
+
+Option 1.1 implements the targeted history-driven extension without introducing an occurrence table or changing the primary `event.date` anchor.
+
+For rows on or before today:
+
+1. `Since Last` uses the latest valid history date, regardless of its `onTime` value.
+2. A recurring event's effective schedule anchor uses the latest history date marked `onTime = 0`; if none exists, it uses the primary `event.date`.
+3. `Until Next` is calculated from that effective recurring anchor and the existing recurrence rules.
+4. Reminder cycle calculations use the same effective recurring anchor, keeping reminder timing aligned with `Until Next`.
+5. One-time events retain their existing no-`Until Next` behavior unless an explicit `planned_date` exists.
+6. `Days Since` remains based on the primary `event.date`.
+
+An on-time history row therefore updates `Since Last` without moving the recurrence schedule. An off-time history row can correct the schedule, and the most recent off-time row becomes the dynamic anchor. Editing or deleting history can consequently change the projected schedule because the projection is derived from current history state; this is intentional for this incremental phase and remains a reason not to describe history as a fully independent occurrence model.
+
+Implementation impact:
+
+1. No schema migration is required; existing `history.date` and `history.onTime` columns are sufficient.
+2. `EventTimeline`, the event-list SQL projections, and `OnAlarmReceive` now use the separated latest-history/latest-off-time inputs.
+3. The existing `last_notified_date` suppression mechanism remains in place and evaluates against the corrected recurrence cycle.
+4. The full occurrence-table model, history CSV roundtrip, richer planned/occurred/skipped occurrence types, and any unrelated Option 1 work remain deferred.
+
+This is a projection and reminder-alignment change, not completion of Option 1 as a whole and not activation of Option 2.
 
 Deferred reevaluation trigger candidates:
 

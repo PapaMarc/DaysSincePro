@@ -63,4 +63,29 @@ public class SinceLastProjectionSqlTest {
             }
         }
     }
+
+    @Test
+    public void recurringEvent_selectsLatestHistoryAndLatestOffTimeSeparately() throws Exception {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
+            try (Statement st = conn.createStatement()) {
+                st.execute("CREATE TABLE event (_id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, recur INTEGER)");
+                st.execute("CREATE TABLE history (eventId INTEGER, date DATE, onTime INTEGER)");
+                st.execute("INSERT INTO event (_id, date, recur) VALUES (1, '2026-09-01', 7)");
+                st.execute("INSERT INTO history (eventId, date, onTime) VALUES (1, '2026-09-12', 0)");
+                st.execute("INSERT INTO history (eventId, date, onTime) VALUES (1, '2026-09-19', 1)");
+            }
+
+            String sql = "SELECT "
+                    + "(SELECT max(h.date) FROM history h WHERE h.eventId = event._id AND h.date <= '2026-09-20') AS last_happened_date, "
+                    + "(SELECT max(h.date) FROM history h WHERE h.eventId = event._id AND h.onTime = 0 AND h.date <= '2026-09-20') AS last_off_time_date "
+                    + "FROM event WHERE _id = 1";
+
+            try (Statement st = conn.createStatement();
+                 ResultSet rs = st.executeQuery(sql)) {
+                rs.next();
+                assertEquals("2026-09-19", rs.getString("last_happened_date"));
+                assertEquals("2026-09-12", rs.getString("last_off_time_date"));
+            }
+        }
+    }
 }

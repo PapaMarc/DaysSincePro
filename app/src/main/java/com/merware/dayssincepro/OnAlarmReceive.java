@@ -206,7 +206,8 @@ public class OnAlarmReceive extends BroadcastReceiver {
          //   showToast("ah, alarm received for specific id" + eventID);
 
             // see if needs an notification
-                sql = "select _id, catID, event, date, recur, last_notified_date, notify_enabled, notify_lead_days from event where "
+                sql = "select _id, catID, event, date, recur, last_notified_date, notify_enabled, notify_lead_days, "
+                    + "coalesce((select max(h.date) from history h where h.eventId = event._id and h.onTime = 0 and h.date <= date('now', 'localtime')), date) as effective_date from event where "
                     + "_id = '" + eventID + "'";
 
             cursor = db.rawQuery(sql, null);
@@ -243,6 +244,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
             String lastNotifiedDate = cursor.getString(5);
                 Integer notifyEnabled = nullableInteger(cursor, 6);
                 Integer notifyLeadDays = nullableInteger(cursor, 7);
+                String effectiveDate = cursor.getString(8);
 
                 if (!isEventNotificationEnabled(notifyEnabled)) {
                 return;
@@ -252,7 +254,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                     ReminderLeadDaysResolver.resolve(nEstDays, notifyLeadDays);
 
             Calendar nowCal = Calendar.getInstance();
-            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
+            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(effectiveDate, nEstDays, nowCal);
                 dsc1 = new DaysSinceCalculations(context, occurrences.lastOccurrence);
                 long daysSinceReference = dsc1.getDaysSinceEvent();
                 DaysSinceCalculations dscToNext = new DaysSinceCalculations(context, occurrences.nextOccurrence);
@@ -282,7 +284,8 @@ public class OnAlarmReceive extends BroadcastReceiver {
         // showToast("Alarm received! for all!");
         int notificationCount = 0;
 
-        sql = "select _id, catID, event, date, recur, last_notified_date, notify_enabled, notify_lead_days from event";
+        sql = "select _id, catID, event, date, recur, last_notified_date, notify_enabled, notify_lead_days, "
+            + "coalesce((select max(h.date) from history h where h.eventId = event._id and h.onTime = 0 and h.date <= date('now', 'localtime')), date) as effective_date from event";
 
         cursor = db.rawQuery(sql, null);
 
@@ -296,6 +299,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
             String lastNotifiedDate = cursor.getString(5);
                 Integer notifyEnabled = nullableInteger(cursor, 6);
                 Integer notifyLeadDays = nullableInteger(cursor, 7);
+                String effectiveDate = cursor.getString(8);
 
                 if (!isEventNotificationEnabled(notifyEnabled)) {
                 cursor.moveToNext();
@@ -306,7 +310,7 @@ public class OnAlarmReceive extends BroadcastReceiver {
                     ReminderLeadDaysResolver.resolve(nEstDays, notifyLeadDays);
 
             Calendar nowCal = Calendar.getInstance();
-            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(usDate, nEstDays, nowCal);
+            RecurrenceCycle.Occurrences occurrences = currentCycleOccurrences(effectiveDate, nEstDays, nowCal);
             dsc1 = new DaysSinceCalculations(context, occurrences.lastOccurrence);
                 long daysSinceReference = dsc1.getDaysSinceEvent();
                 DaysSinceCalculations dscToNext = new DaysSinceCalculations(context, occurrences.nextOccurrence);
