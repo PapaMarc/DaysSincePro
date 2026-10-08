@@ -59,6 +59,20 @@ public class EventTimelineTest {
     }
 
     @Test
+    public void offTimeHistory_resetsUpdated120DayRecurrenceFromHistoryDate() {
+        EventTimeline.Snapshot snapshot = EventTimeline.compute(
+                new SimpleDate("2026-05-25"),
+                null,
+                120,
+                new SimpleDate("2026-10-08"),
+                new SimpleDate("2026-10-08"),
+                calendarFor("2026-10-08"));
+
+        assertEquals("2026-10-08", snapshot.sinceLastReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2027-02-05", snapshot.untilNextReferenceDate.getDate(SimpleDate.DateStyle.YMD));
+    }
+
+    @Test
     public void onTimeHistoryDoesNotMoveRecurringScheduleWhenNoCorrectionExists() {
         EventTimeline.Snapshot snapshot = EventTimeline.compute(
                 new SimpleDate("2026-09-01"),

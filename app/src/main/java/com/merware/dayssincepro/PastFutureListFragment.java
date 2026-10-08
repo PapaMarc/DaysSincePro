@@ -1007,6 +1007,10 @@ public class PastFutureListFragment extends ListFragment {
 
         switch (requestCode) {
 
+            case HISTORY_ACTIVITY:
+                requestTabsRefresh();
+                break;
+
             case EDIT_ACTIVITY:
                 switch (resultCode) {
                     case Activity.RESULT_OK:

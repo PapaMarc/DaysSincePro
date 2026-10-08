@@ -88,8 +88,6 @@ public class EditHistory extends AppCompatActivity {
 
         btnPickDate.setOnClickListener(dateDialogListener);
 
-        onTimeCheckbox.setOnClickListener(checkListener);
-
         Button okButton = (Button) findViewById(R.id.eventOK);
         okButton.setOnClickListener(eventOK);
 
@@ -146,16 +144,6 @@ public class EditHistory extends AppCompatActivity {
 
     }
 
-    boolean isOnTime = true;
-    private OnClickListener checkListener = new OnClickListener() {
-
-        @Override
-        public void onClick(View arg0) {
-
-            isOnTime = onTimeCheckbox.isChecked();
-        }
-    };
-
     private OnClickListener eventOK = new OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent();
@@ -168,9 +156,8 @@ public class EditHistory extends AppCompatActivity {
             }
 
             intent.putExtra("date", dateText);
-            intent.putExtra("onTime", isOnTime);
+            intent.putExtra("onTime", onTimeCheckbox.isChecked());
             intent.putExtra("historyId", historyId);
-            intent.putExtra("onTime", isOnTime);
 
             //Log.wtf("edit", editTextNotes.getText().toString());
             //Log.wtf("edit", "on time ma? " + isOnTime);
