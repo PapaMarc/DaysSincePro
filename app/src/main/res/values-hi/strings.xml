@@ -21,12 +21,7 @@
     <string name="non_recur">एक बार का इवेंट</string>
     <string name="categories">श्रेणियां</string>
     <string name="events">इवेंट</string>
-    <string name="yesterday">कल हुआ</string>
-    <string name="today">आज हुआ</string>
-    <string name="last_week">पहले हुआ</string>
     <string name="history">इतिहास</string>
-    <string name="skip">छोड़ें</string>
-    <string name="tomorrow">कल होना है</string>
 
     <string name="remove_item">आइटम हटाएं</string>
     <string name="are_you_sure">क्या आप सुनिश्चित हैं?</string>
@@ -131,13 +126,6 @@
     <string name="recurs_in">यह इवेंट दोहराता है</string>
     <string name="days_recur">"यह इवेंट कितने दिनों में दोहराया जाएगा? (एक बार के लिए 0)"</string>
     <string name="remove_event">इवेंट हटाएं</string>
-    <string name="monday">सोमवार</string>
-    <string name="tuesday">मंगलवार</string>
-    <string name="wednesday">बुधवार</string>
-    <string name="thursday">गुरुवार</string>
-    <string name="friday">शुक्रवार</string>
-    <string name="saturday">शनिवार</string>
-    <string name="sunday">रविवार</string>
     <string name="is_due">देय है।</string>
     <string name="is_today">आज है।</string>
     <string name="is_near_due">देय होने वाला है।</string>
@@ -247,7 +235,6 @@
     <string name="history_update_failed">क्षमा करें, अपडेट विफल हुआ।</string>
     <string name="generic_error_title">त्रुटि</string>
     <string name="past_future_database_problem_with_reason">क्षमा करें, डेटाबेस समस्याएं: %1$s</string>
-    <string name="skip_until_next_date">अगली तारीख %1$s तक छोड़ें</string>
 
     <string name="csv_import_no_events_imported">कोई इवेंट आयात नहीं हुआ।</string>
     <string name="csv_import_error_with_reason">आयात त्रुटि: %1$s</string>
@@ -322,7 +309,6 @@
     <string name="open_settings">सेटिंग्स खोलें</string>
     <string name="mini_b_ok">ठीक है</string>
     <string name="history_future_date_not_allowed">घटित तिथि भविष्य में नहीं हो सकती।</string>
-    <string name="action_not_available_for_one_time">यह क्रिया केवल दोहराए जाने वाले इवेंट के लिए उपलब्ध है।</string>
     <string name="planned_date_cleared_info">योजनाबद्ध भविष्य तिथि हटा दी गई क्योंकि वह अब भविष्य में नहीं है।</string>
     <string name="csv_history_warning_title">CSV निर्यात में History शामिल नहीं है</string>
     <string name="csv_history_warning_message">History प्रविष्टियां: %1$d\nHistory वाले इवेंट: %2$d\nकस्टम नोटिफ़ाई डेज़ वाले इवेंट: %3$d\nनोटिफ़िकेशन अक्षम वाले इवेंट: %4$d\n\nCSV निर्यात/आयात History, कस्टम नोटिफ़ाई डेज़, या प्रति-इवेंट नोटिफ़िकेशन स्थिति को संरक्षित नहीं करता। पूर्ण बैकअप/पुनर्स्थापना के लिए डेटाबेस निर्यात उपयोग करें।</string>

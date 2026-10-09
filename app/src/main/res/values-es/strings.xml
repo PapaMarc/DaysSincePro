@@ -20,12 +20,7 @@
     <string name="non_recur">Evento unico</string>
     <string name="categories">Categorias</string>
     <string name="events">Eventos</string>
-    <string name="yesterday">Ocurrio ayer</string>
-    <string name="today">Ocurrio hoy</string>
-    <string name="last_week">Ocurrio antes</string>
     <string name="history">Historial</string>
-    <string name="skip">Saltar</string>
-    <string name="tomorrow">Ocurrira manana</string>
 
     <string name="remove_item">Eliminar elemento</string>
     <string name="are_you_sure">Estas seguro?</string>
@@ -126,13 +121,6 @@
     <string name="recurs_in">Este evento se repite en</string>
     <string name="days_recur">"Cada cuantos dias se repite este evento? (0 para evento unico)"</string>
     <string name="remove_event">Eliminar evento</string>
-    <string name="monday">Lunes</string>
-    <string name="tuesday">Martes</string>
-    <string name="wednesday">Miercoles</string>
-    <string name="thursday">Jueves</string>
-    <string name="friday">Viernes</string>
-    <string name="saturday">Sabado</string>
-    <string name="sunday">Domingo</string>
     <string name="is_due">esta vencido.</string>
     <string name="is_today">es hoy.</string>
     <string name="is_near_due">esta cerca del vencimiento.</string>
@@ -236,7 +224,6 @@
     <string name="history_update_failed">Lo sentimos, la actualizacion fallo.</string>
     <string name="generic_error_title">Error</string>
     <string name="past_future_database_problem_with_reason">Lo sentimos, problemas de base de datos: %1$s</string>
-    <string name="skip_until_next_date">Saltar hasta la proxima fecha %1$s</string>
 
     <string name="csv_import_no_events_imported">No se importaron eventos.</string>
     <string name="csv_import_error_with_reason">Error de importacion: %1$s</string>
@@ -309,7 +296,6 @@
     <string name="open_settings">Abrir configuracion</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">La fecha de ocurrido no puede estar en el futuro.</string>
-    <string name="action_not_available_for_one_time">Esta accion solo esta disponible para eventos recurrentes.</string>
     <string name="planned_date_cleared_info">La fecha futura planificada se borro porque ya no esta en el futuro.</string>
     <string name="csv_history_warning_title">La exportacion CSV no incluye historial</string>
     <string name="csv_history_warning_message">Entradas de historial: %1$d\nEventos con historial: %2$d\nEventos con dias de notificacion personalizados: %3$d\nEventos con notificaciones deshabilitadas: %4$d\n\nLa exportacion/importacion CSV no conserva historial, dias de notificacion personalizados ni el estado de notificaciones por evento. Usa la exportacion de base de datos para respaldo y restauracion completos.</string>

@@ -20,12 +20,7 @@
   <string name="non_recur">[!! ‮One Time Event‬ !!]</string>
   <string name="categories">[!! ‮Categories‬ !!]</string>
   <string name="events">[!! ‮Events‬ !!]</string>
-  <string name="yesterday">[!! ‮Happened Yesterday‬ !!]</string>
-  <string name="today">[!! ‮Happened Today‬ !!]</string>
-  <string name="last_week">[!! ‮Happened Earlier‬ !!]</string>
   <string name="history">[!! ‮History‬ !!]</string>
-  <string name="skip">[!! ‮Skip‬ !!]</string>
-  <string name="tomorrow">[!! ‮To Happen Tomorrow‬ !!]</string>
   <string name="remove_item">[!! ‮Remove Item‬ !!]</string>
   <string name="are_you_sure">[!! ‮Are you sure?‬ !!]</string>
   <string name="permission_are_you_sure">[!! ‮Your device may ask for Storage permission to store a file on your phone. Is that OK?‬ !!]</string>
@@ -116,13 +111,6 @@
   <string name="recurs_in">[!! ‮This event recurs in‬ !!]</string>
   <string name="days_recur">[!! ‮"How many days will this event recur? ( 0 for one time event)"‬ !!]</string>
   <string name="remove_event">[!! ‮Remove Event‬ !!]</string>
-  <string name="monday">[!! ‮Monday‬ !!]</string>
-  <string name="tuesday">[!! ‮Tuesday‬ !!]</string>
-  <string name="wednesday">[!! ‮Wednesday‬ !!]</string>
-  <string name="thursday">[!! ‮Thursday‬ !!]</string>
-  <string name="friday">[!! ‮Friday‬ !!]</string>
-  <string name="saturday">[!! ‮Saturday‬ !!]</string>
-  <string name="sunday">[!! ‮Sunday‬ !!]</string>
   <string name="is_due">[!! ‮is due.‬ !!]</string>
   <string name="is_today">[!! ‮is today.‬ !!]</string>
   <string name="is_near_due">[!! ‮is near due.‬ !!]</string>
@@ -239,7 +227,6 @@
   <string name="history_update_failed">[!! ‮Sorry, update failed.‬ !!]</string>
   <string name="generic_error_title">[!! ‮Error‬ !!]</string>
   <string name="past_future_database_problem_with_reason">[!! ‮Sorry, database problems: %1$s‬ !!]</string>
-  <string name="skip_until_next_date">[!! ‮Skip until next date %1$s‬ !!]</string>
   <string name="csv_import_no_events_imported">[!! ‮No events imported.‬ !!]</string>
   <string name="csv_import_error_with_reason">[!! ‮Import error: %1$s‬ !!]</string>
   <string name="csv_import_failed_with_reason">[!! ‮Import failed: %1$s‬ !!]</string>
@@ -313,7 +300,6 @@
   <string name="open_settings">[!! ‮Open Settings‬ !!]</string>
   <string name="mini_b_ok">[!! ‮Ok‬ !!]</string>
   <string name="history_future_date_not_allowed">[!! ‮Happened date cannot be in the future.‬ !!]</string>
-  <string name="action_not_available_for_one_time">[!! ‮This action is only available for recurring events.‬ !!]</string>
   <string name="planned_date_cleared_info">[!! ‮Planned future date cleared because it is no longer in the future.‬ !!]</string>
   <string name="csv_history_warning_title">[!! ‮CSV export does not include History‬ !!]</string>
   <string name="csv_history_warning_message">[!! ‮History entries: %4$d\nEvents with history: %4$d\nEvents with custom notify days: %4$d\nEvents with notifications disabled: %4$d\n\nCSV export/import does not preserve History, custom notify days, or per-event notification enabled state. Use database export for full-fidelity backup and restore.‬ !!]</string>

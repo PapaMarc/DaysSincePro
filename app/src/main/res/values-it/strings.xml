@@ -20,12 +20,7 @@
     <string name="non_recur">Evento singolo</string>
     <string name="categories">Categorie</string>
     <string name="events">Eventi</string>
-    <string name="yesterday">Avvenuto ieri</string>
-    <string name="today">Avvenuto oggi</string>
-    <string name="last_week">Avvenuto prima</string>
     <string name="history">Cronologia</string>
-    <string name="skip">Salta</string>
-    <string name="tomorrow">Avverra domani</string>
 
     <string name="remove_item">Rimuovi elemento</string>
     <string name="are_you_sure">Sei sicuro?</string>
@@ -126,13 +121,6 @@
     <string name="recurs_in">Questo evento si ripete tra</string>
     <string name="days_recur">"Ogni quanti giorni si ripete questo evento? (0 per evento singolo)"</string>
     <string name="remove_event">Rimuovi evento</string>
-    <string name="monday">Lunedi</string>
-    <string name="tuesday">Martedi</string>
-    <string name="wednesday">Mercoledi</string>
-    <string name="thursday">Giovedi</string>
-    <string name="friday">Venerdi</string>
-    <string name="saturday">Sabato</string>
-    <string name="sunday">Domenica</string>
     <string name="is_due">e in scadenza.</string>
     <string name="is_today">e oggi.</string>
     <string name="is_near_due">e vicino alla scadenza.</string>
@@ -236,7 +224,6 @@
     <string name="history_update_failed">Aggiornamento non riuscito.</string>
     <string name="generic_error_title">Errore</string>
     <string name="past_future_database_problem_with_reason">Problemi database: %1$s</string>
-    <string name="skip_until_next_date">Salta fino alla prossima data %1$s</string>
 
     <string name="csv_import_no_events_imported">Nessun evento importato.</string>
     <string name="csv_import_error_with_reason">Errore importazione: %1$s</string>
@@ -309,7 +296,6 @@
     <string name="open_settings">Apri impostazioni</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">La data avvenuta non puo essere nel futuro.</string>
-    <string name="action_not_available_for_one_time">Questa azione e disponibile solo per eventi ricorrenti.</string>
     <string name="planned_date_cleared_info">La data futura pianificata e stata cancellata perche non e piu nel futuro.</string>
     <string name="csv_history_warning_title">L export CSV non include la cronologia</string>
     <string name="csv_history_warning_message">Voci cronologia: %1$d\nEventi con cronologia: %2$d\nEventi con giorni di notifica personalizzati: %3$d\nEventi con notifiche disabilitate: %4$d\n\nL export/import CSV non preserva cronologia, giorni di notifica personalizzati o lo stato notifiche per evento. Usa export database per backup e ripristino completi.</string>

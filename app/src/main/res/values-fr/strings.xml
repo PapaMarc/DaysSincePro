@@ -20,12 +20,7 @@
   <string name="non_recur">Événement unique</string>
   <string name="categories">Catégories</string>
   <string name="events">Événements</string>
-  <string name="yesterday">C’est arrivé hier</string>
-  <string name="today">C’est arrivé aujourd’hui</string>
-  <string name="last_week">C’est arrivé plus tôt</string>
   <string name="history">Histoire</string>
-  <string name="skip">Sauter</string>
-  <string name="tomorrow">Ce qui arrivera demain</string>
   <string name="remove_item">Supprimer l’élément</string>
   <string name="are_you_sure">Es-tu sûr?</string>
   <string name="permission_are_you_sure">Votre appareil peut demander l’autorisation de stockage pour stocker un fichier sur votre téléphone. Est-ce que ça va ?</string>
@@ -116,13 +111,6 @@
   <string name="recurs_in">Cet événement se reproduit dans</string>
   <string name="days_recur">"Combien de jours cet événement se reproduira-t-il ? (0 pour un événement ponctuel)"</string>
   <string name="remove_event">Supprimer l’événement</string>
-  <string name="monday">Lundi</string>
-  <string name="tuesday">Mardi</string>
-  <string name="wednesday">Mercredi</string>
-  <string name="thursday">Jeudi</string>
-  <string name="friday">Vendredi</string>
-  <string name="saturday">Samedi</string>
-  <string name="sunday">Dimanche</string>
   <string name="is_due">est dû.</string>
   <string name="is_today">c’est aujourd’hui.</string>
   <string name="is_near_due">est sur le point d’arriver à échéance.</string>
@@ -223,7 +211,6 @@
   <string name="history_update_failed">Désolé, la mise à jour a échoué.</string>
   <string name="generic_error_title">Erreur</string>
   <string name="past_future_database_problem_with_reason">Désolé, problèmes de base de données : %1$s</string>
-  <string name="skip_until_next_date">Ignorer jusqu\'à la prochaine date %1$s</string>
   <string name="csv_import_no_events_imported">Aucun événement importé.</string>
   <string name="csv_import_error_with_reason">Erreur d\'importation : %1$s</string>
   <string name="csv_import_failed_with_reason">Échec de l\'importation : %1$s</string>
@@ -291,7 +278,6 @@
   <string name="open_settings">Ouvrir les paramètres</string>
   <string name="mini_b_ok">D’accord</string>
   <string name="history_future_date_not_allowed">La date qui s’est produite ne peut pas être dans le futur.</string>
-  <string name="action_not_available_for_one_time">Cette action n’est disponible que pour les événements récurrents.</string>
   <string name="planned_date_cleared_info">La date future prévue a été effacée car elle n’est plus dans le futur.</string>
   <string name="csv_history_warning_title">L’exportation CSV n’inclut pas l’historique</string>
   <string name="csv_history_warning_message">Entrées de l’historique : %1$d\nÉvénements avec historique : %2$d\nÉvénements avec jours de notification personnalisés : %3$d\nÉvénements avec notifications désactivées : %4$d\n\nL’exportation/importation CSV ne conserve pas l’historique, les jours de notification personnalisés ni l’état des notifications par événement. Utilisez l’exportation de base de données pour une sauvegarde et une restauration en toute fidélité.</string>

@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.appcompat.app.AlertDialog;
@@ -15,7 +14,6 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import android.database.sqlite.SQLiteDatabase;
@@ -475,412 +472,53 @@ public class PastFutureListFragment extends ListFragment {
         startActivityForResult(intent, EDIT_ACTIVITY);
     }
 
-    void todayItem(int position, long id) {
-        SimpleDate now = new SimpleDate(new Date());
-        logHappened(id, now.getDate(SimpleDate.DateStyle.YMD));
-        requestTabsRefresh();
-    }
-
-    private void chooseDayItemDate(int position, long id, SimpleDate d) {
-        ContentValues args = new ContentValues();
-        args.put("date", d.getDate(SimpleDate.DateStyle.YMD));
-
-        // Log.wtf("future", "update to this: " + d.getDate(SimpleDate.DateStyle.YMD) + " for id " + id);
-
-        db.update("event", args, "_id = " + id, null);
-        requestTabsRefresh();
-
-        if (kind == TabKind.DaysUntil && d.getDate().before(now.getDate())) {
-            showToast(getString(R.string.untilToSince));
-        }
-    }
-
-    private void chooseDayItem(int position, long id, int daysFrom) {
-        // Positive values are days in the past, negative values are days in the future.
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_YEAR, -daysFrom);
-
-        SimpleDate happenedDate = new SimpleDate(now.getTime());
-        String isoDate = happenedDate.getDate(SimpleDate.DateStyle.YMD);
-        if (HistoryDateRules.isFutureHappenedDate(isoDate)) {
-            showToast(getString(R.string.history_future_date_not_allowed));
-            return;
-        }
-
-        logHappened(id, isoDate);
-        requestTabsRefresh();
-    }
-
-    void yesterdayItem(int position, long id) {
-        chooseDayItem(position, id, 1);
-    }
-
-    void tomorrowItem(int position, long id) {
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        chooseDayItemDate(position, id, new SimpleDate(tomorrow.getTime()));
-    }
-
-    static final private int MENU_YESTERDAY = Menu.FIRST;
-    static final private int MENU_TODAY = Menu.FIRST + 1;
-    static final private int MENU_TOMORROW = Menu.FIRST + 2;
-    static final private int MENU_EARLIER= Menu.FIRST + 3;
-
-
-    private static final int GROUP1 = 10;
-    private static final int SUBMENU0 = GROUP1 + 1;
-    private static final int SUBMENU1 = GROUP1 + 2;
-    private static final int SUBMENU2 = GROUP1 + 3;
-    private static final int SUBMENU3 = GROUP1 + 4;
-    private static final int SUBMENU4 = GROUP1 + 5;
-    private static final int SUBMENU5 = GROUP1 + 6;
-    private static final int SUBMENU6 = GROUP1 + 7;
-
-    static final private int MENU_REMOVE = Menu.FIRST + 4;
-    static final private int MENU_SKIP = Menu.FIRST + 5;
-    static final private int MENU_HISTORY = Menu.FIRST + 6;
+    static final private int MENU_REMOVE = Menu.FIRST;
+    static final private int MENU_HISTORY = Menu.FIRST + 1;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        //   showToast("right click menu, kind is " + kind);
-
-     //   menu.setHeaderTitle(R.string.event);
-        menu.add(0, MENU_YESTERDAY, Menu.NONE + 1, R.string.yesterday);
-        menu.add(1, MENU_TODAY, Menu.NONE + 2, R.string.today);
-        MenuItem tomorrowItem = menu.add(2, MENU_TOMORROW, Menu.NONE + 3, R.string.tomorrow);
-
-        SubMenu weekDayMenu = menu.addSubMenu(GROUP1, MENU_EARLIER,  Menu.NONE + 4, R.string.last_week);
-        weekDayMenu.add(GROUP1, SUBMENU0, 1, R.string.sunday);
-        weekDayMenu.add(GROUP1, SUBMENU1, 2, R.string.monday);
-        weekDayMenu.add(GROUP1, SUBMENU2, 3, R.string.tuesday);
-        weekDayMenu.add(GROUP1, SUBMENU3, 4, R.string.wednesday);
-        weekDayMenu.add(GROUP1, SUBMENU4, 5, R.string.thursday);
-        weekDayMenu.add(GROUP1, SUBMENU5, 6, R.string.friday);
-        weekDayMenu.add(GROUP1, SUBMENU6, 7, R.string.saturday);
-
-        menu.add(4, MENU_REMOVE, Menu.NONE + 5, R.string.remove);
-        MenuItem skipItem = menu.add(5, MENU_SKIP, Menu.NONE + 6, R.string.skip);
-        menu.add(6, MENU_HISTORY, Menu.NONE + 7, R.string.history);
-
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        if (info != null && isOneTimeEvent(info.id)) {
-            tomorrowItem.setEnabled(false);
-            skipItem.setEnabled(false);
-        }
-
+        menu.add(0, MENU_REMOVE, Menu.NONE + 1, R.string.remove);
+        menu.add(1, MENU_HISTORY, Menu.NONE + 2, R.string.history);
     }
-
-    private boolean isOneTimeEvent(long eventId) {
-        Cursor cursor = db.query(
-                "event",
-                new String[] { "recur" },
-                "_id = ?",
-                new String[] { String.valueOf(eventId) },
-                null,
-                null,
-                null
-        );
-
-        try {
-            if (!cursor.moveToFirst()) {
-                return false;
-            }
-            return cursor.getInt(0) == 0;
-        } finally {
-            cursor.close();
-        }
-    }
-
-    private long parentMenuId = 0;
-    private int parentMenuPos = 0;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
-        // this is the remedy to have only one fragment call this at a time.
-        if (isContextActionTargetFragment()) {
-
-            super.onContextItemSelected(item);
-            AdapterView.AdapterContextMenuInfo menuInfo;
-            menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-            Calendar calendar = Calendar.getInstance();
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            int daysDiff = 0;
-            long eventId;
-
-            if (menuInfo != null) {
-                parentMenuId = menuInfo.id;
-                parentMenuPos = menuInfo.position;
-                eventId = menuInfo.id;
-            }
-            else
-            {
-                eventId = parentMenuId;
-            }
-
-            switch (item.getItemId()) {
-
-                case MENU_YESTERDAY:
-                    yesterdayItem(menuInfo.position, menuInfo.id);
-                    break;
-                case MENU_TODAY:
-                    todayItem(menuInfo.position, menuInfo.id);
-                    break;
-                case MENU_TOMORROW:
-                    if (isOneTimeEvent(eventId)) {
-                        showToast(getString(R.string.action_not_available_for_one_time));
-                        break;
-                    }
-                    tomorrowItem(menuInfo.position, menuInfo.id);
-                    break;
-                case MENU_REMOVE:
-                    AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(context);
-                    builder.setTitle(R.string.remove_event);
-                    builder.setMessage(R.string.are_you_sure);
-                    builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
-                    builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
-                    builder.show();
-
-                    removeId = menuInfo.id;
-                    break;
-                // case Menu.NONE + 3:
-                //    logHappened(eventId, dateLastHappened(eventId));
-                //    break;
-                case SUBMENU0:
-
-                    switch (dayOfWeek) // if today is
-                    {
-                        case Calendar.SATURDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 7;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case SUBMENU1: // Monday
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 6;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case SUBMENU2: // last Tuesday
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 5;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case SUBMENU3: // Wednesday
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 4;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-                    break;
-                case SUBMENU4: // Thursday
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 3;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case SUBMENU5:
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 1;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 2;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case SUBMENU6:
-                    switch (dayOfWeek) {
-                        case Calendar.SATURDAY:
-                            daysDiff = 7;
-                            break;
-                        case Calendar.FRIDAY:
-                            daysDiff = 6;
-                            break;
-                        case Calendar.THURSDAY:
-                            daysDiff = 5;
-                            break;
-                        case Calendar.WEDNESDAY:
-                            daysDiff = 4;
-                            break;
-                        case Calendar.TUESDAY:
-                            daysDiff = 3;
-                            break;
-                        case Calendar.MONDAY:
-                            daysDiff = 2;
-                            break;
-                        case Calendar.SUNDAY:
-                            daysDiff = 1;
-                            break;
-                    }
-                    chooseDayItem(parentMenuPos, parentMenuId, daysDiff);
-
-                    break;
-                case MENU_SKIP:
-                    if (isOneTimeEvent(eventId)) {
-                        showToast(getString(R.string.action_not_available_for_one_time));
-                        break;
-                    }
-
-                    // find how many days until next event should happen.
-
-                    String sql = "select date, recur, date(date, '+' || recur || ' day') as nextdate from event where _id = " + menuInfo.id;
-
-                    Cursor cursor = db.rawQuery(sql, null);
-
-                    try {
-                        if (cursor.moveToFirst())
-                        {
-                            String nextdate = cursor.getString(2);
-                            showToast(getString(R.string.skip_until_next_date, nextdate));
-                            chooseDayItemDate(menuInfo.position, menuInfo.id, new SimpleDate(nextdate));
-                        }
-                    } finally {
-                        cursor.close();
-                    }
-                    break;
-
-                case MENU_HISTORY:
-                    Intent intent = new Intent(context, HistoryActivity.class);
-
-                    long catId = getCatIdFromEvent(menuInfo.id);
-
-                    intent.putExtra("eventId", menuInfo.id);
-                    intent.putExtra("catId", catId);
-                    startActivityForResult(intent, HISTORY_ACTIVITY);
-                    break;
-            }
-
-            return true;
-        }
-        else
-        {
+        if (!isContextActionTargetFragment()) {
             return false;
         }
+
+        super.onContextItemSelected(item);
+        AdapterView.AdapterContextMenuInfo menuInfo =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if (menuInfo == null) {
+            return false;
+        }
+
+        switch (item.getItemId()) {
+            case MENU_REMOVE:
+                AlertDialog.Builder builder = DialogThemeHelper.themedBuilder(context);
+                builder.setTitle(R.string.remove_event);
+                builder.setMessage(R.string.are_you_sure);
+                builder.setPositiveButton(R.string.yes, yesNoDialogClickListener);
+                builder.setNegativeButton(R.string.no, yesNoDialogClickListener);
+                builder.show();
+                removeId = menuInfo.id;
+                break;
+            case MENU_HISTORY:
+                Intent intent = new Intent(context, HistoryActivity.class);
+                long catId = getCatIdFromEvent(menuInfo.id);
+                intent.putExtra("eventId", menuInfo.id);
+                intent.putExtra("catId", catId);
+                startActivityForResult(intent, HISTORY_ACTIVITY);
+                break;
+            default:
+                return false;
+        }
+
+        return true;
     }
 
     DialogInterface.OnClickListener yesNoDialogClickListener = new DialogInterface.OnClickListener() {
@@ -916,86 +554,6 @@ public class PastFutureListFragment extends ListFragment {
         int catId = cursor.getInt(1);
         cursor.close();
         return catId;
-    }
-
-    private String dateLastHappened(long eventId) {
-        Cursor cursor = db.query("event", new String[] { "_id", "date" },
-                "_id = " + eventId, null, null, null, null);
-
-        cursor.moveToFirst();
-
-        return cursor.getString(1);
-    }
-
-    /**
-     *
-     * @param eventId
-     *            - event ID
-     * @param dateText
-     *            - the date the event happened
-     *
-     *            The constraint will block the db insert if date is already
-     *            there for the id.
-     */
-    void logHappened(long eventId, String dateText) {
-        if (HistoryDateRules.isFutureHappenedDate(dateText)) {
-            showToast(getString(R.string.history_future_date_not_allowed));
-            return;
-        }
-
-        // determine is onTime or not
-        int nEstDays = 0;
-        int timeVal = 1;
-        DaysSinceCalculations dsc1 = new DaysSinceCalculations(
-            context,
-                dateLastHappened(eventId));
-
-        // get nrecur and see if it's on time.
-        // db.query(distinct, table, columns, selection, selectionArgs, groupBy,
-        // having, orderBy, limit, cancellationSignal)
-
-        Cursor cursor = db.query("event", new String[] { "_id", "recur" },
-                "_id = " + eventId, null, null, null, null);
-
-        cursor.moveToFirst();
-
-        nEstDays = cursor.getInt(1);
-
-        if (nEstDays == 0) {
-            timeVal = 1;
-            //showToast("on time");
-        } else {
-
-            if (dsc1.getDaysSinceEvent() > nEstDays) {
-                // not on time
-                timeVal = 0;
-
-                //	showToast("not on time");
-            } else {
-                // showToast("look sir " + dsc1.getDaysSinceEvent());
-
-            }
-        }
-
-        ContentValues values = new ContentValues();
-
-        long catId = getCatIdFromEvent(eventId);
-
-        values.put("eventId", eventId);
-        values.put("catId", catId);
-        values.put("date", dateText);
-        values.put("onTime", timeVal);
-        // no note here
-
-        try {
-            if (db.insert("history", "history", values) == -1) {
-                // unique constrain
-            }
-        }
-        catch (SQLiteConstraintException sqlce)
-        {
-            // ignore problem here
-        }
     }
 
     @Override

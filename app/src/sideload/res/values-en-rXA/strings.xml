@@ -20,12 +20,7 @@
   <string name="non_recur">[!! Ōñē Ŧīḿē Ēṽēñŧ !!]</string>
   <string name="categories">[!! Çàŧēğōŕīēş !!]</string>
   <string name="events">[!! Ēṽēñŧş !!]</string>
-  <string name="yesterday">[!! Ĥàƥƥēñēď Ŷēşŧēŕďàŷ !!]</string>
-  <string name="today">[!! Ĥàƥƥēñēď Ŧōďàŷ !!]</string>
-  <string name="last_week">[!! Ĥàƥƥēñēď Ēàŕľīēŕ !!]</string>
   <string name="history">[!! Ĥīşŧōŕŷ !!]</string>
-  <string name="skip">[!! Šķīƥ !!]</string>
-  <string name="tomorrow">[!! Ŧō Ĥàƥƥēñ Ŧōḿōŕŕōŵ !!]</string>
   <string name="remove_item">[!! Ŕēḿōṽē Īŧēḿ !!]</string>
   <string name="are_you_sure">[!! Àŕē ŷōū şūŕē? !!]</string>
   <string name="permission_are_you_sure">[!! Ŷōūŕ ďēṽīçē ḿàŷ àşķ ƒōŕ Šŧōŕàğē ƥēŕḿīşşīōñ ŧō şŧōŕē à ƒīľē ōñ ŷōūŕ ƥĥōñē. Īş ŧĥàŧ ŌĶ? !!]</string>
@@ -116,13 +111,6 @@
   <string name="recurs_in">[!! Ŧĥīş ēṽēñŧ ŕēçūŕş īñ !!]</string>
   <string name="days_recur">[!! "Ĥōŵ ḿàñŷ ďàŷş ŵīľľ ŧĥīş ēṽēñŧ ŕēçūŕ? ( 0 ƒōŕ ōñē ŧīḿē ēṽēñŧ)" !!]</string>
   <string name="remove_event">[!! Ŕēḿōṽē Ēṽēñŧ !!]</string>
-  <string name="monday">[!! Ṁōñďàŷ !!]</string>
-  <string name="tuesday">[!! Ŧūēşďàŷ !!]</string>
-  <string name="wednesday">[!! Ŵēďñēşďàŷ !!]</string>
-  <string name="thursday">[!! Ŧĥūŕşďàŷ !!]</string>
-  <string name="friday">[!! Ƒŕīďàŷ !!]</string>
-  <string name="saturday">[!! Šàŧūŕďàŷ !!]</string>
-  <string name="sunday">[!! Šūñďàŷ !!]</string>
   <string name="is_due">[!! īş ďūē. !!]</string>
   <string name="is_today">[!! īş ŧōďàŷ. !!]</string>
   <string name="is_near_due">[!! īş ñēàŕ ďūē. !!]</string>
@@ -239,7 +227,6 @@
   <string name="history_update_failed">[!! Šōŕŕŷ, ūƥďàŧē ƒàīľēď. !!]</string>
   <string name="generic_error_title">[!! Ēŕŕōŕ !!]</string>
   <string name="past_future_database_problem_with_reason">[!! Šōŕŕŷ, ďàŧàƀàşē ƥŕōƀľēḿş: %1$s !!]</string>
-  <string name="skip_until_next_date">[!! Šķīƥ ūñŧīľ ñēẋŧ ďàŧē %1$s !!]</string>
   <string name="csv_import_no_events_imported">[!! Ñō ēṽēñŧş īḿƥōŕŧēď. !!]</string>
   <string name="csv_import_error_with_reason">[!! Īḿƥōŕŧ ēŕŕōŕ: %1$s !!]</string>
   <string name="csv_import_failed_with_reason">[!! Īḿƥōŕŧ ƒàīľēď: %1$s !!]</string>
@@ -313,7 +300,6 @@
   <string name="open_settings">[!! Ōƥēñ Šēŧŧīñğş !!]</string>
   <string name="mini_b_ok">[!! Ōķ !!]</string>
   <string name="history_future_date_not_allowed">[!! Ĥàƥƥēñēď ďàŧē çàññōŧ ƀē īñ ŧĥē ƒūŧūŕē. !!]</string>
-  <string name="action_not_available_for_one_time">[!! Ŧĥīş àçŧīōñ īş ōñľŷ àṽàīľàƀľē ƒōŕ ŕēçūŕŕīñğ ēṽēñŧş. !!]</string>
   <string name="planned_date_cleared_info">[!! Ƥľàññēď ƒūŧūŕē ďàŧē çľēàŕēď ƀēçàūşē īŧ īş ñō ľōñğēŕ īñ ŧĥē ƒūŧūŕē. !!]</string>
   <string name="csv_history_warning_title">[!! ÇŠṼ ēẋƥōŕŧ ďōēş ñōŧ īñçľūďē Ĥīşŧōŕŷ !!]</string>
   <string name="csv_history_warning_message">[!! Ĥīşŧōŕŷ ēñŧŕīēş: %4$d\ñĒṽēñŧş ŵīŧĥ ĥīşŧōŕŷ: %4$d\ñĒṽēñŧş ŵīŧĥ çūşŧōḿ ñōŧīƒŷ ďàŷş: %4$d\ñĒṽēñŧş ŵīŧĥ ñōŧīƒīçàŧīōñş ďīşàƀľēď: %4$d\ñ\ñÇŠṼ ēẋƥōŕŧ/īḿƥōŕŧ ďōēş ñōŧ ƥŕēşēŕṽē Ĥīşŧōŕŷ, çūşŧōḿ ñōŧīƒŷ ďàŷş, ōŕ ƥēŕ-ēṽēñŧ ñōŧīƒīçàŧīōñ ēñàƀľēď şŧàŧē. Ūşē ďàŧàƀàşē ēẋƥōŕŧ ƒōŕ ƒūľľ-ƒīďēľīŧŷ ƀàçķūƥ àñď ŕēşŧōŕē. !!]</string>

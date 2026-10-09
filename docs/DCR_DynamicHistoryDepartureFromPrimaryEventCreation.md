@@ -4,6 +4,16 @@ Document ID: DCR-2026-09-07-E
 Status: Draft - Option 1 selected; Option 1.1 complete; Option 2 deferred
 Author: DaysSincePro Architecture
 
+## Implementation-status clarification (2026-10-09)
+
+This document records an earlier proposal and is not an authoritative description of the current implementation. Its current-experience and root-cause sections contain claims that do not match the code inspected during the long-press shortcut removal:
+
+- Happened Yesterday, Happened Today, and Happened Earlier inserted History rows without changing the primary event date.
+- To Happen Tomorrow and Skip changed the primary event date without inserting History rows.
+- Opening History from the event menu did not itself insert a History row.
+
+For the verified prior behavior, removal decision, and future reintroduction criteria, see `DCR-CUT_RemoveLongPressShortcuts.md`.
+
 ## 1. Problem Statement
 
 The current long-press action model mixes two concepts:

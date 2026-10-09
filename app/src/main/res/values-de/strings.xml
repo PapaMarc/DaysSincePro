@@ -20,12 +20,7 @@
     <string name="non_recur">Einmaliges Ereignis</string>
     <string name="categories">Kategorien</string>
     <string name="events">Ereignisse</string>
-    <string name="yesterday">Gestern passiert</string>
-    <string name="today">Heute passiert</string>
-    <string name="last_week">Frueher passiert</string>
     <string name="history">Verlauf</string>
-    <string name="skip">Ueberspringen</string>
-    <string name="tomorrow">Passiert morgen</string>
 
     <string name="remove_item">Eintrag entfernen</string>
     <string name="are_you_sure">Bist du sicher?</string>
@@ -126,13 +121,6 @@
     <string name="recurs_in">Dieses Ereignis wiederholt sich in</string>
     <string name="days_recur">"Nach wie vielen Tagen wiederholt sich dieses Ereignis? (0 fuer einmaliges Ereignis)"</string>
     <string name="remove_event">Ereignis entfernen</string>
-    <string name="monday">Montag</string>
-    <string name="tuesday">Dienstag</string>
-    <string name="wednesday">Mittwoch</string>
-    <string name="thursday">Donnerstag</string>
-    <string name="friday">Freitag</string>
-    <string name="saturday">Samstag</string>
-    <string name="sunday">Sonntag</string>
     <string name="is_due">ist faellig.</string>
     <string name="is_today">ist heute.</string>
     <string name="is_near_due">ist bald faellig.</string>
@@ -236,7 +224,6 @@
     <string name="history_update_failed">Aktualisierung fehlgeschlagen.</string>
     <string name="generic_error_title">Fehler</string>
     <string name="past_future_database_problem_with_reason">Datenbankprobleme: %1$s</string>
-    <string name="skip_until_next_date">Ueberspringen bis naechstes Datum %1$s</string>
 
     <string name="csv_import_no_events_imported">Keine Ereignisse importiert.</string>
     <string name="csv_import_error_with_reason">Importfehler: %1$s</string>
@@ -309,7 +296,6 @@
     <string name="open_settings">Einstellungen oeffnen</string>
     <string name="mini_b_ok">Ok</string>
     <string name="history_future_date_not_allowed">Das Ereignisdatum darf nicht in der Zukunft liegen.</string>
-    <string name="action_not_available_for_one_time">Diese Aktion ist nur fuer wiederkehrende Ereignisse verfuegbar.</string>
     <string name="planned_date_cleared_info">Geplantes Zukunftsdatum wurde entfernt, da es nicht mehr in der Zukunft liegt.</string>
     <string name="csv_history_warning_title">CSV-Export enthaelt keinen Verlauf</string>
     <string name="csv_history_warning_message">Verlaufseintraege: %1$d\nEreignisse mit Verlauf: %2$d\nEreignisse mit benutzerdefinierten Benachrichtigungstagen: %3$d\nEreignisse mit deaktivierten Benachrichtigungen: %4$d\n\nCSV-Export/-Import bewahrt Verlauf, benutzerdefinierte Benachrichtigungstage und den Benachrichtigungsstatus pro Ereignis nicht. Verwende Datenbankexport fuer vollstaendige Sicherung und Wiederherstellung.</string>

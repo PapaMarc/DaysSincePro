@@ -21,12 +21,7 @@
     <string name="non_recur">一次性事件</string>
     <string name="categories">类别</string>
     <string name="events">事件</string>
-    <string name="yesterday">昨天发生</string>
-    <string name="today">今天发生</string>
-    <string name="last_week">更早发生</string>
     <string name="history">历史</string>
-    <string name="skip">跳过</string>
-    <string name="tomorrow">明天发生</string>
 
     <string name="remove_item">删除条目</string>
     <string name="are_you_sure">确定吗？</string>
@@ -131,13 +126,6 @@
     <string name="recurs_in">此事件重复于</string>
     <string name="days_recur">"该事件每隔多少天重复？（0 表示一次性事件）"</string>
     <string name="remove_event">删除事件</string>
-    <string name="monday">星期一</string>
-    <string name="tuesday">星期二</string>
-    <string name="wednesday">星期三</string>
-    <string name="thursday">星期四</string>
-    <string name="friday">星期五</string>
-    <string name="saturday">星期六</string>
-    <string name="sunday">星期日</string>
     <string name="is_due">已到期。</string>
     <string name="is_today">就在今天。</string>
     <string name="is_near_due">即将到期。</string>
@@ -242,7 +230,6 @@
     <string name="history_update_failed">抱歉，更新失败。</string>
     <string name="generic_error_title">错误</string>
     <string name="past_future_database_problem_with_reason">抱歉，数据库问题：%1$s</string>
-    <string name="skip_until_next_date">跳过直到下一个日期 %1$s</string>
 
     <string name="csv_import_no_events_imported">未导入任何事件。</string>
     <string name="csv_import_error_with_reason">导入错误：%1$s</string>
@@ -317,7 +304,6 @@
     <string name="open_settings">打开设置</string>
     <string name="mini_b_ok">确定</string>
     <string name="history_future_date_not_allowed">发生日期不能是未来日期。</string>
-    <string name="action_not_available_for_one_time">该操作仅适用于重复事件。</string>
     <string name="planned_date_cleared_info">计划的未来日期已清除，因为它已不再是未来日期。</string>
     <string name="csv_history_warning_title">CSV 导出不包含历史记录</string>
     <string name="csv_history_warning_message">历史条目：%1$d\n有历史的事件：%2$d\n使用自定义提醒天数的事件：%3$d\n已禁用通知的事件：%4$d\n\nCSV 导出/导入不会保留历史、自定义提醒天数或每个事件的通知开关状态。若需完整备份与恢复，请使用数据库导出。</string>
