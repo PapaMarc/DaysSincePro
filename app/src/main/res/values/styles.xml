@@ -100,36 +100,6 @@
         <item name="colorAccent">@color/ui_accent_primary</item>
     </style>
 
-    <!-- Material 3 themes for the 3 activities hosting MaterialDatePicker (DaysDiffActivity,
-         EditEventActivity, EditHistory) - applied via setTheme() at runtime alongside the
-         existing light/dark preference toggle, same pattern as AppDialogTheme/AppDialogTheme2
-         but scoped separately so the other activities sharing those two styles are
-         unaffected. See DCR_evolveToMaterialDatePicker.md §4/§8. -->
-    <style name="DatePickerHostThemeLight" parent="Theme.Material3.Light">
-        <item name="colorPrimary">@color/ui_accent_primary</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorPrimaryContainer">@color/picker_primary_container_light</item>
-        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
-        <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
-        <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
-    </style>
-
-    <style name="DatePickerHostThemeDark" parent="Theme.Material3.Dark">
-        <item name="colorPrimary">@color/ui_accent_primary</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorPrimaryContainer">@color/picker_primary_container_dark</item>
-        <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
-        <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
-        <item name="materialCalendarTheme">@style/DatePickerCalendarThemeOverlay</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
-    </style>
-
-    <style name="DatePickerCalendarThemeOverlay" parent="ThemeOverlay.Material3.MaterialCalendar">
-        <item name="buttonBarPositiveButtonStyle">@style/DatePickerActionButtonLight</item>
-        <item name="buttonBarNegativeButtonStyle">@style/DatePickerActionButtonLight</item>
-    </style>
-
     <style name="DatePickerDialogThemeLight" parent="ThemeOverlay.Material3.MaterialCalendar">
         <item name="buttonBarPositiveButtonStyle">@style/DatePickerActionButtonLight</item>
         <item name="buttonBarNegativeButtonStyle">@style/DatePickerActionButtonLight</item>
@@ -261,7 +231,6 @@
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_light</item>
         <item name="miniBButtonFillColor">@color/ui_button_fill_light</item>
         <item name="uiPopupSurfaceColor">@color/ui_surface_light</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="MiniAEventThemeDark" parent="Theme.Material3.Dark.NoActionBar">
@@ -276,7 +245,6 @@
         <item name="colorOnPrimaryContainer">@color/picker_on_primary_container_dark</item>
         <item name="miniBButtonFillColor">@color/ui_button_fill_dark</item>
         <item name="uiPopupSurfaceColor">@color/ui_surface_dark</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="MiniBActionButton" parent="Widget.AppCompat.Button">

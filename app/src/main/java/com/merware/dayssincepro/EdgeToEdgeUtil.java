@@ -1,25 +1,28 @@
 package com.merware.dayssincepro;
 
-import android.app.Activity;
 import android.view.View;
-import android.view.Window;
 
+import androidx.activity.ComponentActivity;
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 /**
- * Since targetSdk 35 (Android 15) enforces edge-to-edge display, the window content
- * draws under the system bars by default. This pads the content root by the system
- * bar insets so the ActionBar/list content isn't drawn under the status/nav bars.
+ * Enables edge-to-edge with compatible system-bar styling and keeps app content clear
+ * of the system bars.
  */
 class EdgeToEdgeUtil {
 
-    static void applyContentInsets(Activity activity) {
-        applyStatusBarStyle(activity);
+    static void applyContentInsets(ComponentActivity activity) {
+        int surfaceColor = activity.getColor(
+                ThemeMode.isDark(activity) ? R.color.ui_surface_dark : R.color.ui_surface_light);
+        SystemBarStyle barStyle = ColorUtils.calculateLuminance(surfaceColor) > 0.5
+                ? SystemBarStyle.light(surfaceColor, surfaceColor)
+                : SystemBarStyle.dark(surfaceColor);
+        EdgeToEdge.enable(activity, barStyle, barStyle);
 
         View content = activity.findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
@@ -27,21 +30,5 @@ class EdgeToEdgeUtil {
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
-    }
-
-    private static void applyStatusBarStyle(Activity activity) {
-        Window window = activity.getWindow();
-        boolean darkTheme = ThemeMode.isDark(activity);
-        int statusBarColor = activity.getColor(
-                darkTheme ? R.color.ui_surface_dark : R.color.ui_surface_light);
-
-        window.setStatusBarColor(statusBarColor);
-
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
-        if (controller != null) {
-            // Use light icons on dark bars and dark icons on light bars.
-            boolean useDarkIcons = ColorUtils.calculateLuminance(statusBarColor) > 0.5;
-            controller.setAppearanceLightStatusBars(useDarkIcons);
-        }
     }
 }
