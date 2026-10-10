@@ -11,9 +11,11 @@ Baseline from `:app:lint` before the focused edge-to-edge changes:
 - 20 errors
 - 426 warnings
 
-After the focused edge-to-edge changes, `:app:lintDebug` reports 16 errors and
-426 warnings. The four `NewApi` errors for opt-out attributes are gone; the task
-still fails on unrelated existing lint errors.
+The first focused edge-to-edge change removed the four `NewApi` errors for
+opt-out attributes. Later artifact inspection found that Material Components'
+fullscreen `MaterialDatePicker` path still retained deprecated system-bar
+calls, so the picker integration was replaced with Material 3 Compose. Final
+lint and artifact verification results are recorded in Stage 2 below.
 
 Google Play Console warning text (from provided screenshot):
 
@@ -27,9 +29,8 @@ Google Play Console warning text (from provided screenshot):
 
 ## Lint Issue Types and Counts
 
-The category breakdown below is from the earlier release-52 inventory; the current
-baseline was rerun for this focused change and is recorded above. The current lint
-report contains four `NewApi` errors for the edge-to-edge opt-out attributes.
+The category breakdown below is from the earlier release-52 inventory and is not
+the current post-change lint result.
 
 Blocking errors by issue type in that earlier inventory:
 
@@ -120,7 +121,8 @@ Scope completed:
 - Removed the edge-to-edge opt-out attributes from the active light/dark `MiniAEventTheme`.
 - Removed the `DatePickerHostTheme` styles and selector after confirming no production call sites; removed the selector-only unit assertions and corrected the implementation note.
 - Removed the calendar theme overlay that became unused with those host themes.
-- Replaced direct status-bar styling with AndroidX `EdgeToEdge.enable()` using the existing light/dark surface colors, preserving shared system-bar inset padding.
+- Replaced direct status-bar styling and AndroidX Activity's high-level `EdgeToEdge.enable()` helper with `WindowCompat` and `WindowInsetsControllerCompat`, preserving shared inset padding and theme-based bar icon appearance.
+- Replaced the five `MaterialDatePicker` call sites with Material 3 Compose `DatePickerDialog` hosted in `ComposeView`. Artifact mapping traced the flagged setters to the Material Components 1.14.0 fullscreen picker path.
 
 Risk profile:
 
@@ -129,8 +131,16 @@ Risk profile:
 Verification:
 
 - Ensure edge-to-edge opt-out `NewApi` findings and direct deprecated status-bar API use are absent.
-- Run focused unit tests, lint, and build checks; the full lint task may still fail on unrelated baseline errors.
+- Run focused unit tests and sideload build; inspect the minified artifact to ensure it contains no calls to either flagged `Window` setter. The full lint task may still fail on unrelated baseline errors.
 - Manually check the three `MiniAEventTheme` activities and other shared-helper users in light/dark mode and supported navigation modes.
+
+Automated verification (2026-10-10):
+
+- `:app:testDebugUnitTest` passed.
+- `:app:assembleSideload` and `bundleRelease` passed with the project Gradle daemon configured for a 2 GiB heap and 768 MiB metaspace; the previous 512 MiB heap thrashed during R8 after adding Compose.
+- Scanned the final sideload `classes.dex`: neither `Window.setStatusBarColor()` nor `Window.setNavigationBarColor()` is present.
+- `:app:lintDebug` still reports 16 errors and 426 warnings, with no errors in the changed picker code. These remaining findings are outside this remediation.
+- Emulator/sideload visual checks and Google Play Console re-analysis remain pending.
 
 Confirm the Play Console warning status on its next analysis cycle.
 

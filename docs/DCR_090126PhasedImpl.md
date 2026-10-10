@@ -91,6 +91,8 @@ Depends on: Phase 1's confirmed floor value; independent of Phases 3–4.
 
 **Tests added:** `DatePickerSupportTest` (min-date floor value, UTC millis round-trip, year-below-1000 handling, time-zone independence of the conversion — `newPicker()`/`MaterialDatePicker` itself is UI/Android-framework code and intentionally left to on-device verification, not unit-tested). Full test suite + `compileDebugJavaWithJavac` + `assembleDebug` re-verified clean. On-device/emulator verification of the actual picker UI is being done separately by the user, not as part of this automated pass.
 
+**Google Play edge-to-edge remediation follow-up (2026-10-10):** inspection of the minified artifact traced the reported `Window.setStatusBarColor()` and `Window.setNavigationBarColor()` calls to Material Components 1.14.0's fullscreen `MaterialDatePicker` implementation. The five picker call sites now use Material 3 Compose `DatePickerDialog` hosted from the existing activities via `ComposeView`, rather than `MaterialDatePicker`. This retains the Material 3 calendar experience, UTC date selection, the year 1–9999 range, and the history date's past-only rule while removing the library implementation that introduced the flagged calls. The app's edge-to-edge setup uses `WindowCompat` and `WindowInsetsControllerCompat`.
+
 ---
 
 ## 5. Phase 3 — Schema Version 4: `event.details` + `event.last_notified_date`

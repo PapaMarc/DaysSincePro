@@ -1,26 +1,20 @@
 package com.merware.dayssincepro;
 
-import android.content.Context;
-
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointBackward;
-import com.google.android.material.datepicker.MaterialDatePicker;
-
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Shared MaterialDatePicker configuration for DaysDiffActivity, EditEventActivity, and
- * EditHistory - keeps the minimum-selectable-date floor identical across all 5 call sites
- * per DCR_evolveToMaterialDatePicker.md §7.4/§2.
+ * Shared date selection rules and UTC date conversions for the date-picker call sites.
  */
 final class DatePickerSupport {
 
     private DatePickerSupport() {
     }
 
-    static final long MIN_DATE_UTC_MILLIS = utcMillis(1, Calendar.JANUARY, 1);
+    static final int MIN_DATE_YEAR = 1;
+    static final int MAX_DATE_YEAR = 9999;
+    static final long MIN_DATE_UTC_MILLIS = utcMillis(MIN_DATE_YEAR, Calendar.JANUARY, 1);
 
     /** Builds a UTC-normalized millis value for the given calendar fields (0-based month). */
     static long utcMillis(int year, int month, int day) {
@@ -35,9 +29,8 @@ final class DatePickerSupport {
      * comparisons. Always zero-pads the year to 4 digits - hand-rolled string
      * concatenation (e.g. {@code year + "-" + month + "-" + day}) silently produced
      * un-padded years like "45-01-15", which broke lexicographic date comparisons/sorts
-     * (e.g. "date &lt;= 'today'") once dates before ~year 1000 became enterable via
-     * MaterialDatePicker. Use this everywhere an ISO date string is built from separate
-     * year/month/day fields, instead of ad hoc concatenation.
+     * (e.g. "date &lt;= 'today'") for years below 1000. Use this everywhere an ISO date
+     * string is built from separate year/month/day fields, instead of ad hoc concatenation.
      *
      * @param month 0-based (java.util.Calendar convention, e.g. Calendar.JANUARY == 0)
      */
@@ -45,52 +38,17 @@ final class DatePickerSupport {
         return String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
     }
 
-    static MaterialDatePicker<Long> newPicker(Context context, long initialSelectionUtcMillis) {
-        String themeValue = ThemeMode.getThemeValue(context);
-        int pickerThemeResId = ThemeMode.datePickerDialogThemeResId(themeValue);
-
-        CalendarConstraints constraints = new CalendarConstraints.Builder()
-                .setStart(MIN_DATE_UTC_MILLIS)
-                .setOpenAt(initialSelectionUtcMillis)
-                .build();
-
-        return MaterialDatePicker.Builder.datePicker()
-                .setTheme(pickerThemeResId)
-                .setCalendarConstraints(constraints)
-                .setSelection(initialSelectionUtcMillis)
-                .build();
+    static boolean isSelectableYear(int year, boolean pastOnly, int currentYear) {
+        return year >= MIN_DATE_YEAR
+                && year <= MAX_DATE_YEAR
+                && (!pastOnly || year <= currentYear);
     }
 
-            static MaterialDatePicker<Long> newPastOrTodayPicker(Context context, long initialSelectionUtcMillis) {
-            String themeValue = ThemeMode.getThemeValue(context);
-            int pickerThemeResId = ThemeMode.datePickerDialogThemeResId(themeValue);
-
-            CalendarConstraints constraints = new CalendarConstraints.Builder()
-                .setStart(MIN_DATE_UTC_MILLIS)
-                .setOpenAt(initialSelectionUtcMillis)
-                .setValidator(DateValidatorPointBackward.now())
-                .build();
-
-            return MaterialDatePicker.Builder.datePicker()
-                .setTheme(pickerThemeResId)
-                .setCalendarConstraints(constraints)
-                .setSelection(initialSelectionUtcMillis)
-                .build();
-            }
-
-    static MaterialDatePicker<Long> newPicker(long initialSelectionUtcMillis) {
-        CalendarConstraints constraints = new CalendarConstraints.Builder()
-                .setStart(MIN_DATE_UTC_MILLIS)
-                .setOpenAt(initialSelectionUtcMillis)
-                .build();
-
-        return MaterialDatePicker.Builder.datePicker()
-                .setCalendarConstraints(constraints)
-                .setSelection(initialSelectionUtcMillis)
-                .build();
+    static boolean isSelectableDate(long dateUtcMillis, boolean pastOnly, long todayUtcMillis) {
+        return !pastOnly || dateUtcMillis <= todayUtcMillis;
     }
 
-    /** Converts a MaterialDatePicker UTC-midnight selection into UTC calendar fields. */
+    /** Converts a UTC-midnight selection into UTC calendar fields. */
     static Calendar toUtcCalendar(long selectionUtcMillis) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTimeInMillis(selectionUtcMillis);
