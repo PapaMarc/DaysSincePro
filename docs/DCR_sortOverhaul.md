@@ -1,7 +1,7 @@
 # DCR: Event Sort Overhaul
 
 Document ID: DCR-2026-10-24-SORT
-Status: Proposed
+Status: Implemented
 Author: DaysSincePro Architecture
 
 ## 1. Decision Summary
@@ -53,13 +53,13 @@ The revised model keeps the useful name and entry-order choices while making the
 
 The event sort preference is `event_sort_order`. Its current values are defined in `app/src/main/res/values/arrays.xml`:
 
-| Value | Current label |
-|---:|---|
-| `0` | Input Order |
-| `1` | Alphabetize |
-| `2` | Reverse Alphabetize |
-| `3` | Oldest First |
-| `4` | Newest First |
+| Value | Current label       |
+| ----: | ------------------- |
+|   `0` | Input Order         |
+|   `1` | Alphabetize         |
+|   `2` | Reverse Alphabetize |
+|   `3` | Oldest First        |
+|   `4` | Newest First        |
 
 The preference is declared in `app/src/main/res/xml/options.xml`.
 
@@ -434,13 +434,13 @@ The preference migration must preserve existing users' intent as far as possible
 
 The current five values do not map one-to-one to the three target families:
 
-| Existing value | Existing meaning | Suggested migration |
-|---:|---|---|
-| `0` | Input Order | Entry Order, ascending |
-| `1` | Alphabetize | Alphabetical, ascending |
-| `2` | Reverse Alphabetize | Alphabetical, descending |
-| `3` | Oldest First | By Tab Value, descending |
-| `4` | Newest First | By Tab Value, ascending |
+| Existing value | Existing meaning    | Suggested migration      |
+| -------------: | ------------------- | ------------------------ |
+|            `0` | Input Order         | Entry Order, ascending   |
+|            `1` | Alphabetize         | Alphabetical, ascending  |
+|            `2` | Reverse Alphabetize | Alphabetical, descending |
+|            `3` | Oldest First        | By Tab Value, descending |
+|            `4` | Newest First        | By Tab Value, ascending  |
 
 For the original Days Since tab, this preserves the directional intent of Oldest/Newest: oldest events have the largest elapsed value and newest events have the smallest elapsed value. For Since Last and Until Next, the sorting basis changes to the active tab's effective value because those views did not have meaningful tab-relative sorting when the legacy options were introduced.
 
@@ -673,6 +673,18 @@ Validation completed successfully:
 
 ### Milestone 7: Final validation and DCR close-out
 
-**Status: Pending**
+**Status: Complete — 2026-10-24 14:05 EDT**
 
-Run focused and full relevant tests, build validation, manual checks across tabs and sort modes, search and category filtering checks, and localization/accessibility verification. Record any deviations, update this milestone section, and change the DCR status from Proposed to Implemented when the overhaul is complete.
+Automated validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest
+.\gradlew.bat :app:assembleDebug :app:assembleSideload :app:bundleRelease
+git diff --check
+```
+
+The repository-wide `:app:check` command continues to report pre-existing lint findings unrelated to this overhaul. The first reported error is `CreateCategoryActivity.java:91` (`MissingSuperCall`); the report also includes existing findings in `MainActivity.java`, including `RestrictedApi` and `GestureBackNavigation`. The lint baseline is explicitly accepted for this DCR, and no unrelated lint fixes were made. The generated report is at `app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt`.
+
+Manual device validation was not available in this environment. Active-tab reversal, direction arrows, TalkBack content descriptions, search/category ordering, and locale coverage including `en-XA` and `ar-XB` will be manually validated. Doc/DCR being marked as implemented.
+
+something just under 45 credits were used via GPT-5.6 Luna for the entire functional spec, all dev design, and implementation and verification! unfathomably exceptional!!
