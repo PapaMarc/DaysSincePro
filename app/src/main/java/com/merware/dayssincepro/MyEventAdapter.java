@@ -57,13 +57,12 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         TextView explainView = (TextView) rowView.findViewById(R.id.explain);
         c.moveToPosition(position);
 
-        long nEstDays = c.getLong(4); // recur
-        String plannedDate = c.getString(8);
-        int lastHappenedDateCol = c.getColumnIndex("last_happened_date");
-        String lastHappenedDate = (lastHappenedDateCol >= 0) ? c.getString(lastHappenedDateCol) : null;
-        int lastOffTimeDateCol = c.getColumnIndex("last_off_time_date");
-        String lastOffTimeDate = (lastOffTimeDateCol >= 0) ? c.getString(lastOffTimeDateCol) : null;
+        EventPresentation presentation;
+        Calendar now = Calendar.getInstance();
+        c.moveToPosition(position);
+        presentation = EventPresentation.fromCursor(context, c, now);
 
+        long nEstDays = presentation.recurrenceDays;
         if (nEstDays == 0) { // distinct real future one time date
             if (themeOption == 1) // dark
                 eventView.setTextColor(Color.WHITE);
@@ -73,54 +72,33 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         // ------------ first column -----------------
         eventView.setText(c.getString(2));
-        String usDate = c.getString(3);
+        String usDate = presentation.startDateText;
         DateStyle dateStyle = DateStyle.US;
 
-        SimpleDate sd = new SimpleDate(usDate, SimpleDate.DateStyle.US);
-
+        SimpleDate sd = presentation.startDate;
         DaysSinceCalculations dsc;
-        DaysSinceCalculations dsc1 = new DaysSinceCalculations(context, usDate);
-        DaysSinceCalculations dsc2 = dsc1;
+        DaysSinceCalculations dsc1 = presentation.startCalculation;
+        DaysSinceCalculations dsc2 = presentation.nextCalculation;
         String dayText;
-        SimpleDate nextDate = sd;
-        Calendar now = Calendar.getInstance();
-        String usEndDate = c.getString(5);
-        SimpleDate plannedFutureDate = null;
-        boolean hasPlannedFutureDate = false;
-
-        if (nEstDays == 0 && plannedDate != null && plannedDate.length() > 0) {
-            if (plannedDate.compareTo(HistoryDateRules.todayIsoDate()) > 0) {
-                plannedFutureDate = new SimpleDate(plannedDate, SimpleDate.DateStyle.US);
-                hasPlannedFutureDate = true;
-            }
-        }
-
-        SimpleDate latestHistory = lastHappenedDate == null ? null
-            : new SimpleDate(lastHappenedDate, SimpleDate.DateStyle.US);
-        SimpleDate latestOffTime = lastOffTimeDate == null ? null
-            : new SimpleDate(lastOffTimeDate, SimpleDate.DateStyle.US);
-        EventTimeline.Snapshot timeline = EventTimeline.compute(
-            sd, usEndDate, nEstDays, latestHistory, latestOffTime, now);
-        nextDate = timeline.nextOccurrence;
+        SimpleDate nextDate = presentation.nextDate;
+        String usEndDate = presentation.endDateText;
+        SimpleDate plannedFutureDate = presentation.plannedFutureDate;
+        boolean hasPlannedFutureDate = presentation.hasPlannedFutureDate;
+        EventTimeline.Snapshot timeline = presentation.timeline;
 
         if (nEstDays != 0) {
-            dsc2 = new DaysSinceCalculations(context, nextDate);
             dateView.setText(nextDate.getDate(dateStyle));
         }
 
-        SimpleDate sinceLastDate = timeline.sinceLastReferenceDate;
-        if (nEstDays == 0 && latestHistory != null) {
-            sinceLastDate = latestHistory;
-        }
-
-        DaysSinceCalculations dsc3 = new DaysSinceCalculations(context, sinceLastDate);
+        SimpleDate sinceLastDate = presentation.sinceLastDate;
+        DaysSinceCalculations dsc3 = presentation.sinceLastCalculation;
 
         if (kind == TabKind.DaysSince) {
             dsc = dsc1;
         } else if (kind == TabKind.SinceLast) {
             dsc = dsc3;
         } else {
-            dsc = hasPlannedFutureDate ? new DaysSinceCalculations(context, plannedDate) : dsc2;
+            dsc = presentation.plannedCalculation;
 
             // if event hasn't happened quite yet, use predetermined says till.
 
@@ -129,13 +107,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             }
         }
 
-        boolean useNextDate = false;  // use next recurring date in days until
-
-        if (timeline.hasFutureOccurrence && sd.getDate().before(now.getTime()))
-        {
-            // good enough use this
-            useNextDate = true;
-         }
+        boolean useNextDate = presentation.useNextDate;
 
         // ----------------- 2nd column ----------------
         //Log.wtf("look", "event [" + c.getString(2) + "] end day ar " + usEndDate);

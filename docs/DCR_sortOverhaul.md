@@ -605,9 +605,17 @@ Validation completed successfully:
 
 ### Milestone 2: Centralizing presentation and sort-key calculation
 
-**Status: Pending**
+**Status: Complete — 2026-10-24 13:12 EDT**
 
-Create the shared event-presentation calculation used by both row rendering and sorting. Preserve existing display behavior while ensuring Days Since, Since Last, and Until Next use one authoritative set of effective dates and values.
+Added `EventPresentation` as the shared event-date calculation used by `MyEventAdapter` and future sort-key generation. It centralizes recurrence, History, off-time History, end-date, planned one-time date, and effective Until Next semantics without changing the existing list-ordering behavior.
+
+Added focused tests for recurring presentation references, future planned one-time events, and off-time History recurrence anchors. The adapter now consumes the shared presentation values while retaining its existing display and explanation paths.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest
+```
 
 ### Milestone 3: Implementing the Java ordering bridge
 
