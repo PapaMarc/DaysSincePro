@@ -20,18 +20,14 @@
 
     <string-array name="entries">
         <item>Ordre de saisie</item>
-        <item>Ordre alphabétique</item>
-        <item>Ordre alphabétique inversé</item>
-        <item>Les plus anciens d’abord</item>
-        <item>Les plus récents d’abord</item>
+        <item>Alphabétique</item>
+        <item>Par valeur de l’onglet</item>
     </string-array>
 
     <string-array name="values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
-        <item>3</item>
-        <item>4</item>
     </string-array>
 
     <string-array name="sizes">

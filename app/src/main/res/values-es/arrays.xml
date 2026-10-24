@@ -7,7 +7,7 @@
         <item>Orden cronologico</item><item>Alfabetico</item><item>Alfabetico inverso</item>
     </string-array>
     <string-array name="entries">
-        <item>Orden de entrada</item><item>Alfabetico</item><item>Alfabetico inverso</item><item>Mas antiguos primero</item><item>Mas nuevos primero</item>
+        <item>Orden de entrada</item><item>Alfabético</item><item>Por valor de pestaña</item>
     </string-array>
     <string-array name="sizes">
         <item>Muy grande</item><item>Grande</item><item>Medio</item><item>Pequeno</item><item>Muy pequeno</item>

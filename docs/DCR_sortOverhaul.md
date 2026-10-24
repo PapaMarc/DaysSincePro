@@ -577,7 +577,7 @@ The following recommendations are accepted for the initial implementation:
 The following are implementation details rather than product-direction questions:
 
 1. Implement the direct compatibility mapping from section 10 without treating it as a long-term product preference contract.
-2. Add and translate the final resource strings for the three settings labels, direction descriptions, accessibility descriptions, and optional announcements.
+2. **Complete in Milestone 4 for settings labels:** Add and translate the three settings labels across all supported event-sort array resources. Direction and accessibility strings remain part of Milestone 6.
 3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
 4. During UI implementation, select the platform-compatible content-description/state-change API and verify whether an additional explicit accessibility announcement is needed.
 
@@ -633,9 +633,15 @@ Validation completed successfully:
 
 ### Milestone 4: Migrating the preference model
 
-**Status: Pending**
+**Status: Complete — 2026-10-24 13:27 EDT**
 
-Replace the five legacy choices with Entry Order, Alphabetical, and By Tab Value. Implement the accepted legacy mapping, use By Tab Value ascending as the new default, and preserve deterministic direction state.
+Replaced the five legacy event-sort choices with Entry Order, Alphabetical, and By Tab Value. Updated the shared event-sort values to three entries while retaining the accepted legacy mapping in `EventSortSpec.fromLegacyPreference(...)`. Updated all supported localized `entries` resources, including German, Spanish, French, Hindi, Italian, Portuguese, Brazilian Portuguese, and Simplified Chinese. By Tab Value ascending remains the new default.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug
+```
 
 ### Milestone 5: Adding active-tab direction interaction
 

@@ -20,19 +20,15 @@
     </string-array>
 
     <string-array name="entries">
-        <item>Input Order</item>
-        <item>Alphabetize</item>
-        <item>Reverse Alphabetize</item>
-        <item>Oldest First</item>
-        <item>Newest First</item>
+        <item>Entry Order</item>
+        <item>Alphabetical</item>
+        <item>By Tab Value</item>
     </string-array>
 
     <string-array name="values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
-        <item>3</item>
-        <item>4</item>
     </string-array>
 
     <string-array name="sizes">

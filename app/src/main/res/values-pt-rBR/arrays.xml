@@ -14,10 +14,8 @@
 
     <string-array name="entries">
         <item>Ordem de entrada</item>
-        <item>Ordem alfabetica</item>
-        <item>Ordem alfabetica inversa</item>
-        <item>Mais antigos primeiro</item>
-        <item>Mais novos primeiro</item>
+        <item>Alfabética</item>
+        <item>Por valor da aba</item>
     </string-array>
 
     <string-array name="sizes">
