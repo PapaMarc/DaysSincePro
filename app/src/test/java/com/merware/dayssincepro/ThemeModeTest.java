@@ -31,5 +31,8 @@ public class ThemeModeTest {
 
         assertEquals(R.style.MiniAEventThemeDark, ThemeMode.miniAEventThemeResId(ThemeMode.THEME_DARK));
         assertEquals(R.style.MiniAEventThemeLight, ThemeMode.miniAEventThemeResId(ThemeMode.THEME_LIGHT));
+
+        assertEquals(R.style.DatePickerHostThemeDark, ThemeMode.datePickerHostThemeResId(ThemeMode.THEME_DARK));
+        assertEquals(R.style.DatePickerHostThemeLight, ThemeMode.datePickerHostThemeResId(ThemeMode.THEME_LIGHT));
     }
 }

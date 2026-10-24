@@ -1,19 +1,15 @@
 # Housekeeping
 
-## Lint + Google Play Console App Warnings (baseline 2026-10-10)
+## Lint + Google Play Console App Warnings (Loc release 52 / 3.13.243.52)
 
 ## Overview
 
 This document tracks cleanup work that is not feature work but affects quality gates, release risk, and Play Console health.
 
-Baseline from `:app:lint` before the focused edge-to-edge changes:
+Current lint status from `:app:lint`:
 
-- 20 errors
-- 426 warnings
-
-After the focused edge-to-edge changes, `:app:lintDebug` reports 16 errors and
-426 warnings. The four `NewApi` errors for opt-out attributes are gone; the task
-still fails on unrelated existing lint errors.
+- 16 errors
+- 425 warnings
 
 Google Play Console warning text (from provided screenshot):
 
@@ -27,11 +23,7 @@ Google Play Console warning text (from provided screenshot):
 
 ## Lint Issue Types and Counts
 
-The category breakdown below is from the earlier release-52 inventory; the current
-baseline was rerun for this focused change and is recorded above. The current lint
-report contains four `NewApi` errors for the edge-to-edge opt-out attributes.
-
-Blocking errors by issue type in that earlier inventory:
+Blocking errors by issue type:
 
 | Issue Type            | Count |
 | --------------------- | ----: |
@@ -113,26 +105,32 @@ Exit criteria:
 
 ### Stage 2: Play Console Edge-to-Edge Remediation
 
-Status: implementation complete; manual visual verification remains.
+Scope:
 
-Scope completed:
-
-- Removed the edge-to-edge opt-out attributes from the active light/dark `MiniAEventTheme`.
-- Removed the `DatePickerHostTheme` styles and selector after confirming no production call sites; removed the selector-only unit assertions and corrected the implementation note.
-- Removed the calendar theme overlay that became unused with those host themes.
-- Replaced direct status-bar styling with AndroidX `EdgeToEdge.enable()` using the existing light/dark surface colors, preserving shared system-bar inset padding.
+- Remove dependency on deprecated edge-to-edge opt-out parameters.
+- Standardize inset handling on activity roots and dialogs/surfaces touched by Material3 themes.
+- Validate that top/bottom content is not obscured after changes.
 
 Risk profile:
 
-- Medium. Primarily UI/layout regression risk; the shared helper is used by all activity screens.
+- Medium. Primarily UI/layout regression risk.
+
+Suggested ordering:
+
+1. Remove/replace deprecated style parameters in smallest affected theme set.
+2. Verify shared inset helper behavior remains correct for all activity hosts.
+3. Expand changes to remaining affected themes/screens only after prior gate is green.
 
 Verification:
 
-- Ensure edge-to-edge opt-out `NewApi` findings and direct deprecated status-bar API use are absent.
-- Run focused unit tests, lint, and build checks; the full lint task may still fail on unrelated baseline errors.
-- Manually check the three `MiniAEventTheme` activities and other shared-helper users in light/dark mode and supported navigation modes.
+- Lint must stay green for edge/back categories.
+- Build + unit tests every step.
+- Keep changes split per screen/theme cluster to simplify rollback.
 
-Confirm the Play Console warning status on its next analysis cycle.
+Exit criteria:
+
+- No lint edge-related blockers.
+- Play warning trend expected to improve on next Play analysis cycle.
 
 ### Stage 3: Warning Debt Reduction by Value and Safety
 
