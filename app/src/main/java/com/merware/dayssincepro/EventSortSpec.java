@@ -1,5 +1,7 @@
 package com.merware.dayssincepro;
 
+import android.content.SharedPreferences;
+
 /**
  * User-selected event sort family and direction.
  *
@@ -10,6 +12,9 @@ final class EventSortSpec {
 
     static final String PREF_FAMILY = "event_sort_order";
     static final String PREF_DIRECTION = "event_sort_direction";
+    static final String PREF_MIGRATION_VERSION = "event_sort_migration_version";
+    static final int CURRENT_MIGRATION_VERSION = 1;
+    static final String DEFAULT_FAMILY_VALUE = "tab_value";
 
     enum Family {
         ENTRY_ORDER,
@@ -33,6 +38,30 @@ final class EventSortSpec {
 
     static final EventSortSpec DEFAULT =
             new EventSortSpec(Family.TAB_VALUE, Direction.ASCENDING);
+
+    static void migratePreference(SharedPreferences preferences) {
+        if (preferences.getInt(PREF_MIGRATION_VERSION, 0) >= CURRENT_MIGRATION_VERSION) {
+            return;
+        }
+
+        String currentValue = preferences.getString(PREF_FAMILY, null);
+        SharedPreferences.Editor editor = preferences.edit();
+        String migratedValue = migratedFamilyValue(currentValue);
+        if (!migratedValue.equals(currentValue)) {
+            editor.putString(PREF_FAMILY, migratedValue);
+            editor.putString(PREF_DIRECTION, "0");
+        }
+        editor.putInt(PREF_MIGRATION_VERSION, CURRENT_MIGRATION_VERSION).apply();
+    }
+
+    static String migratedFamilyValue(String value) {
+        if ("entry_order".equals(value)
+                || "alphabetical".equals(value)
+                || DEFAULT_FAMILY_VALUE.equals(value)) {
+            return value;
+        }
+        return DEFAULT_FAMILY_VALUE;
+    }
 
     final Family family;
     final Direction direction;

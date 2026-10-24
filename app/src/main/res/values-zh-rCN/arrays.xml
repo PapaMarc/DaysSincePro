@@ -7,7 +7,7 @@
         <item>按时间顺序</item><item>按字母排序</item><item>按字母倒序</item>
     </string-array>
     <string-array name="entries">
-        <item>输入顺序</item><item>按字母排序</item><item>按标签页值</item>
+        <item>按标签页值</item><item>按字母排序</item><item>输入顺序</item>
     </string-array>
     <string-array name="sizes">
         <item>特大</item><item>大</item><item>中</item><item>小</item><item>特小</item>

@@ -7,7 +7,7 @@
         <item>कालानुक्रमिक क्रम</item><item>वर्णानुक्रम</item><item>उल्टा वर्णानुक्रम</item>
     </string-array>
     <string-array name="entries">
-        <item>प्रविष्टि क्रम</item><item>वर्णानुक्रम</item><item>टैब मान के अनुसार</item>
+        <item>टैब मान के अनुसार</item><item>वर्णानुक्रम</item><item>प्रविष्टि क्रम</item>
     </string-array>
     <string-array name="sizes">
         <item>बहुत बड़ा</item><item>बड़ा</item><item>मध्यम</item><item>छोटा</item><item>बहुत छोटा</item>

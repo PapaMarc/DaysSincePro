@@ -7,7 +7,7 @@
         <item>Ordine cronologico</item><item>Alfabetico</item><item>Alfabetico inverso</item>
     </string-array>
     <string-array name="entries">
-        <item>Ordine di inserimento</item><item>Alfabetico</item><item>Per valore della scheda</item>
+        <item>Per valore della scheda</item><item>Alfabetico</item><item>Ordine di inserimento</item>
     </string-array>
     <string-array name="sizes">
         <item>Molto grande</item><item>Grande</item><item>Medio</item><item>Piccolo</item><item>Molto piccolo</item>

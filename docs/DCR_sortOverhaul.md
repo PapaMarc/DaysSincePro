@@ -430,21 +430,19 @@ Entry Order and Alphabetical can remain SQL-optimized if doing so does not creat
 
 ## 10. State and Compatibility
 
-The preference migration must preserve existing users' intent as far as possible.
+New installations default to By Tab Value, ascending. Existing installations receive a one-time migration to that same default when they still contain legacy or invalid event-sort state. This intentionally does not preserve the old sort choice; it gives all users the new recommended behavior while ensuring their later choices are not reset.
 
 The current five values do not map one-to-one to the three target families:
 
-| Existing value | Existing meaning    | Suggested migration      |
-| -------------: | ------------------- | ------------------------ |
-|            `0` | Input Order         | Entry Order, ascending   |
-|            `1` | Alphabetize         | Alphabetical, ascending  |
-|            `2` | Reverse Alphabetize | Alphabetical, descending |
-|            `3` | Oldest First        | By Tab Value, descending |
-|            `4` | Newest First        | By Tab Value, ascending  |
+| Existing value | Existing meaning    | One-time migration result |
+| -------------: | ------------------- | ------------------------- |
+|            `0` | Input Order         | By Tab Value, ascending   |
+|            `1` | Alphabetize         | By Tab Value, ascending   |
+|            `2` | Reverse Alphabetize | By Tab Value, ascending   |
+|            `3` | Oldest First        | By Tab Value, ascending   |
+|            `4` | Newest First        | By Tab Value, ascending   |
 
-For the original Days Since tab, this preserves the directional intent of Oldest/Newest: oldest events have the largest elapsed value and newest events have the smallest elapsed value. For Since Last and Until Next, the sorting basis changes to the active tab's effective value because those views did not have meaningful tab-relative sorting when the legacy options were introduced.
-
-The user population is currently very small, so preserving every historical detail is not a significant practical constraint. The direct mapping is still preferable because it is simple, deterministic, and avoids silently discarding an existing explicit direction choice. Release notes should explain that Oldest/Newest now use the active tab's value rather than the original stored event date.
+The migration writes the symbolic `tab_value` family and ascending direction, then records migration version 1. It runs only while that version marker is absent. Already-modern symbolic values are preserved and only receive the marker, so users who have already selected a new choice are not reset. The existing compatibility parser remains as defensive handling for any legacy value encountered outside the normal migration path.
 
 The new model may require separate persisted state for:
 
@@ -565,7 +563,7 @@ The following recommendations are accepted for the initial implementation:
 4. The settings choices are **Entry Order**, **Alphabetical**, and **By Tab Value**.
 5. The active-tab arrow represents the current direction and is the primary visible indication that the active tab is sortable.
 6. Accessibility wording may use mode-specific explanations such as “A-Z,” “first entered first,” or “soonest first.”
-7. Existing preference values use the direct compatibility mapping in section 10. The small current user population makes this a low-risk compatibility choice.
+7. Existing legacy preference values are reset once to By Tab Value, ascending; modern symbolic values are preserved.
 8. `_id` is the permanent Entry Order key.
 9. The initial implementation uses a Java-calculated presentation record and a reordered `MatrixCursor`, or an equivalent ordered-row bridge if implementation constraints require it.
 10. Accessibility state is exposed through a stateful tab content description. A concise accessibility announcement after a direction toggle may be added if testing shows it improves discoverability without causing duplicate announcements.
@@ -576,7 +574,7 @@ The following recommendations are accepted for the initial implementation:
 
 The following are implementation details rather than product-direction questions:
 
-1. Implement the direct compatibility mapping from section 10 without treating it as a long-term product preference contract.
+1. Implement the one-time preference migration from section 10 while retaining the legacy parser as a defensive fallback.
 2. **Complete in Milestone 4 for settings labels:** Add and translate the three settings labels across all supported event-sort array resources. Direction and accessibility strings remain part of Milestone 6.
 3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
 4. **Complete in Milestone 6:** Use stateful tab content descriptions with localized direction text. No additional explicit announcement is used by default to avoid duplicate accessibility output.
@@ -623,7 +621,7 @@ Validation completed successfully:
 
 Added `EventRowSorter`, which calculates effective event presentations in Java, applies Entry Order, Alphabetical, or By Tab Value ordering, applies the accepted ascending/descending direction, and preserves deterministic tie-breaking. Normal and search list paths now use the reordered `MatrixCursor` while retaining every column required by `MyEventAdapter`.
 
-The existing legacy preference values are temporarily mapped through `EventSortSpec.fromLegacyPreference(...)` so the bridge is active before the settings-resource migration in Milestone 4. The mapping follows the accepted DCR compatibility table.
+The existing legacy preference values are temporarily mapped through `EventSortSpec.fromLegacyPreference(...)` so the bridge is active before the settings-resource migration in Milestone 4. The parser remains as a defensive fallback; the one-time upgrade migration now resets legacy values to the new By Tab Value ascending default.
 
 Validation completed successfully:
 
@@ -635,7 +633,7 @@ Validation completed successfully:
 
 **Status: Complete — 2026-10-24 13:27 EDT**
 
-Replaced the five legacy event-sort choices with Entry Order, Alphabetical, and By Tab Value. Updated the shared event-sort values to three entries while retaining the accepted legacy mapping in `EventSortSpec.fromLegacyPreference(...)`. Updated all supported localized `entries` resources, including German, Spanish, French, Hindi, Italian, Portuguese, Brazilian Portuguese, and Simplified Chinese. By Tab Value ascending remains the new default.
+Replaced the five legacy event-sort choices with By Tab Value, Alphabetical, and Entry Order. Updated the shared event-sort values to three entries while retaining the defensive legacy mapping in `EventSortSpec.fromLegacyPreference(...)`. Updated all supported localized `entries` resources, including German, Spanish, French, Hindi, Italian, Portuguese, Brazilian Portuguese, and Simplified Chinese. By Tab Value ascending remains the new default.
 
 Validation completed successfully:
 
@@ -685,6 +683,19 @@ git diff --check
 
 The repository-wide `:app:check` command continues to report pre-existing lint findings unrelated to this overhaul. The first reported error is `CreateCategoryActivity.java:91` (`MissingSuperCall`); the report also includes existing findings in `MainActivity.java`, including `RestrictedApi` and `GestureBackNavigation`. The lint baseline is explicitly accepted for this DCR, and no unrelated lint fixes were made. The generated report is at `app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt`.
 
-Manual device validation was not available in this environment. Active-tab reversal, direction arrows, TalkBack content descriptions, search/category ordering, and locale coverage including `en-XA` and `ar-XB` will be manually validated. Doc/DCR being marked as implemented.
+Manual device validation was not available in this environment. Active-tab reversal, direction arrows, TalkBack content descriptions, search/category ordering, and locale coverage including `en-XA` and `ar-XB` remain follow-up checks and do not block implementation status.
+
+### Milestone 8: Applying the one-time preference migration and display-order update
+
+**Status: Complete — 2026-10-24 14:28 EDT**
+
+Updated the Settings order to By Tab Value, Alphabetical, and Entry Order across all supported localized resources. Added a versioned migration that resets legacy or invalid event-sort values to By Tab Value ascending exactly once, preserves already-modern symbolic values, and prevents future user choices from being overwritten. Added focused migration tests.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest --tests com.merware.dayssincepro.EventSortSpecTest :app:assembleDebug
+git diff --check
+```
 
 something just under 45 credits were used via GPT-5.6 Luna for the entire functional spec, all dev design, and implementation and verification! unfathomably exceptional!!

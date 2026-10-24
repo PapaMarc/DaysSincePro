@@ -20,15 +20,15 @@
     </string-array>
 
     <string-array name="entries">
-        <item>Entry Order</item>
-        <item>Alphabetical</item>
         <item>By Tab Value</item>
+        <item>Alphabetical</item>
+        <item>Entry Order</item>
     </string-array>
 
     <string-array name="values">
-        <item>entry_order</item>
-        <item>alphabetical</item>
         <item>tab_value</item>
+        <item>alphabetical</item>
+        <item>entry_order</item>
     </string-array>
 
     <string-array name="sizes">

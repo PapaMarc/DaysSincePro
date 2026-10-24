@@ -13,9 +13,9 @@
     </string-array>
 
     <string-array name="entries">
-        <item>Ordem de entrada</item>
-        <item>Alfabética</item>
         <item>Por valor da aba</item>
+        <item>Alfabética</item>
+        <item>Ordem de entrada</item>
     </string-array>
 
     <string-array name="sizes">

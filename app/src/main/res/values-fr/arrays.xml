@@ -19,15 +19,15 @@
     </string-array>
 
     <string-array name="entries">
-        <item>Ordre de saisie</item>
-        <item>Alphabétique</item>
         <item>Par valeur de l’onglet</item>
+        <item>Alphabétique</item>
+        <item>Ordre de saisie</item>
     </string-array>
 
     <string-array name="values">
-        <item>entry_order</item>
-        <item>alphabetical</item>
         <item>tab_value</item>
+        <item>alphabetical</item>
+        <item>entry_order</item>
     </string-array>
 
     <string-array name="sizes">

@@ -83,6 +83,21 @@ public class EventSortSpecTest {
                 EventSortSpec.Direction.ASCENDING);
     }
 
+    @Test
+    public void migration_resetsLegacyValuesToByTabValue() {
+        assertEquals("tab_value", EventSortSpec.migratedFamilyValue("0"));
+        assertEquals("tab_value", EventSortSpec.migratedFamilyValue("4"));
+        assertEquals("tab_value", EventSortSpec.migratedFamilyValue(null));
+        assertEquals("tab_value", EventSortSpec.migratedFamilyValue("invalid"));
+    }
+
+    @Test
+    public void migration_preservesModernValues() {
+        assertEquals("entry_order", EventSortSpec.migratedFamilyValue("entry_order"));
+        assertEquals("alphabetical", EventSortSpec.migratedFamilyValue("alphabetical"));
+        assertEquals("tab_value", EventSortSpec.migratedFamilyValue("tab_value"));
+    }
+
     private void assertSpec(String value,
                             EventSortSpec.Family family,
                             EventSortSpec.Direction direction) {

@@ -7,7 +7,7 @@
         <item>Chronologische Reihenfolge</item><item>Alphabetisch</item><item>Umgekehrt alphabetisch</item>
     </string-array>
     <string-array name="entries">
-        <item>Eingabereihenfolge</item><item>Alphabetisch</item><item>Nach Tab-Wert</item>
+        <item>Nach Tab-Wert</item><item>Alphabetisch</item><item>Eingabereihenfolge</item>
     </string-array>
     <string-array name="sizes">
         <item>Sehr gross</item><item>Gross</item><item>Mittel</item><item>Klein</item><item>Sehr klein</item>

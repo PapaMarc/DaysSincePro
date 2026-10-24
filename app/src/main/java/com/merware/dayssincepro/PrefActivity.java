@@ -23,6 +23,7 @@ public class PrefActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         AppLocaleManager.applyStoredLocale(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        EventSortSpec.migratePreference(preferences);
         applySettingsTheme();
 
         super.onCreate(savedInstanceState);
