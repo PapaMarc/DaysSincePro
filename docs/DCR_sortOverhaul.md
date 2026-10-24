@@ -578,7 +578,7 @@ The following are implementation details rather than product-direction questions
 
 1. Implement the direct compatibility mapping from section 10 without treating it as a long-term product preference contract.
 2. Add and translate the final resource strings for the three settings labels, direction descriptions, accessibility descriptions, and optional announcements.
-3. Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
+3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
 4. During UI implementation, select the platform-compatible content-description/state-change API and verify whether an additional explicit accessibility announcement is needed.
 
 ## 16. Milestone Tracking
@@ -619,9 +619,17 @@ Validation completed successfully:
 
 ### Milestone 3: Implementing the Java ordering bridge
 
-**Status: Pending**
+**Status: Complete — 2026-10-24 13:22 EDT**
 
-Query candidate rows, calculate presentation records, sort them in Java, and provide the ordered results through a reordered `MatrixCursor` or an equivalent ordered-row bridge. Preserve every column required by `MyEventAdapter`.
+Added `EventRowSorter`, which calculates effective event presentations in Java, applies Entry Order, Alphabetical, or By Tab Value ordering, applies the accepted ascending/descending direction, and preserves deterministic tie-breaking. Normal and search list paths now use the reordered `MatrixCursor` while retaining every column required by `MyEventAdapter`.
+
+The existing legacy preference values are temporarily mapped through `EventSortSpec.fromLegacyPreference(...)` so the bridge is active before the settings-resource migration in Milestone 4. The mapping follows the accepted DCR compatibility table.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest
+```
 
 ### Milestone 4: Migrating the preference model
 

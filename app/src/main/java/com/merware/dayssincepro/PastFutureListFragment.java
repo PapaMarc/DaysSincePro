@@ -138,14 +138,11 @@ public class PastFutureListFragment extends ListFragment {
         }
 
         String option = preferences.getString("event_sort_order", "0");
-        int iOption = Integer.parseInt(option);
-        String orderBy = null;
+        EventSortSpec sortSpec = EventSortSpec.fromLegacyPreference(option);
 
         String sql = "";
 
         try {
-
-            orderBy = getOrderBy();
 
             now = new SimpleDate(new Date());
 
@@ -191,7 +188,7 @@ public class PastFutureListFragment extends ListFragment {
                 }
             }
 
-            sql = sql + whereClause + " order by " + orderBy;
+            sql = sql + whereClause;
 
                 DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listData begin route=normal kind=" + kind
@@ -200,7 +197,12 @@ public class PastFutureListFragment extends ListFragment {
                         + " where=\"" + whereClause + "\"");
 
             //    showToast(sql);
-            cursor = db.rawQuery(sql, null);
+            Cursor sourceCursor = db.rawQuery(sql, null);
+            try {
+                cursor = EventRowSorter.reorder(context, sourceCursor, kind, sortSpec);
+            } finally {
+                sourceCursor.close();
+            }
                 String firstRowProbe = firstRowProbe(cursor);
                 DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listData end route=normal kind=" + kind
@@ -270,7 +272,6 @@ public class PastFutureListFragment extends ListFragment {
      */
     public void listDataAjax(String str) {
         String sql = "";
-        String orderBy = null;
         if (str == null) {
             return;
         }
@@ -278,12 +279,11 @@ public class PastFutureListFragment extends ListFragment {
         searchText = str;
 
         try {
-            orderBy = getOrderBy();
             maybeClearStaleOneTimePlannedDates(HistoryDateRules.todayIsoDate());
 
             Cursor cursor;
 
-            sql = buildSearchSql(orderBy);
+            sql = buildSearchSql(null);
 
                 DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listDataAjax begin route=search kind=" + kind
@@ -293,7 +293,14 @@ public class PastFutureListFragment extends ListFragment {
 
             //   showToast(sql);
 
-            cursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
+            Cursor sourceCursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
+            try {
+                String option = preferences.getString("event_sort_order", "0");
+                EventSortSpec sortSpec = EventSortSpec.fromLegacyPreference(option);
+                cursor = EventRowSorter.reorder(context, sourceCursor, kind, sortSpec);
+            } finally {
+                sourceCursor.close();
+            }
                 String firstRowProbe = firstRowProbe(cursor);
                 DeveloperToolsSession.logTrackA("PastFutureListFragment",
                     "listDataAjax end route=search kind=" + kind

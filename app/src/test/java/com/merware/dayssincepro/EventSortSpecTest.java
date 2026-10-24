@@ -50,4 +50,34 @@ public class EventSortSpecTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new EventSortSpec(EventSortSpec.Family.TAB_VALUE, null));
     }
+
+    @Test
+    public void legacyPreferenceMapping_preservesExistingDirectionIntent() {
+        assertSpec("0", EventSortSpec.Family.ENTRY_ORDER,
+                EventSortSpec.Direction.ASCENDING);
+        assertSpec("1", EventSortSpec.Family.ALPHABETICAL,
+                EventSortSpec.Direction.ASCENDING);
+        assertSpec("2", EventSortSpec.Family.ALPHABETICAL,
+                EventSortSpec.Direction.DESCENDING);
+        assertSpec("3", EventSortSpec.Family.TAB_VALUE,
+                EventSortSpec.Direction.DESCENDING);
+        assertSpec("4", EventSortSpec.Family.TAB_VALUE,
+                EventSortSpec.Direction.ASCENDING);
+    }
+
+    @Test
+    public void invalidLegacyPreference_usesNewDefault() {
+        assertEquals(EventSortSpec.DEFAULT.family,
+                EventSortSpec.fromLegacyPreference("not-a-number").family);
+        assertEquals(EventSortSpec.DEFAULT.direction,
+                EventSortSpec.fromLegacyPreference("99").direction);
+    }
+
+    private void assertSpec(String value,
+                            EventSortSpec.Family family,
+                            EventSortSpec.Direction direction) {
+        EventSortSpec spec = EventSortSpec.fromLegacyPreference(value);
+        assertEquals(family, spec.family);
+        assertEquals(direction, spec.direction);
+    }
 }

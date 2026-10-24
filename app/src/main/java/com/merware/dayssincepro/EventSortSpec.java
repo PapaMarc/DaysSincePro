@@ -47,4 +47,28 @@ final class EventSortSpec {
     EventSortSpec withFamily(Family newFamily) {
         return new EventSortSpec(newFamily, Direction.ASCENDING);
     }
+
+    static EventSortSpec fromLegacyPreference(String value) {
+        int option;
+        try {
+            option = Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            return DEFAULT;
+        }
+
+        switch (option) {
+            case 0:
+                return new EventSortSpec(Family.ENTRY_ORDER, Direction.ASCENDING);
+            case 1:
+                return new EventSortSpec(Family.ALPHABETICAL, Direction.ASCENDING);
+            case 2:
+                return new EventSortSpec(Family.ALPHABETICAL, Direction.DESCENDING);
+            case 3:
+                return new EventSortSpec(Family.TAB_VALUE, Direction.DESCENDING);
+            case 4:
+                return new EventSortSpec(Family.TAB_VALUE, Direction.ASCENDING);
+            default:
+                return DEFAULT;
+        }
+    }
 }
