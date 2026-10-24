@@ -25,9 +25,9 @@
     </string-array>
 
     <string-array name="values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+        <item>entry_order</item>
+        <item>alphabetical</item>
+        <item>tab_value</item>
     </string-array>
 
     <string-array name="sizes">

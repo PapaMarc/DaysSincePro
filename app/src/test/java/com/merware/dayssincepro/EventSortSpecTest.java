@@ -73,6 +73,16 @@ public class EventSortSpecTest {
                 EventSortSpec.fromLegacyPreference("99").direction);
     }
 
+    @Test
+    public void symbolicPreferenceValues_distinguishNewChoicesFromLegacyValues() {
+        assertSpec("entry_order", EventSortSpec.Family.ENTRY_ORDER,
+                EventSortSpec.Direction.ASCENDING);
+        assertSpec("alphabetical", EventSortSpec.Family.ALPHABETICAL,
+                EventSortSpec.Direction.ASCENDING);
+        assertSpec("tab_value", EventSortSpec.Family.TAB_VALUE,
+                EventSortSpec.Direction.ASCENDING);
+    }
+
     private void assertSpec(String value,
                             EventSortSpec.Family family,
                             EventSortSpec.Direction direction) {

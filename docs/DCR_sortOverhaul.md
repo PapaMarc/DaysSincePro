@@ -579,7 +579,7 @@ The following are implementation details rather than product-direction questions
 1. Implement the direct compatibility mapping from section 10 without treating it as a long-term product preference contract.
 2. **Complete in Milestone 4 for settings labels:** Add and translate the three settings labels across all supported event-sort array resources. Direction and accessibility strings remain part of Milestone 6.
 3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
-4. During UI implementation, select the platform-compatible content-description/state-change API and verify whether an additional explicit accessibility announcement is needed.
+4. **Pending Milestone 6:** During UI implementation, select the platform-compatible content-description/state-change API and verify whether an additional explicit accessibility announcement is needed.
 
 ## 16. Milestone Tracking
 
@@ -645,9 +645,17 @@ Validation completed successfully:
 
 ### Milestone 5: Adding active-tab direction interaction
 
-**Status: Pending**
+**Status: Complete — 2026-10-24 13:41 EDT**
 
-Implement inactive-tab selection, active-tab direction reversal, global direction state, reset-to-ascending behavior when changing sort family, and the visible active-tab up/down indicator.
+Implemented inactive-tab selection through the existing TabLayout/ViewPager behavior and active-tab direction reversal through `onTabReselected`. Direction is global and persisted separately from the selected sort family. Changing the sort family resets direction to ascending. The selected tab displays an up or down arrow; accessibility descriptions and announcements remain in Milestone 6.
+
+The new symbolic preference values distinguish the three settings choices from legacy numeric values, while `EventSortSpec` continues to map legacy values during compatibility migration.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug
+```
 
 ### Milestone 6: Completing localization and accessibility
 

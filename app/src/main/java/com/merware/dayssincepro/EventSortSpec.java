@@ -8,6 +8,9 @@ package com.merware.dayssincepro;
  */
 final class EventSortSpec {
 
+    static final String PREF_FAMILY = "event_sort_order";
+    static final String PREF_DIRECTION = "event_sort_direction";
+
     enum Family {
         ENTRY_ORDER,
         ALPHABETICAL,
@@ -20,6 +23,11 @@ final class EventSortSpec {
 
         Direction reversed() {
             return this == ASCENDING ? DESCENDING : ASCENDING;
+        }
+
+        static Direction fromPreferenceValue(String value) {
+            return "1".equals(value) || "DESCENDING".equals(value)
+                    ? DESCENDING : ASCENDING;
         }
     }
 
@@ -48,7 +56,21 @@ final class EventSortSpec {
         return new EventSortSpec(newFamily, Direction.ASCENDING);
     }
 
-    static EventSortSpec fromLegacyPreference(String value) {
+    EventSortSpec withDirection(Direction newDirection) {
+        return new EventSortSpec(family, newDirection);
+    }
+
+    static EventSortSpec fromPreferenceValue(String value) {
+        if ("entry_order".equals(value)) {
+            return new EventSortSpec(Family.ENTRY_ORDER, Direction.ASCENDING);
+        }
+        if ("alphabetical".equals(value)) {
+            return new EventSortSpec(Family.ALPHABETICAL, Direction.ASCENDING);
+        }
+        if ("tab_value".equals(value)) {
+            return DEFAULT;
+        }
+
         int option;
         try {
             option = Integer.parseInt(value);
@@ -70,5 +92,9 @@ final class EventSortSpec {
             default:
                 return DEFAULT;
         }
+    }
+
+    static EventSortSpec fromLegacyPreference(String value) {
+        return fromPreferenceValue(value);
     }
 }

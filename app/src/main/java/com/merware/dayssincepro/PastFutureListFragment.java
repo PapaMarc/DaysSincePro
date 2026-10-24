@@ -137,8 +137,7 @@ public class PastFutureListFragment extends ListFragment {
             return;
         }
 
-        String option = preferences.getString("event_sort_order", "0");
-        EventSortSpec sortSpec = EventSortSpec.fromLegacyPreference(option);
+        EventSortSpec sortSpec = getSortSpec();
 
         String sql = "";
 
@@ -232,31 +231,14 @@ public class PastFutureListFragment extends ListFragment {
         }
     }
 
-    private String getOrderBy()
-    {
-        String option = preferences.getString("event_sort_order", "0");
-        int iOption = Integer.parseInt(option);
-        String orderBy = null;
-
-        switch (iOption) {
-            case 0:
-                orderBy = null;
-                break;
-            case 1:
-                orderBy = "event ASC";
-                break;
-            case 2:
-                orderBy = "event DESC";
-                break;
-            case 3:
-                orderBy = "date ASC";
-                break;
-            case 4:
-                orderBy = "date DESC";
-                break;
+    private EventSortSpec getSortSpec() {
+        EventSortSpec base = EventSortSpec.fromPreferenceValue(
+                preferences.getString(EventSortSpec.PREF_FAMILY, "tab_value"));
+        if (!preferences.contains(EventSortSpec.PREF_DIRECTION)) {
+            return base;
         }
-
-        return orderBy;
+        return base.withDirection(EventSortSpec.Direction.fromPreferenceValue(
+                preferences.getString(EventSortSpec.PREF_DIRECTION, "0")));
     }
 
     String searchText = "";
@@ -295,9 +277,7 @@ public class PastFutureListFragment extends ListFragment {
 
             Cursor sourceCursor = db.rawQuery(sql, new String[]{"%" + str + "%"});
             try {
-                String option = preferences.getString("event_sort_order", "0");
-                EventSortSpec sortSpec = EventSortSpec.fromLegacyPreference(option);
-                cursor = EventRowSorter.reorder(context, sourceCursor, kind, sortSpec);
+                cursor = EventRowSorter.reorder(context, sourceCursor, kind, getSortSpec());
             } finally {
                 sourceCursor.close();
             }

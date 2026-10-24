@@ -113,6 +113,12 @@ public class PrefActivity extends AppCompatActivity {
                 pref.setSummary(listPref.getEntry());
             }
 
+            if (EventSortSpec.PREF_FAMILY.equals(key)) {
+                sharedPreferences.edit()
+                        .putString(EventSortSpec.PREF_DIRECTION, "0")
+                        .apply();
+            }
+
             if ("noti".equals(key)) {
                 boolean isNotiOn = sharedPreferences.getBoolean("noti", false);
                 if (getActivity() != null) {

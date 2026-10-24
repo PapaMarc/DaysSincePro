@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     ViewPager2 mViewPager;
+    private TabLayout eventTabLayout;
     private final ViewPager2.OnPageChangeCallback pageRefreshCallback =
             new ViewPager2.OnPageChangeCallback() {
                 @Override
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
                     sinceLastFragment = (SinceLastFragment) resolvePagerFragment(1, sinceLastFragment);
                     daysUntilFragment = (DaysUntilFragment) resolvePagerFragment(2, daysUntilFragment);
                     refreshCurrentTab(daysSinceFragment, sinceLastFragment, daysUntilFragment, position);
+                    updateSortTabIndicator();
                 }
             };
 
@@ -124,15 +126,31 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.registerOnPageChangeCallback(pageRefreshCallback);
 
-        TabLayout tabLayout = findViewById(R.id.main_tabs);
-        new TabLayoutMediator(tabLayout, mViewPager,
+        eventTabLayout = findViewById(R.id.main_tabs);
+        new TabLayoutMediator(eventTabLayout, mViewPager,
                 new TabLayoutMediator.TabConfigurationStrategy() {
                     @Override
                     public void onConfigureTab(TabLayout.Tab tab, int position) {
                         tab.setText(mSectionsPagerAdapter.getPageTitle(position));
                     }
                 }).attach();
-        applyTabTextStateColors(tabLayout);
+                eventTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        updateSortTabIndicator();
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        reverseEventSortDirection();
+                    }
+                });
+                applyTabTextStateColors(eventTabLayout);
+                updateSortTabIndicator();
 
         boolean notifyOptionJustNow = preferences.getBoolean("noti", false);
 
@@ -710,6 +728,45 @@ public class MainActivity extends AppCompatActivity implements
                     daysUntil.listData();
                 }
                 break;
+        }
+    }
+
+    private EventSortSpec currentEventSortSpec() {
+        EventSortSpec base = EventSortSpec.fromPreferenceValue(
+                preferences.getString(EventSortSpec.PREF_FAMILY, "tab_value"));
+        if (!preferences.contains(EventSortSpec.PREF_DIRECTION)) {
+            return base;
+        }
+        return base.withDirection(EventSortSpec.Direction.fromPreferenceValue(
+                preferences.getString(EventSortSpec.PREF_DIRECTION, "0")));
+    }
+
+    private void reverseEventSortDirection() {
+        EventSortSpec reversed = currentEventSortSpec().reversed();
+        preferences.edit()
+                .putString(EventSortSpec.PREF_DIRECTION,
+                        reversed.direction == EventSortSpec.Direction.DESCENDING ? "1" : "0")
+                .apply();
+        refreshAllTabsFromChild();
+        updateSortTabIndicator();
+    }
+
+    private void updateSortTabIndicator() {
+        if (eventTabLayout == null || mViewPager == null || mSectionsPagerAdapter == null) {
+            return;
+        }
+
+        EventSortSpec sortSpec = currentEventSortSpec();
+        int selectedPosition = mViewPager.getCurrentItem();
+        String direction = sortSpec.direction == EventSortSpec.Direction.ASCENDING
+                ? " \u2191" : " \u2193";
+
+        for (int position = 0; position < mSectionsPagerAdapter.getItemCount(); position++) {
+            TabLayout.Tab tab = eventTabLayout.getTabAt(position);
+            if (tab != null) {
+                CharSequence title = mSectionsPagerAdapter.getPageTitle(position);
+                tab.setText(position == selectedPosition ? title + direction : title);
+            }
         }
     }
 

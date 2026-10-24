@@ -9,7 +9,7 @@
 		<ListPreference android:key="event_sort_order"
 			android:dialogTitle="@string/event_sort_order" android:title="@string/event_sort_order"
 			android:summary="@string/event_sort_order" android:entries="@array/entries"
-			android:entryValues="@array/values" android:defaultValue="0" />
+			android:entryValues="@array/values" android:defaultValue="tab_value" />
 			
 		<com.merware.dayssincepro.FontSizeListPreference android:key="font_size"
 			android:dialogTitle="@string/font_size" android:title="@string/font_size"
