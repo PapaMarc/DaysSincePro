@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(rootProject.file("app/keystore.properties")))
@@ -10,7 +9,6 @@ android {
 
     buildFeatures {
         buildConfig true
-        compose true
     }
 
 
@@ -18,8 +16,8 @@ android {
         applicationId "com.MerWare.DaysSincePro"
         minSdk 30
         targetSdk 36
-        versionCode 59
-        versionName "3.16.338.59"
+        versionCode 58
+        versionName "3.16.335.58"
         buildConfigField "boolean", "ENABLE_DEV_DIAGNOSTICS", "false"
         buildConfigField "boolean", "SHOW_SIDELOAD_IDENTITY", "false"
     }
@@ -60,10 +58,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation platform('androidx.compose:compose-bom:2025.05.00')
-    implementation 'androidx.activity:activity-compose:1.13.0'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.ui:ui'
     testImplementation 'junit:junit:4.13.2'
 
     // Real SQLite engine for JVM-only tests that exercise actual SQL (VACUUM INTO, etc.)

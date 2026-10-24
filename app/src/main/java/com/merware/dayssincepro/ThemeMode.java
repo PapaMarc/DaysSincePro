@@ -45,4 +45,9 @@ final class ThemeMode {
         return isDark(themeValue) ? R.style.MiniAEventThemeDark : R.style.MiniAEventThemeLight;
     }
 
+    static int datePickerDialogThemeResId(String themeValue) {
+        return isDark(themeValue)
+                ? R.style.DatePickerDialogThemeDark
+                : R.style.DatePickerDialogThemeLight;
+    }
 }

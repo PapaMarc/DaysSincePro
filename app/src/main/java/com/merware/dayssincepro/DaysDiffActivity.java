@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+
 public class DaysDiffActivity extends AppCompatActivity {
 
     private int mYear;
@@ -70,7 +72,8 @@ public class DaysDiffActivity extends AppCompatActivity {
     private OnClickListener buttonACallback = new OnClickListener() {
         public void onClick(View v) {
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            ComposeDatePicker.show(DaysDiffActivity.this, initial, false, selection -> {
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(DaysDiffActivity.this, initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);
                 mMonth = cal.get(Calendar.MONTH);
@@ -78,14 +81,16 @@ public class DaysDiffActivity extends AppCompatActivity {
 
                 usDate1 = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
                 updateDisplay(usDate1, dateText);
-            }, null);
+            });
+            picker.show(getSupportFragmentManager(), "datePickerA");
         }
     };
 
     private OnClickListener buttonBCallback = new OnClickListener() {
         public void onClick(View v) {
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            ComposeDatePicker.show(DaysDiffActivity.this, initial, false, selection -> {
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(DaysDiffActivity.this, initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);
                 mMonth = cal.get(Calendar.MONTH);
@@ -93,7 +98,8 @@ public class DaysDiffActivity extends AppCompatActivity {
 
                 usDate2 = DatePickerSupport.isoDateString(mYear, mMonth, mDay);
                 updateDisplay(usDate2, dateText2);
-            }, null);
+            });
+            picker.show(getSupportFragmentManager(), "datePickerB");
         }
     };
 

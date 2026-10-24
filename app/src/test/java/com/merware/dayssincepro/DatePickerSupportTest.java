@@ -6,11 +6,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Verifies the pure UTC date conversion and selection rules shared by the date-picker call sites.
+ * Verifies DatePickerSupport's pure UTC calendar-field/millis conversion logic - the
+ * shared configuration used by all 5 MaterialDatePicker call sites (DaysDiffActivity x2,
+ * EditEventActivity x2, EditHistory) per DCR_evolveToMaterialDatePicker.md §2/§7.4.
  */
 public class DatePickerSupportTest {
 
@@ -22,28 +23,6 @@ public class DatePickerSupportTest {
         assertEquals(1, cal.get(Calendar.YEAR));
         assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
         assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
-    }
-
-    @Test
-    public void selectableYear_respectsSupportedRangeAndPastOnlyMode() {
-        assertTrue(DatePickerSupport.isSelectableYear(1, false, 2026));
-        assertTrue(DatePickerSupport.isSelectableYear(9999, false, 2026));
-        assertTrue(DatePickerSupport.isSelectableYear(2026, true, 2026));
-        assertFalse(DatePickerSupport.isSelectableYear(0, false, 2026));
-        assertFalse(DatePickerSupport.isSelectableYear(10000, false, 2026));
-        assertFalse(DatePickerSupport.isSelectableYear(2027, true, 2026));
-    }
-
-    @Test
-    public void selectableDate_pastOnlyModeRejectsFutureDates() {
-        long today = DatePickerSupport.utcMillis(2026, Calendar.JANUARY, 1);
-        long yesterday = DatePickerSupport.utcMillis(2025, Calendar.DECEMBER, 31);
-        long tomorrow = DatePickerSupport.utcMillis(2026, Calendar.JANUARY, 2);
-
-        assertTrue(DatePickerSupport.isSelectableDate(yesterday, true, today));
-        assertTrue(DatePickerSupport.isSelectableDate(today, true, today));
-        assertFalse(DatePickerSupport.isSelectableDate(tomorrow, true, today));
-        assertTrue(DatePickerSupport.isSelectableDate(tomorrow, false, today));
     }
 
     @Test
@@ -68,7 +47,7 @@ public class DatePickerSupportTest {
 
     @Test
     public void utcMillis_isTimeZoneIndependent() {
-        // Regression guard: the Compose picker consumes UTC-midnight millis, so the
+        // Regression guard: since MaterialDatePicker operates in UTC internally, the
         // conversion must not drift a day depending on the JVM's default time zone.
         TimeZone original = TimeZone.getDefault();
         try {

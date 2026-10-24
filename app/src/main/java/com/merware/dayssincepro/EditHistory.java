@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class EditHistory extends AppCompatActivity {
@@ -105,13 +106,15 @@ public class EditHistory extends AppCompatActivity {
     private OnClickListener dateDialogListener = new OnClickListener() {
         public void onClick(View v) {
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            ComposeDatePicker.show(EditHistory.this, initial, true, selection -> {
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPastOrTodayPicker(EditHistory.this, initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);
                 mMonth = cal.get(Calendar.MONTH);
                 mDay = cal.get(Calendar.DAY_OF_MONTH);
                 updateDisplay();
-            }, null);
+            });
+            picker.show(getSupportFragmentManager(), "historyDatePicker");
         }
     };
 

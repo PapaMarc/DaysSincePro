@@ -40,6 +40,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.merware.dayssincepro.SimpleDate.DateStyle;
 
 public class EditEventActivity extends AppCompatActivity {
@@ -464,13 +465,15 @@ public class EditEventActivity extends AppCompatActivity {
         public void onClick(View v) {
             dismissKeyboardAndClearFocus();
             long initial = DatePickerSupport.utcMillis(mYear, mMonth, mDay);
-            ComposeDatePicker.show(EditEventActivity.this, initial, false, selection -> {
+            MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(EditEventActivity.this, initial);
+            picker.addOnPositiveButtonClickListener(selection -> {
                 Calendar cal = DatePickerSupport.toUtcCalendar(selection);
                 mYear = cal.get(Calendar.YEAR);
                 mMonth = cal.get(Calendar.MONTH);
                 mDay = cal.get(Calendar.DAY_OF_MONTH);
                 updateDisplay();
-            }, null);
+            });
+            picker.show(getSupportFragmentManager(), "startDatePicker");
         }
     };
 
@@ -520,15 +523,8 @@ public class EditEventActivity extends AppCompatActivity {
             initial = DatePickerSupport.utcMillis(mEndYear, mEndMonth, mEndDay);
         }
 
-        Runnable onDismiss = fromEndDayCheckbox ? () -> {
-            cbEndDay.setChecked(false);
-            mEndYear = 0;
-            mEndMonth = 0;
-            mEndDay = 0;
-            showEndDateFields(false);
-        } : null;
-
-        ComposeDatePicker.show(EditEventActivity.this, initial, false, selection -> {
+        MaterialDatePicker<Long> picker = DatePickerSupport.newPicker(EditEventActivity.this, initial);
+        picker.addOnPositiveButtonClickListener(selection -> {
             Calendar cal = DatePickerSupport.toUtcCalendar(selection);
             mEndYear = cal.get(Calendar.YEAR);
             mEndMonth = cal.get(Calendar.MONTH);
@@ -551,7 +547,26 @@ public class EditEventActivity extends AppCompatActivity {
                 updateDisplay();
                 showEndDateFields(true);
             }
-        }, onDismiss);
+        });
+
+        if (fromEndDayCheckbox) {
+            picker.addOnNegativeButtonClickListener(view -> {
+                cbEndDay.setChecked(false);
+                mEndYear = 0;
+                mEndMonth = 0;
+                mEndDay = 0;
+                showEndDateFields(false);
+            });
+            picker.addOnCancelListener(dialog -> {
+                cbEndDay.setChecked(false);
+                mEndYear = 0;
+                mEndMonth = 0;
+                mEndDay = 0;
+                showEndDateFields(false);
+            });
+        }
+
+        picker.show(getSupportFragmentManager(), "endDatePicker");
     }
 
     private OnClickListener timeDialogListener = new OnClickListener() {
