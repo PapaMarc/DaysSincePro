@@ -87,6 +87,8 @@
     <string name="light">浅色 </string>
     <string name="category_sort_order">类别排序</string>
     <string name="event_sort_order">事件排序</string>
+    <string name="event_sort_accessibility_ascending">%1$s，已选中，升序。激活后按降序排序。</string>
+    <string name="event_sort_accessibility_descending">%1$s，已选中，降序。激活后按升序排序。</string>
     <string name="font_size"> 事件列表字体大小</string>
     <string name="font_size_for_events">事件列表字体大小</string>
     <string name="display_style">天数样式</string>

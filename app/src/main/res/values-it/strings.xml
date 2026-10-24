@@ -83,6 +83,8 @@
     <string name="light">Chiaro </string>
     <string name="category_sort_order">Ordine categorie</string>
     <string name="event_sort_order">Ordine eventi</string>
+    <string name="event_sort_accessibility_ascending">%1$s, selezionata, crescente. Attiva per ordinare in modo decrescente.</string>
+    <string name="event_sort_accessibility_descending">%1$s, selezionata, decrescente. Attiva per ordinare in modo crescente.</string>
     <string name="font_size"> Dimensione carattere elenco eventi</string>
     <string name="font_size_for_events">Dimensione carattere elenco eventi</string>
     <string name="display_style">Stile giorni</string>

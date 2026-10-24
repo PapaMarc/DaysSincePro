@@ -77,6 +77,8 @@
   <string name="light">Lumière</string>
   <string name="category_sort_order">Ordre de tri des catégories</string>
   <string name="event_sort_order">Ordre de tri des événements</string>
+  <string name="event_sort_accessibility_ascending">%1$s, sélectionné, croissant. Activer pour trier par ordre décroissant.</string>
+  <string name="event_sort_accessibility_descending">%1$s, sélectionné, décroissant. Activer pour trier par ordre croissant.</string>
   <string name="font_size">Taille de police de la liste d’événements</string>
   <string name="font_size_for_events">Taille de police de la liste d’événements</string>
   <string name="display_style">Style de jours</string>

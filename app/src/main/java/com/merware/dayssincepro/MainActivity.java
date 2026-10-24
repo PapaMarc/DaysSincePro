@@ -765,7 +765,14 @@ public class MainActivity extends AppCompatActivity implements
             TabLayout.Tab tab = eventTabLayout.getTabAt(position);
             if (tab != null) {
                 CharSequence title = mSectionsPagerAdapter.getPageTitle(position);
-                tab.setText(position == selectedPosition ? title + direction : title);
+                boolean selected = position == selectedPosition;
+                tab.setText(selected ? title + direction : title);
+                tab.setContentDescription(selected
+                        ? getString(sortSpec.direction == EventSortSpec.Direction.ASCENDING
+                                ? R.string.event_sort_accessibility_ascending
+                                : R.string.event_sort_accessibility_descending,
+                                title)
+                        : title);
             }
         }
     }

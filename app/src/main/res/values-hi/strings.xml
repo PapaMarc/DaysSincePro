@@ -87,6 +87,8 @@
     <string name="light">हल्का </string>
     <string name="category_sort_order">श्रेणी क्रम</string>
     <string name="event_sort_order">इवेंट क्रम</string>
+    <string name="event_sort_accessibility_ascending">%1$s, चयनित, आरोही। घटते क्रम में क्रमित करने के लिए सक्रिय करें।</string>
+    <string name="event_sort_accessibility_descending">%1$s, चयनित, घटता। बढ़ते क्रम में क्रमित करने के लिए सक्रिय करें।</string>
     <string name="font_size"> इवेंट सूची फ़ॉन्ट आकार</string>
     <string name="font_size_for_events">इवेंट सूची फ़ॉन्ट आकार</string>
     <string name="display_style">दिन शैली</string>

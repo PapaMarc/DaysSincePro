@@ -83,6 +83,8 @@
     <string name="light">Claro </string>
     <string name="category_sort_order">Orden de categorias</string>
     <string name="event_sort_order">Orden de eventos</string>
+    <string name="event_sort_accessibility_ascending">%1$s, seleccionado, ascendente. Activar para ordenar de forma descendente.</string>
+    <string name="event_sort_accessibility_descending">%1$s, seleccionado, descendente. Activar para ordenar de forma ascendente.</string>
     <string name="font_size"> Tamano de fuente de la lista de eventos</string>
     <string name="font_size_for_events">Tamano de fuente de la lista de eventos</string>
     <string name="display_style">Estilo de dias</string>

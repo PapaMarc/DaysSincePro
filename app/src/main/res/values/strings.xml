@@ -87,6 +87,8 @@
     <string name="light">Light </string>
     <string name="category_sort_order">Category Sort Order</string>
     <string name="event_sort_order">Event Sort Order</string>
+    <string name="event_sort_accessibility_ascending">%1$s, selected, ascending. Activate to sort descending.</string>
+    <string name="event_sort_accessibility_descending">%1$s, selected, descending. Activate to sort ascending.</string>
     <string name="font_size"> Event List Font Size</string>
     <string name="font_size_for_events">Event List Font Size</string>
     <string name="display_style">Days Style</string>

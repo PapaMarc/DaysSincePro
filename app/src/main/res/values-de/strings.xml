@@ -83,6 +83,8 @@
     <string name="light">Hell </string>
     <string name="category_sort_order">Sortierung Kategorien</string>
     <string name="event_sort_order">Sortierung Ereignisse</string>
+    <string name="event_sort_accessibility_ascending">%1$s, ausgewaehlt, aufsteigend. Aktivieren, um absteigend zu sortieren.</string>
+    <string name="event_sort_accessibility_descending">%1$s, ausgewaehlt, absteigend. Aktivieren, um aufsteigend zu sortieren.</string>
     <string name="font_size"> Schriftgroesse Ereignisliste</string>
     <string name="font_size_for_events">Schriftgroesse Ereignisliste</string>
     <string name="display_style">Tageanzeige</string>

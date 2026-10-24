@@ -17,7 +17,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 60
-        versionName "3.17.366.60"
+        versionName "3.17.367.60"
         buildConfigField "boolean", "ENABLE_DEV_DIAGNOSTICS", "false"
         buildConfigField "boolean", "SHOW_SIDELOAD_IDENTITY", "false"
     }
@@ -115,7 +115,9 @@ tasks.register("checkReminderLocalizationKeys") {
             "event_notifications_disabled",
                 "notify_global_disabled_hint",
             "notify_at_time_format",
-            "about_running_in_debug_mode"
+                "event_sort_accessibility_ascending",
+                "event_sort_accessibility_descending",
+                "about_running_in_debug_mode"
         ]
 
         def requiredPlurals = [
