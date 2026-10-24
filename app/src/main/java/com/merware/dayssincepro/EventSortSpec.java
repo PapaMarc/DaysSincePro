@@ -12,8 +12,9 @@ final class EventSortSpec {
 
     static final String PREF_FAMILY = "event_sort_order";
     static final String PREF_DIRECTION = "event_sort_direction";
+    static final String PREF_DIRECTION_PREFIX = "event_sort_direction_";
     static final String PREF_MIGRATION_VERSION = "event_sort_migration_version";
-    static final int CURRENT_MIGRATION_VERSION = 1;
+    static final int CURRENT_MIGRATION_VERSION = 2;
     static final String DEFAULT_FAMILY_VALUE = "tab_value";
 
     enum Family {
@@ -47,9 +48,26 @@ final class EventSortSpec {
         String currentValue = preferences.getString(PREF_FAMILY, null);
         SharedPreferences.Editor editor = preferences.edit();
         String migratedValue = migratedFamilyValue(currentValue);
-        if (!migratedValue.equals(currentValue)) {
+        boolean resetLegacyValue = !migratedValue.equals(currentValue);
+        if (resetLegacyValue) {
             editor.putString(PREF_FAMILY, migratedValue);
-            editor.putString(PREF_DIRECTION, "0");
+        }
+
+        Direction previousDirection = Direction.fromPreferenceValue(
+                preferences.getString(PREF_DIRECTION, "0"));
+        boolean preservePreviousDirection = !resetLegacyValue
+                && preferences.contains(PREF_DIRECTION);
+        for (Family family : Family.values()) {
+            for (TabKind tabKind : TabKind.values()) {
+                Direction direction = family == Family.TAB_VALUE && preservePreviousDirection
+                        ? previousDirection : Direction.ASCENDING;
+                editor.putString(directionPreferenceKey(family, tabKind),
+                        directionPreferenceValue(direction));
+            }
+        }
+
+        if (resetLegacyValue) {
+            editor.putString(PREF_DIRECTION, directionPreferenceValue(Direction.ASCENDING));
         }
         editor.putInt(PREF_MIGRATION_VERSION, CURRENT_MIGRATION_VERSION).apply();
     }
@@ -61,6 +79,30 @@ final class EventSortSpec {
             return value;
         }
         return DEFAULT_FAMILY_VALUE;
+    }
+
+    static String directionPreferenceKey(Family family, TabKind tabKind) {
+        if (family == null || tabKind == null) {
+            throw new IllegalArgumentException("Sort family and tab kind are required");
+        }
+        return PREF_DIRECTION_PREFIX + familyPreferenceValue(family) + "_" + tabKind.name();
+    }
+
+    static String directionPreferenceValue(Direction direction) {
+        return direction == Direction.DESCENDING ? "1" : "0";
+    }
+
+    private static String familyPreferenceValue(Family family) {
+        switch (family) {
+            case ENTRY_ORDER:
+                return "entry_order";
+            case ALPHABETICAL:
+                return "alphabetical";
+            case TAB_VALUE:
+                return DEFAULT_FAMILY_VALUE;
+            default:
+                throw new IllegalArgumentException("Unsupported sort family");
+        }
     }
 
     final Family family;
@@ -82,7 +124,7 @@ final class EventSortSpec {
     }
 
     EventSortSpec withFamily(Family newFamily) {
-        return new EventSortSpec(newFamily, Direction.ASCENDING);
+        return new EventSortSpec(newFamily, direction);
     }
 
     EventSortSpec withDirection(Direction newDirection) {

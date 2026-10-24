@@ -169,16 +169,16 @@ The eventual implementation must create one authoritative effective-value calcul
 The event sort preference should expose:
 
 ```text
-Entry Order
-Alphabetical
 By Tab Value
+Alphabetical
+Entry Order
 ```
 
 These are sort families, not five independent direction choices.
 
 ### 6.2 Direction behavior
 
-The initial direction for a newly selected sort family is ascending:
+The initial direction for a family/view combination that has not been used before is ascending:
 
 - Entry Order: first-entered-first.
 - Alphabetical: A-Z.
@@ -191,6 +191,10 @@ Tapping the selected tab reverses the direction:
 - By Tab Value: ascending <-> descending.
 
 The selected direction should be visible on the active tab with an up/down indicator.
+
+Direction is remembered independently for each sort-family/view combination. Changing
+the global family in Settings does not reset any saved directions. Returning to a
+previous family restores the direction last used for the selected view.
 
 ### 6.3 Tab behavior
 
@@ -442,16 +446,16 @@ The current five values do not map one-to-one to the three target families:
 |            `3` | Oldest First        | By Tab Value, ascending   |
 |            `4` | Newest First        | By Tab Value, ascending   |
 
-The migration writes the symbolic `tab_value` family and ascending direction, then records migration version 1. It runs only while that version marker is absent. Already-modern symbolic values are preserved and only receive the marker, so users who have already selected a new choice are not reset. The existing compatibility parser remains as defensive handling for any legacy value encountered outside the normal migration path.
+The migration writes the symbolic `tab_value` family and initializes the family/view direction matrix, then records migration version 2. It runs only while that version marker is absent. The prior global direction initializes all By Tab Value views; all other family/view combinations start ascending. Already-modern symbolic values are preserved and only receive the marker, so users who have already selected a new choice are not reset. The existing compatibility parser remains as defensive handling for any legacy value encountered outside the normal migration path.
 
-The new model may require separate persisted state for:
+The model persists:
 
 ```text
 sort family
-sort direction
+direction for each sort family and view
 ```
 
-If direction is reset whenever the family changes, only the current direction needs to be persisted. If direction is not persisted, the app must define behavior across process death and activity recreation. This should be decided before implementation.
+The direction keys are namespaced by family and view so process death, activity recreation, tab switching, and family switching all restore the same state.
 
 ## 11. Tie-Breaking and Edge Cases
 
@@ -557,18 +561,19 @@ Before implementation is considered complete, verify:
 
 The following recommendations are accepted for the initial implementation:
 
-1. Direction is global across tabs.
-2. Changing the sort family resets direction to ascending.
-3. Alphabetical comparison is case-insensitive.
-4. The settings choices are **Entry Order**, **Alphabetical**, and **By Tab Value**.
-5. The active-tab arrow represents the current direction and is the primary visible indication that the active tab is sortable.
-6. Accessibility wording may use mode-specific explanations such as “A-Z,” “first entered first,” or “soonest first.”
-7. Existing legacy preference values are reset once to By Tab Value, ascending; modern symbolic values are preserved.
-8. `_id` is the permanent Entry Order key.
-9. The initial implementation uses a Java-calculated presentation record and a reordered `MatrixCursor`, or an equivalent ordered-row bridge if implementation constraints require it.
-10. Accessibility state is exposed through a stateful tab content description. A concise accessibility announcement after a direction toggle may be added if testing shows it improves discoverability without causing duplicate announcements.
-11. Accessibility wording uses “Activate” rather than describing an app-specific double-tap gesture.
-12. A later migration to a typed in-memory adapter remains a separate follow-up decision.
+1. The sort family selected in Settings is global across tabs.
+2. Direction is persisted independently for each sort-family/view combination.
+3. Changing the sort family does not reset previously saved directions.
+4. Alphabetical comparison is case-insensitive.
+5. The settings choices are **By Tab Value**, **Alphabetical**, and **Entry Order**.
+6. The active-tab arrow represents the current direction and is the primary visible indication that the active tab is sortable.
+7. Accessibility wording may use mode-specific explanations such as “A-Z,” “first entered first,” or “soonest first.”
+8. Existing legacy preference values are reset once to By Tab Value, ascending; modern symbolic values are preserved.
+9. `_id` is the permanent Entry Order key.
+10. The initial implementation uses a Java-calculated presentation record and a reordered `MatrixCursor`, or an equivalent ordered-row bridge if implementation constraints require it.
+11. Accessibility state is exposed through a stateful tab content description. A concise accessibility announcement after a direction toggle may be added if testing shows it improves discoverability without causing duplicate announcements.
+12. Accessibility wording uses “Activate” rather than describing an app-specific double-tap gesture.
+13. A later migration to a typed in-memory adapter remains a separate follow-up decision.
 
 ## 15. Implementation Checklist
 
@@ -593,7 +598,7 @@ Created this DCR, documented the historical Days Since-focused origin of the exi
 
 **Status: Complete — 2026-10-24 13:04 EDT**
 
-Added the UI-independent `EventSortSpec` model for the three agreed sort families and global direction state. Tests cover the By Tab Value ascending default, direction reversal, reset-to-ascending behavior when changing sort family, and invalid null state rejection. Existing `EventTimelineTest` and `RecurrenceCycleTest` coverage remains part of the characterization baseline for recurrence, History, end-date, and current/next occurrence semantics.
+Added the UI-independent `EventSortSpec` model for the three agreed sort families and family/view direction state. Tests cover the By Tab Value ascending default, direction reversal, preservation of direction when changing family, and invalid null state rejection. Existing `EventTimelineTest` and `RecurrenceCycleTest` coverage remains part of the characterization baseline for recurrence, History, end-date, and current/next occurrence semantics.
 
 Validation completed successfully:
 
@@ -645,7 +650,7 @@ Validation completed successfully:
 
 **Status: Complete — 2026-10-24 13:41 EDT**
 
-Implemented inactive-tab selection through the existing TabLayout/ViewPager behavior and active-tab direction reversal through `onTabReselected`. Direction is global and persisted separately from the selected sort family. Changing the sort family resets direction to ascending. The selected tab displays an up or down arrow; accessibility descriptions and announcements remain in Milestone 6.
+Implemented inactive-tab selection through the existing TabLayout/ViewPager behavior and active-tab direction reversal through `onTabReselected`. Direction was initially global and persisted separately from the selected sort family; the later family/view direction matrix is recorded in Milestone 9. The selected tab displays an up or down arrow; accessibility descriptions and announcements remain in Milestone 6.
 
 The new symbolic preference values distinguish the three settings choices from legacy numeric values, while `EventSortSpec` continues to map legacy values during compatibility migration.
 
@@ -698,4 +703,15 @@ Validation completed successfully:
 git diff --check
 ```
 
-something just under 45 credits were used via GPT-5.6 Luna for the entire functional spec, all dev design, and implementation and verification! unfathomably exceptional!!
+### Milestone 9: Persisting direction per sort family and view
+
+**Status: Complete — 2026-10-24 14:52 EDT**
+
+Expanded direction persistence into a family/view matrix while keeping the Settings sort-family selection global. Each active tab now reverses only its current family/view direction, and switching families or tabs restores the previously saved direction for that combination. Existing global direction state is migrated once into all By Tab Value views; other combinations start ascending.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest --tests com.merware.dayssincepro.EventSortSpecTest :app:assembleDebug
+git diff --check
+```

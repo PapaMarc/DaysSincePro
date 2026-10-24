@@ -234,11 +234,9 @@ public class PastFutureListFragment extends ListFragment {
     private EventSortSpec getSortSpec() {
         EventSortSpec base = EventSortSpec.fromPreferenceValue(
                 preferences.getString(EventSortSpec.PREF_FAMILY, "tab_value"));
-        if (!preferences.contains(EventSortSpec.PREF_DIRECTION)) {
-            return base;
-        }
+        String directionKey = EventSortSpec.directionPreferenceKey(base.family, kind);
         return base.withDirection(EventSortSpec.Direction.fromPreferenceValue(
-                preferences.getString(EventSortSpec.PREF_DIRECTION, "0")));
+                preferences.getString(directionKey, "0")));
     }
 
     String searchText = "";

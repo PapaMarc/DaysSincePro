@@ -734,18 +734,19 @@ public class MainActivity extends AppCompatActivity implements
     private EventSortSpec currentEventSortSpec() {
         EventSortSpec base = EventSortSpec.fromPreferenceValue(
                 preferences.getString(EventSortSpec.PREF_FAMILY, "tab_value"));
-        if (!preferences.contains(EventSortSpec.PREF_DIRECTION)) {
-            return base;
-        }
+        String directionKey = EventSortSpec.directionPreferenceKey(
+                base.family, TabKind.values()[getCurrentTabIndex()]);
         return base.withDirection(EventSortSpec.Direction.fromPreferenceValue(
-                preferences.getString(EventSortSpec.PREF_DIRECTION, "0")));
+                preferences.getString(directionKey, "0")));
     }
 
     private void reverseEventSortDirection() {
         EventSortSpec reversed = currentEventSortSpec().reversed();
+        EventSortSpec.Family family = reversed.family;
+        TabKind tabKind = TabKind.values()[getCurrentTabIndex()];
         preferences.edit()
-                .putString(EventSortSpec.PREF_DIRECTION,
-                        reversed.direction == EventSortSpec.Direction.DESCENDING ? "1" : "0")
+                .putString(EventSortSpec.directionPreferenceKey(family, tabKind),
+                        EventSortSpec.directionPreferenceValue(reversed.direction))
                 .apply();
         refreshAllTabsFromChild();
         updateSortTabIndicator();

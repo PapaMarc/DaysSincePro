@@ -28,7 +28,7 @@ public class EventSortSpecTest {
     }
 
     @Test
-    public void switchingFamily_resetsDirectionToAscending() {
+    public void switchingFamily_preservesDirection() {
         EventSortSpec original = new EventSortSpec(
                 EventSortSpec.Family.ENTRY_ORDER,
                 EventSortSpec.Direction.DESCENDING);
@@ -36,7 +36,7 @@ public class EventSortSpecTest {
         EventSortSpec changed = original.withFamily(EventSortSpec.Family.TAB_VALUE);
 
         assertEquals(EventSortSpec.Family.TAB_VALUE, changed.family);
-        assertEquals(EventSortSpec.Direction.ASCENDING, changed.direction);
+        assertEquals(EventSortSpec.Direction.DESCENDING, changed.direction);
     }
 
     @Test
@@ -96,6 +96,26 @@ public class EventSortSpecTest {
         assertEquals("entry_order", EventSortSpec.migratedFamilyValue("entry_order"));
         assertEquals("alphabetical", EventSortSpec.migratedFamilyValue("alphabetical"));
         assertEquals("tab_value", EventSortSpec.migratedFamilyValue("tab_value"));
+    }
+
+    @Test
+    public void directionKeys_areIndependentForEachFamilyAndTab() {
+        assertEquals(
+                "event_sort_direction_tab_value_DaysSince",
+                EventSortSpec.directionPreferenceKey(
+                        EventSortSpec.Family.TAB_VALUE, TabKind.DaysSince));
+        assertEquals(
+                "event_sort_direction_alphabetical_DaysUntil",
+                EventSortSpec.directionPreferenceKey(
+                        EventSortSpec.Family.ALPHABETICAL, TabKind.DaysUntil));
+    }
+
+    @Test
+    public void directionPreferenceValues_areStable() {
+        assertEquals("0",
+                EventSortSpec.directionPreferenceValue(EventSortSpec.Direction.ASCENDING));
+        assertEquals("1",
+                EventSortSpec.directionPreferenceValue(EventSortSpec.Direction.DESCENDING));
     }
 
     private void assertSpec(String value,
