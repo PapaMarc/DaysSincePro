@@ -91,6 +91,30 @@ public class EventPresentationTest {
         assertEquals("2025-10-26", presentation.displayDate(
                 TabKind.SinceLast, EventSortSpec.Direction.DESCENDING)
                 .getDate(SimpleDate.DateStyle.YMD));
+        assertEquals(365, presentation.boundaryExplanationCalculation(
+                null,
+                TabKind.SinceLast,
+                new EventSortSpec(EventSortSpec.Family.TAB_VALUE,
+                        EventSortSpec.Direction.DESCENDING))
+                .getDaysSinceEvent());
+        assertEquals(0, presentation.boundaryExplanationCalculation(
+                null,
+                TabKind.SinceLast,
+                new EventSortSpec(EventSortSpec.Family.TAB_VALUE,
+                        EventSortSpec.Direction.ASCENDING))
+                .getDaysSinceEvent());
+        assertEquals(0, presentation.boundaryExplanationCalculation(
+                null,
+                TabKind.DaysUntil,
+                new EventSortSpec(EventSortSpec.Family.TAB_VALUE,
+                        EventSortSpec.Direction.ASCENDING))
+                .getDaysSinceEvent());
+        assertEquals(-365, presentation.boundaryExplanationCalculation(
+                null,
+                TabKind.DaysUntil,
+                new EventSortSpec(EventSortSpec.Family.TAB_VALUE,
+                        EventSortSpec.Direction.DESCENDING))
+                .getDaysSinceEvent());
         assertEquals("2026-10-26", presentation.displayDate(
                 TabKind.DaysUntil, EventSortSpec.Direction.ASCENDING)
                 .getDate(SimpleDate.DateStyle.YMD));

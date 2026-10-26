@@ -194,6 +194,15 @@ final class EventPresentation {
         return recurringToday && (kind == TabKind.SinceLast || kind == TabKind.DaysUntil);
     }
 
+    DaysSinceCalculations boundaryExplanationCalculation(
+            Context context, TabKind kind, EventSortSpec sortSpec) {
+        if (sortSpec.family != EventSortSpec.Family.TAB_VALUE
+                || !hasRecurringTodayPriority(kind)) {
+            return null;
+        }
+        return new DaysSinceCalculations(context, displayDate(kind, sortSpec.direction));
+    }
+
     long daysSinceValue() {
         return startCalculation.getDaysSinceEvent();
     }

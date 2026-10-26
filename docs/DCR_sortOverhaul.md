@@ -206,12 +206,12 @@ bottom. The event appears once; it is not duplicated at both ends of one list.
 
 The displayed occurrence follows the selected view and direction:
 
-| View/direction | Displayed occurrence |
-|---|---|
-| Since Last ascending | Current occurrence, displayed as Today |
-| Since Last descending | Previous recurrence occurrence |
-| Until Next ascending | Current occurrence, displayed as Today |
-| Until Next descending | Next recurrence occurrence |
+| View/direction        | Displayed occurrence                   |
+| --------------------- | -------------------------------------- |
+| Since Last ascending  | Current occurrence, displayed as Today |
+| Since Last descending | Previous recurrence occurrence         |
+| Until Next ascending  | Current occurrence, displayed as Today |
+| Until Next descending | Next recurrence occurrence             |
 
 The adjacent occurrence is calculated from the event's existing recurrence interval,
 not hard-coded as one year. Weekly, monthly, quarterly, semiannual, annual, and
@@ -233,6 +233,11 @@ ascending/descending tab-value ordering.
 This is an intentional exception to strict numeric sort/display correspondence:
 the event is prioritized because it occurs today, while its displayed date may be
 the previous or next cycle occurrence for the selected boundary direction.
+
+The explanation text must use that same direction-aware occurrence calculation:
+Today for the current occurrence, or the appropriate cycle distance such as
+1 year for the previous/next occurrence. Date text and explanation text must not
+be calculated independently.
 
 ### 6.3 Tab behavior
 
@@ -622,6 +627,7 @@ The following are implementation details rather than product-direction questions
 3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
 4. **Complete in Milestone 6:** Use stateful tab content descriptions with localized direction text. No additional explicit announcement is used by default to avoid duplicate accessibility output.
 5. **Complete in Milestone 10:** Apply the recurring day-zero boundary exception through the shared presentation and Java ordering pipeline.
+6. **Complete in Milestone 11:** Use the direction-aware boundary occurrence for both date text and explanation text.
 
 ## 16. Milestone Tracking
 
@@ -769,6 +775,26 @@ tie-breaking semantics, and excludes one-time events.
 
 Added focused coverage for annual boundary dates, adjacent occurrence display,
 one-time-event exclusion, and day-zero priority.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest --tests com.merware.dayssincepro.EventPresentationTest --tests com.merware.dayssincepro.EventSortSpecTest :app:assembleDebug
+git diff --check
+```
+
+### Milestone 11: Aligning day-zero explanation text with boundary dates
+
+**Status: Complete — 2026-10-26 19:06 EDT**
+
+Updated the adapter to calculate explanation text from the same direction-aware
+boundary occurrence used for the displayed date. Day-zero recurring events now
+show Today when the current occurrence is displayed and the appropriate cycle
+distance, such as 1 year, when the previous or next occurrence is displayed.
+Ordinary events, one-time events, reminder urgency, and non-By-Tab-Value behavior
+remain unchanged.
+
+Added focused assertions for the four Since Last/Until Next direction combinations.
 
 Validation completed successfully:
 

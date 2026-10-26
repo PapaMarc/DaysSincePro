@@ -221,18 +221,23 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         String styleOption = preferences.getString("disp_style", "0");
         int nStyleOption = Integer.parseInt(styleOption);
+        DaysSinceCalculations boundaryExplanation = presentation
+                .boundaryExplanationCalculation(context, kind, sortSpec);
 
         //  Log.wtf("adapter","look, useNextDate is " + useNextDate);
 
         if (kind == TabKind.DaysUntil && useNextDate) {
-            explainView.setText(dsc2.getExplain(false, nStyleOption));
+            explainView.setText((boundaryExplanation != null
+                    ? boundaryExplanation : dsc2).getExplain(false, nStyleOption));
             //   Log.wtf("myeventadapter", "days until behold " + dsc.getExplain(false, nStyleOption));
         }
         else
         {
             StringBuffer sb = new StringBuffer();
 
-                DaysSinceCalculations dscForExplain = (kind == TabKind.SinceLast)
+                DaysSinceCalculations dscForExplain = boundaryExplanation != null
+                    ? boundaryExplanation
+                    : (kind == TabKind.SinceLast)
                     ? dsc3
                     : new DaysSinceCalculations(context, timeline.daysSinceReferenceDate);
 
