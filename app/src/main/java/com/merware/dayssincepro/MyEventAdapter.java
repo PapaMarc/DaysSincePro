@@ -61,6 +61,7 @@ public class MyEventAdapter extends SimpleCursorAdapter {
         Calendar now = Calendar.getInstance();
         c.moveToPosition(position);
         presentation = EventPresentation.fromCursor(context, c, now);
+        EventSortSpec sortSpec = EventSortSpec.fromPreferences(preferences, kind);
 
         long nEstDays = presentation.recurrenceDays;
         if (nEstDays == 0) { // distinct real future one time date
@@ -117,21 +118,16 @@ public class MyEventAdapter extends SimpleCursorAdapter {
 
         if (systemDateFormat == null) {
             if (kind == TabKind.DaysSince) {
-                dayText = timeline.daysSinceReferenceDate.getDate(DateStyle.US);
-            }
-            else if (kind == TabKind.SinceLast) {
-                dayText = sinceLastDate.getDate(DateStyle.US);
-            }
-            else {
+                dayText = presentation.displayDate(kind, sortSpec.direction).getDate(DateStyle.US);
+            } else if (kind == TabKind.SinceLast) {
+                dayText = presentation.displayDate(kind, sortSpec.direction).getDate(DateStyle.US);
+            } else {
                 // Log.wtf("look", "ok no system date format what is useNextDate " + useNextDate);
                 if (hasPlannedFutureDate) {
                     dayText = plannedFutureDate.getDate(DateStyle.US);
-                } else if (useNextDate) {
-                    dayText = nextDate.getDate(DateStyle.US);
-                }
-                else
-                {
-                    dayText = sd.getDate(DateStyle.US);
+                } else {
+                    dayText = presentation.displayDate(kind, sortSpec.direction)
+                            .getDate(DateStyle.US);
                 }
             }
 
@@ -145,22 +141,17 @@ public class MyEventAdapter extends SimpleCursorAdapter {
             }
 
             if (kind == TabKind.DaysSince) {
-                // Log.wtf("look", "days since ok what is useNextDate " + useNextDate);
-                dayText = timeline.daysSinceReferenceDate.getDate(dateStyle);
-            }
-            else if (kind == TabKind.SinceLast) {
-                dayText = sinceLastDate.getDate(dateStyle);
-            }
-            else {
+                dayText = presentation.displayDate(kind, sortSpec.direction).getDate(dateStyle);
+            } else if (kind == TabKind.SinceLast) {
+                dayText = presentation.displayDate(kind, sortSpec.direction).getDate(dateStyle);
+            } else {
                 // Log.wtf("look", "days until ok what is useNextDate " + useNextDate);
 
                 if (hasPlannedFutureDate) {
                     dayText = plannedFutureDate.getDate(dateStyle);
-                } else if (useNextDate) {
-                    dayText = nextDate.getDate(dateStyle);
-                }
-                else {
-                    dayText = sd.getDate(dateStyle);
+                } else {
+                    dayText = presentation.displayDate(kind, sortSpec.direction)
+                            .getDate(dateStyle);
                 }
             }
         }

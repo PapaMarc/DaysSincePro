@@ -74,4 +74,49 @@ public class EventPresentationTest {
         assertEquals("2026-10-08", presentation.sinceLastDate
                 .getDate(SimpleDate.DateStyle.YMD));
     }
+
+    @Test
+    public void recurringToday_usesAdjacentOccurrenceForBoundaryDirections() {
+        EventPresentation presentation = EventPresentation.compute(
+                null,
+                "1967-10-26",
+                null,
+                365,
+                null,
+                null,
+                null,
+                calendarFor("2026-10-26"));
+
+        assertTrue(presentation.recurringToday);
+        assertEquals("2025-10-26", presentation.displayDate(
+                TabKind.SinceLast, EventSortSpec.Direction.DESCENDING)
+                .getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2026-10-26", presentation.displayDate(
+                TabKind.DaysUntil, EventSortSpec.Direction.ASCENDING)
+                .getDate(SimpleDate.DateStyle.YMD));
+        assertEquals("2027-10-26", presentation.displayDate(
+                TabKind.DaysUntil, EventSortSpec.Direction.DESCENDING)
+                .getDate(SimpleDate.DateStyle.YMD));
+        assertEquals(0, EventRowSorter.dayZeroPriority(presentation, TabKind.SinceLast));
+        assertEquals(0, EventRowSorter.dayZeroPriority(presentation, TabKind.DaysUntil));
+    }
+
+    @Test
+    public void oneTimeToday_doesNotReceiveRecurringBoundaryTreatment() {
+        EventPresentation presentation = EventPresentation.compute(
+                null,
+                "2026-10-26",
+                null,
+                0,
+                null,
+                null,
+                null,
+                calendarFor("2026-10-26"));
+
+        assertTrue(!presentation.recurringToday);
+        assertTrue(!presentation.hasRecurringTodayPriority(TabKind.SinceLast));
+        assertEquals("2026-10-26", presentation.displayDate(
+                TabKind.DaysUntil, EventSortSpec.Direction.ASCENDING)
+                .getDate(SimpleDate.DateStyle.YMD));
+    }
 }

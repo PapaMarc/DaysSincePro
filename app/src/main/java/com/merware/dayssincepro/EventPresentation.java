@@ -22,6 +22,8 @@ final class EventPresentation {
     final SimpleDate sinceLastDate;
     final boolean hasPlannedFutureDate;
     final boolean useNextDate;
+    final boolean recurringToday;
+    final SimpleDate previousOccurrence;
     final DaysSinceCalculations startCalculation;
     final DaysSinceCalculations nextCalculation;
     final DaysSinceCalculations sinceLastCalculation;
@@ -39,6 +41,8 @@ final class EventPresentation {
                               SimpleDate sinceLastDate,
                               boolean hasPlannedFutureDate,
                               boolean useNextDate,
+                              boolean recurringToday,
+                              SimpleDate previousOccurrence,
                               DaysSinceCalculations startCalculation,
                               DaysSinceCalculations nextCalculation,
                               DaysSinceCalculations sinceLastCalculation,
@@ -55,6 +59,8 @@ final class EventPresentation {
         this.sinceLastDate = sinceLastDate;
         this.hasPlannedFutureDate = hasPlannedFutureDate;
         this.useNextDate = useNextDate;
+        this.recurringToday = recurringToday;
+        this.previousOccurrence = previousOccurrence;
         this.startCalculation = startCalculation;
         this.nextCalculation = nextCalculation;
         this.sinceLastCalculation = sinceLastCalculation;
@@ -110,6 +116,11 @@ final class EventPresentation {
         SimpleDate nextDate = timeline.nextOccurrence;
         boolean useNextDate = timeline.hasFutureOccurrence
                 && startDate.getDate().before(now.getTime());
+        boolean recurringToday = recurrenceDays != 0
+                && isSameCalendarDate(timeline.lastOccurrence, now);
+        SimpleDate previousOccurrence = recurringToday
+                ? previousOccurrence(timeline.lastOccurrence, recurrenceDays)
+                : null;
 
         DaysSinceCalculations startCalculation =
                 new DaysSinceCalculations(context, startDateText);
@@ -141,6 +152,8 @@ final class EventPresentation {
                 sinceLastDate,
                 hasPlannedFutureDate,
                 useNextDate,
+                recurringToday,
+                previousOccurrence,
                 startCalculation,
                 nextCalculation,
                 sinceLastCalculation,
@@ -159,6 +172,28 @@ final class EventPresentation {
         return startDate;
     }
 
+    SimpleDate displayDate(TabKind kind, EventSortSpec.Direction direction) {
+        if (recurringToday && kind == TabKind.SinceLast
+                && direction == EventSortSpec.Direction.DESCENDING) {
+            return previousOccurrence;
+        }
+        if (recurringToday && kind == TabKind.DaysUntil
+                && direction == EventSortSpec.Direction.ASCENDING) {
+            return timeline.lastOccurrence;
+        }
+        if (kind == TabKind.SinceLast) {
+            return sinceLastDate;
+        }
+        if (kind == TabKind.DaysUntil) {
+            return untilNextDisplayDate();
+        }
+        return timeline.daysSinceReferenceDate;
+    }
+
+    boolean hasRecurringTodayPriority(TabKind kind) {
+        return recurringToday && (kind == TabKind.SinceLast || kind == TabKind.DaysUntil);
+    }
+
     long daysSinceValue() {
         return startCalculation.getDaysSinceEvent();
     }
@@ -169,5 +204,18 @@ final class EventPresentation {
 
     long untilNextValue() {
         return Math.max(0, -untilNextCalculation.getDaysSinceEvent());
+    }
+
+    private static boolean isSameCalendarDate(SimpleDate date, Calendar now) {
+        return date.getYear() == now.get(Calendar.YEAR)
+                && date.getMonth() == now.get(Calendar.MONTH) + 1
+                && date.getDay() == now.get(Calendar.DAY_OF_MONTH);
+    }
+
+    private static SimpleDate previousOccurrence(SimpleDate occurrence, long recurrenceDays) {
+        Calendar previous = Calendar.getInstance();
+        previous.setTime(occurrence.getDate());
+        RecurrenceCycle.addRecurrenceInterval(previous, -recurrenceDays);
+        return new SimpleDate(previous.getTime());
     }
 }

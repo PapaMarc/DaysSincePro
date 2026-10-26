@@ -196,6 +196,44 @@ Direction is remembered independently for each sort-family/view combination. Cha
 the global family in Settings does not reset any saved directions. Returning to a
 previous family restores the direction last used for the selected view.
 
+### 6.2.1 Recurring day-zero boundary exception
+
+When a recurring event's effective occurrence date is the user's local current date,
+the event receives a special priority in the Since Last and Until Next views when the
+sort family is By Tab Value. It is placed in the leading same-day group for both
+directions, even when ordinary numeric ordering would place a zero value at the
+bottom. The event appears once; it is not duplicated at both ends of one list.
+
+The displayed occurrence follows the selected view and direction:
+
+| View/direction | Displayed occurrence |
+|---|---|
+| Since Last ascending | Current occurrence, displayed as Today |
+| Since Last descending | Previous recurrence occurrence |
+| Until Next ascending | Current occurrence, displayed as Today |
+| Until Next descending | Next recurrence occurrence |
+
+The adjacent occurrence is calculated from the event's existing recurrence interval,
+not hard-coded as one year. Weekly, monthly, quarterly, semiannual, annual, and
+N-day recurrences therefore use their own cycle. One-time events, including one-time
+events dated today, do not receive this treatment.
+
+The day-zero test uses the existing `EventTimeline`/`EventPresentation` recurrence
+semantics and compares calendar dates in the user's local date context rather than
+raw UTC timestamps. Leap-day behavior remains whatever the existing recurrence
+implementation defines; this change does not introduce a new February 29 policy.
+The current date is captured once per presentation/sort refresh.
+
+Filtering occurs before ordering, so the same rule applies consistently to normal,
+search, category-filtered, and combined search/category results. All qualifying
+same-day recurring events are grouped together and then ordered by case-insensitive
+event name followed by `_id ASC`. Remaining rows retain the selected ordinary
+ascending/descending tab-value ordering.
+
+This is an intentional exception to strict numeric sort/display correspondence:
+the event is prioritized because it occurs today, while its displayed date may be
+the previous or next cycle occurrence for the selected boundary direction.
+
 ### 6.3 Tab behavior
 
 - Tapping an inactive tab changes to that tab.
@@ -583,6 +621,7 @@ The following are implementation details rather than product-direction questions
 2. **Complete in Milestone 4 for settings labels:** Add and translate the three settings labels across all supported event-sort array resources. Direction and accessibility strings remain part of Milestone 6.
 3. **Complete in Milestone 3:** Implement the reordered `MatrixCursor` bridge, centralizing the event projection so all columns required by `MyEventAdapter` are preserved.
 4. **Complete in Milestone 6:** Use stateful tab content descriptions with localized direction text. No additional explicit announcement is used by default to avoid duplicate accessibility output.
+5. **Complete in Milestone 10:** Apply the recurring day-zero boundary exception through the shared presentation and Java ordering pipeline.
 
 ## 16. Milestone Tracking
 
@@ -713,5 +752,27 @@ Validation completed successfully:
 
 ```text
 .\gradlew.bat :app:testDebugUnitTest --tests com.merware.dayssincepro.EventSortSpecTest :app:assembleDebug
+git diff --check
+```
+
+### Milestone 10: Prioritizing recurring day-zero boundary events
+
+**Status: Complete — 2026-10-26 18:32 EDT**
+
+Added the shared recurring day-zero boundary exception. Recurring events whose
+effective occurrence is today are grouped first in By Tab Value sorting for Since
+Last and Until Next, regardless of ascending or descending direction. The adapter
+displays today, the previous recurrence, or the next recurrence according to the
+active view and direction. The implementation preserves existing recurrence,
+History, planned-date, local-calendar, leap-day, filtering, and deterministic
+tie-breaking semantics, and excludes one-time events.
+
+Added focused coverage for annual boundary dates, adjacent occurrence display,
+one-time-event exclusion, and day-zero priority.
+
+Validation completed successfully:
+
+```text
+.\gradlew.bat :app:testDebugUnitTest --tests com.merware.dayssincepro.EventPresentationTest --tests com.merware.dayssincepro.EventSortSpecTest :app:assembleDebug
 git diff --check
 ```

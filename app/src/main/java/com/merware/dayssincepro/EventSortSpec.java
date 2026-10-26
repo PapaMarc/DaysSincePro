@@ -40,6 +40,14 @@ final class EventSortSpec {
     static final EventSortSpec DEFAULT =
             new EventSortSpec(Family.TAB_VALUE, Direction.ASCENDING);
 
+    static EventSortSpec fromPreferences(SharedPreferences preferences, TabKind tabKind) {
+        EventSortSpec base = fromPreferenceValue(
+                preferences.getString(PREF_FAMILY, DEFAULT_FAMILY_VALUE));
+        String directionKey = directionPreferenceKey(base.family, tabKind);
+        return base.withDirection(Direction.fromPreferenceValue(
+                preferences.getString(directionKey, "0")));
+    }
+
     static void migratePreference(SharedPreferences preferences) {
         if (preferences.getInt(PREF_MIGRATION_VERSION, 0) >= CURRENT_MIGRATION_VERSION) {
             return;

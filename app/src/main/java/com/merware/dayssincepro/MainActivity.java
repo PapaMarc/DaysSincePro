@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
         AppLocaleManager.applyStoredLocale(this);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        EventSortSpec.migratePreference(preferences);
         alarmHelp = new AlarmHelper(this);
         DeveloperToolsSession.initialize(getPackageName());
 
@@ -732,12 +733,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private EventSortSpec currentEventSortSpec() {
-        EventSortSpec base = EventSortSpec.fromPreferenceValue(
-                preferences.getString(EventSortSpec.PREF_FAMILY, "tab_value"));
-        String directionKey = EventSortSpec.directionPreferenceKey(
-                base.family, TabKind.values()[getCurrentTabIndex()]);
-        return base.withDirection(EventSortSpec.Direction.fromPreferenceValue(
-                preferences.getString(directionKey, "0")));
+        return EventSortSpec.fromPreferences(
+                preferences, TabKind.values()[getCurrentTabIndex()]);
     }
 
     private void reverseEventSortDirection() {

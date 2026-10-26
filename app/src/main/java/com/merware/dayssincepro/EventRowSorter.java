@@ -75,6 +75,13 @@ final class EventRowSorter {
             primary = primary.reversed();
         }
 
+        if (sortSpec.family == EventSortSpec.Family.TAB_VALUE
+                && (kind == TabKind.SinceLast || kind == TabKind.DaysUntil)) {
+            Comparator<Row> dayZeroPriority = Comparator.comparingInt(row ->
+                    dayZeroPriority(row.presentation, kind));
+            primary = dayZeroPriority.thenComparing(primary);
+        }
+
         Comparator<Row> tieBreaker = Comparator
                 .comparing((Row row) -> row.eventName == null ? "" : row.eventName,
                         String.CASE_INSENSITIVE_ORDER)
@@ -93,6 +100,10 @@ final class EventRowSorter {
             default:
                 throw new IllegalStateException("Unsupported tab kind " + kind);
         }
+        }
+
+        static int dayZeroPriority(EventPresentation presentation, TabKind kind) {
+            return presentation.hasRecurringTodayPriority(kind) ? 0 : 1;
     }
 
     private static Object[] copyCurrentRow(Cursor source) {
