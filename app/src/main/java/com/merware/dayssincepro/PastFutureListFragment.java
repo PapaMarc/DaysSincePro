@@ -127,6 +127,9 @@ public class PastFutureListFragment extends ListFragment {
     private boolean isRestored = false;
 
     public void listData() {
+        if (!isDataLoadReady()) {
+            return;
+        }
 
         if (!searchText.isEmpty()) {
                 DeveloperToolsSession.logTrackA("PastFutureListFragment",
@@ -235,6 +238,10 @@ public class PastFutureListFragment extends ListFragment {
         return EventSortSpec.fromPreferences(preferences, kind);
     }
 
+    private boolean isDataLoadReady() {
+        return preferences != null && db != null;
+    }
+
     String searchText = "";
 
     public void unsetSearchText()
@@ -253,6 +260,9 @@ public class PastFutureListFragment extends ListFragment {
         }
         str = str.trim();
         searchText = str;
+        if (!isDataLoadReady()) {
+            return;
+        }
 
         try {
             maybeClearStaleOneTimePlannedDates(HistoryDateRules.todayIsoDate());
